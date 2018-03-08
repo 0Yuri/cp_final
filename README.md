@@ -4,43 +4,16 @@ cres_pass
 **Crescendo e Passando project**
 -------------
 > @author **Poli Júnior Engenharia**
+> @hired **latreta**
 
 ### Line commands
 
-##### To clone this repository
+##### Para clonar o repositório
 ```sh
-$ git clone https://github.com/MauricioLimaJR/Cres_pass.git
+$ git clone https://github.com/0yuri/Cres_pass.git
 ```
 
-##### To daily work
+##### Para atualizar o seu trabalho, antes de começar o novo
 ```sh
 $ git pull origin master
-
-
-/* Create a new branch "temp" */
-
-$ git checkout -b temp
-
-
-/* Stage files to commit */
-
-$ git add .
-or
-$ git add --all
-
-
-/* Commit the work */
-
-$ git commit -m "some message"
-
-
-/* Check to master */
-
-$ git checkout master
-$ git pull origin master
-$ git merge temp
-
-/* Fix the conflicts */
-
-$ git push origin master
 ```
