@@ -76,7 +76,7 @@
 		}
 
     function pegarProduto(){
-      $http.post('system/public/product/get', $stateParams)
+      $http.post('system/public/product/getForEdit', $stateParams)
       .then(function(response){
         if(response.data.success){
           vm.produto = response.data.object;

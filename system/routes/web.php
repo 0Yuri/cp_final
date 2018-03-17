@@ -98,6 +98,7 @@ Route::post('/product/extra/add', 'ProductController@uploadSimple');
 Route::post('/product/remover_image', 'ProductController@removerImagem');
 Route::post('/product/deactivate', 'ProductController@desativar_produto');
 Route::post('/product/get', 'ProductController@getProduct');
+Route::post('/product/getForEdit', 'ProductController@getProductForEdition');
 Route::get('/product/favorites', 'FavoritesController@pegar_favoritos');
 Route::post('/product/logged_products', 'SessionController@logged_products');
 Route::post('/product/getAll', 'ProductController@listarProdutos');

@@ -323,7 +323,7 @@ class Validation extends Model
     // verifica palavrões presentes
     foreach($bad_words as $word){
       if(strlen(stristr($field, $word)) > 0){
-        return "Um campo possui mensagens ofensivas. Vá se tratar!";
+        return "Um campo possui mensagens ofensivas.!";
       }
     }
 
@@ -383,7 +383,6 @@ class Validation extends Model
       return true;
     }
     else{
-      $this->return->setFailed("Operação inválida.");
       return false;
     }
   }

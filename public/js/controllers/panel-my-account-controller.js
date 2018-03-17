@@ -33,8 +33,7 @@
 			$http.post('system/public/user/update', vm.user)
 			.then(function(response){
 				if(response.data.success){
-					vm.msg_status = "Alterado com sucesso!";
-					// $state.reload();
+					$state.reload();
 				}else{
 					vm.msg_status = response.data.error;
 				}

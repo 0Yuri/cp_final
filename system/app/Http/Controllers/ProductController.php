@@ -13,7 +13,7 @@ use Validator;
 
 class ProductController extends Controller
 {
-  // Criar produto - OK
+  // Criar produto
   public function novoProduto(){
     $this->isLogged();
 
@@ -336,6 +336,21 @@ class ProductController extends Controller
       $this->return->setFailed("Não existe nenhum produto com esse identificador.");
       return;
     }
+  }
+
+  public function getProductForEdition(){
+    $data = $this->get_post();
+
+    $produto = Produtos::pegarProdutoEdicao($data['unique_id']);
+
+    if($produto != null){
+      $this->return->setObject($produto);
+    }
+    else{
+      $this->return->setFailed("Não existe nenhum produto com esse identificador.");
+      return;
+    }
+
   }
 
   // Pegar produto logado

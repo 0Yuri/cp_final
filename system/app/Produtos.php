@@ -36,6 +36,31 @@ class Produtos extends Model
     }
   }
 
+  public static function pegarProdutoEdicao($id){
+    $produto = DB::table('products')
+    ->join('product_images', 'product_images.product_id', '=', 'products.id')
+    ->select('products.*', 'product_images.filename as profile_image')
+    ->where('products.unique_id', $id)
+    ->where('product_images.type', '=', 'profile')
+    ->get();
+
+    if(count($produto) > 0){
+      $produto = $produto[0];
+
+      $imagens = DB::table('product_images')
+      ->select('id', 'filename')
+      ->where('product_images.product_id', '=', $produto->id)
+      ->where('product_images.type', 'extra')
+      ->get();
+
+      $produto->imagens = $imagens;
+      return $produto;
+    }
+    else{
+      return null;
+    }
+  }
+
   public static function salvarImagem($product_id, $nome, $type="extra"){
     $data = array(
       'type' => $type,
