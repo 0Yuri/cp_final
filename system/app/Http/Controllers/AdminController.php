@@ -155,7 +155,6 @@ class AdminController extends Controller
 
   }
 
-
   // Verifica se o usuario é administrador para realizar as operações deste controlador
   private function checkPermissionLevel(){
     if(isset($_SESSION['user_id'])){
