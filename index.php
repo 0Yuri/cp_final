@@ -1,10 +1,10 @@
 <?php
 /**
- * <CRESCENDO_E_PASSANDO>
- *
+ * <CRES_PASS>
+ * 
  * This content is released under the MIT License (MIT)
  *
- * Copyright 2017, La Treta
+ * Copyright 2018, Crescendo e Passando
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,10 +24,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
- * @package	<LA_TRETA>
+ * @package	<CRES_PASS>
  * @author latreta
- * @copyright 2017, latreta (https://github.com/latreta)
- * @link <https://github.com/latreta/_api>
+ * @copyright 2018, latreta (https://github.com/latreta)
+ * @link <https://github.com/latreta/bootstrap_app>
  */
 
 /* --------------------------------------------------
@@ -37,24 +37,11 @@
  * index imports. If any folder or file used here
  * had its name changed and not changed here, the
  * imports and links will not work.
-	 */
+ */
 
 $assets_folder = 'public';
 $include_file = 'includes';
 
-/* --------------------------------------------------
- * HOST NAME
- * --------------------------------------------------
- * Ex.:
- *		For http://localhost/folder/
- *		Use $localhost_suffix = 'folder/';
- *
- *		For http://domain.com/
- *		Use $localhost_suffix = '';
- */
-
-$localhost_suffix = 'cp_final';
-// $localhost_suffix = '';
 $host_name = $_SERVER['HTTP_HOST'];
 
 # Base constants
@@ -123,8 +110,7 @@ require_once ASSETS_PATH.$include_file.'.php';
 	}
 	?>
 	<!-- ANGULAR ROUTE BASE -->
-	<!-- <base href="/"> -->
-	<base href=<?= "/".$localhost_suffix."/" ?>>
+	<base href="/">
 </head>
 <body style="padding-right:0px!important;">
 	<ui-view></ui-view>
