@@ -3,13 +3,13 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use DB;
 
-class UsuarioBanido extends Model
+class Ban extends Model
 {
+    const TABLE_NAME = "banned_users";
   
-  public static function verificar($id){
-    $usuario = DB::table('banned_users')
+  public static function verify($id){
+    $usuario = DB::table(Ban::TABLE_NAME)
     ->where('banned_id', $id)
     ->count();
 
@@ -21,11 +21,11 @@ class UsuarioBanido extends Model
     }
   }
 
-  public static function consultar($cpf){
-    $consultar = DB::table('banned_users')
-    ->select('users.*', 'banned_users.reason', 'banned_users.ban_date')
-    ->join('users', 'users.cpf', '=', 'banned_users.cpf')
-    ->where('banned_users.cpf', 'like', $cpf)
+  public static function search($cpf){
+    $consultar = DB::table(Ban::TABLE_NAME)
+    ->select(User::TABLE_NAME . '.*', Ban::TABLE_NAME . '.reason', Ban::TABLE_NAME . '.ban_date')
+    ->join(User::TABLE_NAME, Ban::TABLE_NAME . '.cpf', '=', Ban::TABLE_NAME . '.cpf')
+    ->where(Ban::TABLE_NAME . '.cpf', 'like', $cpf)
     ->get();
 
     if(count($consultar) > 0){
@@ -36,7 +36,7 @@ class UsuarioBanido extends Model
     }
   }
 
-  public static function banir($id, $cpf, $rg, $email, $motivo){
+  public static function ban($id, $cpf, $rg, $email, $motivo){
     $banimento = array(
       'banned_id' => $id,
       'cpf' => $cpf,
@@ -45,7 +45,7 @@ class UsuarioBanido extends Model
       'reason' => $motivo
     );
 
-    $inserir = DB::table('banned_users')
+    $inserir = DB::table(Ban::TABLE_NAME)
     ->insert($banimento);
 
     if($inserir){
@@ -56,8 +56,8 @@ class UsuarioBanido extends Model
     }
   }
 
-  public static function desbanir($id){
-    $desbanir = DB::table('banned_users')
+  public static function unban($id){
+    $desbanir = DB::table(Ban::TABLE_NAME)
     ->where('banned_id', $id)
     ->delete();
 
