@@ -16,8 +16,6 @@ Route::post('/admin/lojas/pesquisar', 'AdminController@pesquisarLoja');
 Route::post('/admin/lojas/toggleStatus', 'AdminController@toggleLoja');
 
 Route::get('/admin/estatisticas', 'AdminController@estatisticas');
-
-
 // ------------------------ENDING OF TESTING SECTION-------------------------- //
 // Checkout
 Route::get('/checkout/definir_pedidos', 'CheckoutController@criarPedidoSessao');
@@ -78,7 +76,7 @@ Route::post('/store/change_picture', 'StoreController@alterarImagem');
 Route::post('/store/change_banner', 'StoreController@alterarBanner');
 Route::post('/store/update_store', 'StoreController@alterar_loja');
 Route::get('/store/toggle_store', 'StoreController@toggle_loja');
-Route::get('/store/checkStore', 'SessionController@checkStore');
+Route::get('/store/checkStore', 'SessionController@status_store');
 Route::get('/store/logged_store', 'SessionController@logged_store');
 Route::get('/store/status_store', 'SessionController@status_store');
 Route::post('/store/store_products', 'ProductController@getProductFromStore');
@@ -92,10 +90,11 @@ Route::post('/product/add', 'ProductController@novoProduto');
 Route::post('/product/update', 'ProductController@alterar_produto');
 Route::post('/product/activate', 'ProductController@ativar_produto');
 
-Route::post('/product/profile/add', 'ProductController@uploadProfile');
-Route::post('/product/extra/add', 'ProductController@uploadSimple');
+//Operações com as imagens dos produtos
+Route::post('/product/profile/add', 'UploadController@uploadProductProfile');
+Route::post('/product/extra/add', 'UploadController@uploadProductExtra');
+Route::post('/product/remover_image', 'UploadController@deleteProductExtra');
 
-Route::post('/product/remover_image', 'ProductController@removerImagem');
 Route::post('/product/deactivate', 'ProductController@desativar_produto');
 Route::post('/product/get', 'ProductController@getProduct');
 Route::post('/product/getForEdit', 'ProductController@getProductForEdition');
@@ -129,7 +128,7 @@ Route::post('/address/get', 'CorreiosController@pegarEndereco');
 Route::post('/address/getSignup', 'CorreiosController@pegarEnderecoCadastro');
 // Pesquisa
 Route::post('/search', 'SearchController@pesquisar');
-// Mensagens
+// Mensagens - OK
 Route::any('/message/sent', 'MessageController@enviadas');
 Route::any('/message/received', 'MessageController@recebidas');
 Route::post('/message/get', 'MessageController@pegarMensagem');

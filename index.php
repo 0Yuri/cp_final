@@ -53,7 +53,7 @@ $include_file = 'includes';
  *		Use $localhost_suffix = '';
  */
 
-$localhost_suffix = 'cres_pass';
+$localhost_suffix = 'cp_final';
 // $localhost_suffix = '';
 $host_name = $_SERVER['HTTP_HOST'];
 
