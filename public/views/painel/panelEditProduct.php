@@ -10,7 +10,7 @@
             <button type="button" class="btn btn-default" ng-click="vm.uploadProfile(vm.produto)">Enviar</button>
           </div>
           <label>
-            <img class="productImage" ng-show="!profilepreview" src="{{imgFolder}}/site/products/{{vm.produto.profile_image}}" width="250px" height="250px">
+            <img class="productImage" ng-show="!profilepreview" src="{{imgFolder}}/site/products/{{vm.produto.profile_image.filename}}" width="250px" height="250px">
             <img class="productImage" ng-src={{profilepreview}} ng-show="profilepreview" width="250px" height="250px">
             <input type="file" file-model="profilePic" filepreview="profilepreview" fileinput="profilePic" style="display:none">
           </label>
