@@ -25,7 +25,6 @@ class MessageController extends Controller
 
     // Pega as mensagens
     $mensagens = SentMessages::get($_SESSION['user_id'], $page);
-
     // Pega quantidade de paginas
     $paginas = SentMessages::getPages($_SESSION['user_id']);
 
@@ -98,6 +97,6 @@ class MessageController extends Controller
   }
 
   public function apagarMensagem(){
-
+    $data = $this->get_post();
   }
 }

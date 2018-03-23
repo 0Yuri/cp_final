@@ -7,11 +7,12 @@ use DB;
 
 class Address extends Model
 {
+  const TABLE_NAME = "address";
 
   public static function pegarEntrega($entrega){
     if($entrega['type'] == 'user'){
 
-      $endereco = DB::table('address')
+      $endereco = DB::table(Address::TABLE_NAME)
       ->select('number as numero', 'city as localidade', 'cep', 'UF as uf', 'complement as complemento', 'neighborhood as bairro', 'street as logradouro', 'reference as referencia')
       ->where('user_id', $_SESSION['user_id'])
       ->get();
@@ -32,7 +33,7 @@ class Address extends Model
   }
 
   public static function pegarEndereco($id){
-    $endereco = DB::table('address')
+    $endereco = DB::table(Address::TABLE_NAME)
     ->select('number as numero', 'city as localidade', 'cep', 'UF as uf', 'complement as complemento', 'neighborhood as bairro', 'street as logradouro', 'reference as referencia')
     ->where('user_id', $id)
     ->get();
@@ -47,7 +48,7 @@ class Address extends Model
   }
   // Salva um endereço
   public static function salvar($data){
-    $adicionou = DB::table('address')
+    $adicionou = DB::table(Address::TABLE_NAME)
     ->insert($data);
     //
     if($adicionou){
@@ -62,7 +63,7 @@ class Address extends Model
     ->select('address.cep')
     ->where('stores.id', '=', $store_id)
     ->join('users', 'users.id', '=', 'stores.owner_id')
-    ->join('address', 'address.user_id', '=', 'users.id')
+    ->join(Address::TABLE_NAME, 'address.user_id', '=', 'users.id')
     ->get();
 
     if(count($cep) > 0){
@@ -78,7 +79,7 @@ class Address extends Model
     ->select('address.cep')
     ->where('stores.name', '=', $store_name)
     ->join('users', 'users.id', '=', 'stores.owner_id')
-    ->join('address', 'address.user_id', '=', 'users.id')
+    ->join(Address::TABLE_NAME, 'address.user_id', '=', 'users.id')
     ->get();
 
     if(count($cep) > 0){
@@ -90,7 +91,7 @@ class Address extends Model
   }
   // Calcula frete de acordo com cep de origem e destinatario + medidas com valor declarado
   public static function calcularFrete($comprador, $cep_origem, $tipo, $weight='1', $height='5', $width='15',$length='16', $declared_price='200'){
-    $cep_destino = DB::table('address')
+    $cep_destino = DB::table(Address::TABLE_NAME)
     ->select('address.cep')
     ->where('users.id', $comprador)
     ->join('users', 'users.id', '=', 'address.user_id')

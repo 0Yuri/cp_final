@@ -12,7 +12,7 @@ use App\Produtos;
 use App\Session;
 use App\FileHandler;
 use App\Order;
-use App\UsuarioBanido as Ban;
+use App\Ban;
 
 class SessionController extends Controller
 {
@@ -22,8 +22,8 @@ class SessionController extends Controller
     $data = $this->get_post();
     $session = Session::login($data['email'], $data['password']);
 
-    if(Ban::verificar($session)){
-      $this->return->setFailed("Você está bloqueado de acessar o nosso sistema.");
+    if(Ban::verify($session)){
+      $this->return->setFailed("Você está bloqueado de acessar o nosso sistema. Para mais informações entre em contato com o suporte.");
       return;
     }
     else{
@@ -83,7 +83,7 @@ class SessionController extends Controller
 	public function logged_store(){
 		$this->isLogged();
 
-		$loja = Store::pegarLojaLogado($_SESSION['user_id']);
+		$loja = Store::getLoggedStoreInfo($_SESSION['user_id']);
 
 		if($loja == null){
 			$this->return->setFailed("O usuário não possui loja cadastrada.");
@@ -105,9 +105,8 @@ class SessionController extends Controller
     if(!isset($data['page']) || strlen($data['page']) <= 0){
       $data['page'] = 0;
     }
-
-    // $produtos = Product::pegarProdutosLogado($_SESSION['user_id'], $data['page']);
-    $produtos = Produtos::pegarProdutosLogado($_SESSION['user_id'], $data['page']);
+    
+    $produtos = Product::getLoggedStoreProducts($_SESSION['user_id'], $data['page']);
 
     if($produtos == null){
       $this->return->setFailed("Esta loja não possui nenhum produto.");
@@ -119,7 +118,7 @@ class SessionController extends Controller
   // Status da loja
   public function status_store(){
     $this->isLogged();
-    $status = Store::statusLoja($_SESSION['user_id']);
+    $status = Store::statusStore($_SESSION['user_id']);
 
     if($status){
       return;

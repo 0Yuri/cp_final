@@ -4,10 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
-use App\Enderecos;
+use App\Address;
 
 class User extends Model
 {
+  const TABLE_NAME = 'users';
+
   // Salva um usuário novo no banco de dados
   public static function salvar($data){
     $usuario = (array)$data['user_info'];
@@ -20,13 +22,13 @@ class User extends Model
       // Insere o usuario e retorna o id para referenciar no endereco
       $usuario['password'] = password_hash($usuario['password'], PASSWORD_DEFAULT);
 
-      $inseriu = DB::table('users')
+      $inseriu = DB::table(User::TABLE_NAME)
       ->insertGetId($usuario);
 
       if($inseriu){
         // Atribui ao campo user_id o id do usuario adicionad
         $endereco['user_id'] = $inseriu;
-        $endereco = Enderecos::salvar($endereco);
+        $endereco = Address::salvar($endereco);
         if($endereco){
           return $inseriu;
         }else{
@@ -40,7 +42,7 @@ class User extends Model
 
   // Altera um usuário
   public static function alterar($data){
-    $alterou = DB::table('users')
+    $alterou = DB::table(User::TABLE_NAME)
     ->where('email', $data['email'])
     ->update($data);
 
@@ -54,7 +56,7 @@ class User extends Model
   // Verifica se já existe um usuário com o email cadastrado
   public static function existe($email){
     //verifica se já existe.
-    $usuario = DB::table('users')
+    $usuario = DB::table(User::TABLE_NAME)
     ->select('email')
     ->where('email', '=', $email)
     ->get();
@@ -80,7 +82,7 @@ class User extends Model
   public static function getLoggedUser($id){
     $fillable = [ 'name', 'last_name', 'birthdate', 'email', 'rg', 'cpf', 'ddd_1', 'tel_1', 'ddd_2', 'tel_2'];
 
-    $usuario = DB::table('users')
+    $usuario = DB::table(User::TABLE_NAME)
     ->select($fillable)
     ->where('id', $id)
     ->get();
@@ -103,7 +105,7 @@ class User extends Model
       'name', 'last_name', 'gender', 'created_at'
     ];
 
-    $usuario = DB::table('users')
+    $usuario = DB::table(User::TABLE_NAME)
     ->select('*')
     ->where('name_id', '=', $id)
     ->get();
@@ -131,7 +133,7 @@ class User extends Model
   }
 
   public static function existeNameID($name_id){
-    $existe = DB::table('users')
+    $existe = DB::table(User::TABLE_NAME)
     ->where('name_id', $name_id)
     ->get();
 
@@ -144,7 +146,7 @@ class User extends Model
   }
 
   public static function createHolder($user_id){
-    $usuario = DB::table('users')
+    $usuario = DB::table(User::TABLE_NAME)
     ->join('address', 'address.user_id', '=', 'users.id')
     ->select('users.name', 'users.last_name', 'users.birthdate as aniversario', 'users.cpf', 'users.ddd_1 as ddd', 'users.tel_1 as telefone',
     'address.*')

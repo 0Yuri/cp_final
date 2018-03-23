@@ -6,7 +6,6 @@ use DB;
 use App\Image;
 use App\Store;
 use App\Product;
-use App\Produtos;
 
 use Illuminate\Support\Facades\Input;
 use Validator;
@@ -43,8 +42,8 @@ class ProductController extends Controller
     $nome_produto = str_ireplace(" ", "", $data['name']);
 
     $data['unique_id'] = uniqid('PROD-'.$nome_produto);
-
-    $inseriu = Product::salvarProduto($data);
+    
+    $inseriu = Product::saveProduct($data);
 
     if(!$inseriu){
       $this->return->setFailed("Erro ao criar o produto.");
@@ -96,7 +95,7 @@ class ProductController extends Controller
       unset($data['imagens']);
     }
 
-    $alterar = Product::alterarProduto($data);
+    $alterar = Product::updateProduct($data);
 
     if(!$alterar){
       $this->return->setFailed("Ocorreu um erro ao alterar o produto.");
@@ -104,231 +103,21 @@ class ProductController extends Controller
 
   }
 
-  // Upload imagem de perfil
-  public function uploadProfile(){
-    $data = $_POST;
-
-    if(Input::hasFile('imagem')){
-      $image = Input::file('imagem');
-      if(!Input::file('imagem')->isValid()){
-        $this->return->setFailed("Imagem inválida.");
-        return;
-      }
-      else{
-        $diretorio = realpath(storage_path() . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "..") . DIRECTORY_SEPARATOR . "public" . DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR;
-        $destino = $diretorio . "site" . DIRECTORY_SEPARATOR . "products" . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR;
-        $destino_excluido = $diretorio . "site" . DIRECTORY_SEPARATOR . "products" . DIRECTORY_SEPARATOR;
-
-        $nomeHash =  md5($image->getClientOriginalName()) . '.' . $image->getClientOriginalExtension();
-
-        if(!$image->move($destino, $nomeHash)){
-          $this->return->setFailed("Ocorreu um erro ao fazer o upload da sua foto.");
-          return;
-        }
-        else{
-
-          $imagem_antiga = DB::table('product_images')
-          ->where('product_id', $data['produto'])
-          ->where('type', '=', 'profile')
-          ->get();
-
-          if(count($imagem_antiga) > 0){
-            $imagem_antiga = $imagem_antiga[0];
-          }
-
-          $nomeFinal = 'users/' . $nomeHash;
-          if(!Produtos::salvarImagem($data['produto'], $nomeFinal, 'profile')){
-            $this->return->setFailed("Ocorreu um erro ao salvar esta imagem.");
-            return;
-          }
-          else{
-            if(!unlink($destino_excluido . $imagem_antiga->filename)){
-              $this->return->setFailed("Ocorreu um erro ao excluir a foto anterior.");
-              return;
-            }
-            else{
-              $excluir = DB::table('product_images')
-              ->where('id', $imagem_antiga->id)
-              ->delete();
-            }
-          }
-        }
-      }
-    }
-    else{
-      $this->return->setFailed("Nenhuma imagem foi encontrada.");
-      return;
-    }
-
-  }
-
-  // Upload de imagens extras
-  public function uploadSimple(){
-    $data = $_POST;
-
-    $imagens = DB::table('product_images')
-    ->where('product_id', $data['produto'])
-    ->where('type', '=', 'extra')
-    ->count();
-
-    if($imagens >= 5){
-      $this->return->setFailed("Este produto já possui 6 fotos, 1 de perfil e 5 extras.");
-      return;
-    }
-    else{
-      if(Input::hasFile('imagem')){
-        $image = Input::file('imagem');
-
-        if(!Input::file('imagem')->isValid()){
-          $this->return->setFailed("Imagem inválida.");
-          return;
-        }
-        else{
-          $diretorio = realpath(storage_path() . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "..") . DIRECTORY_SEPARATOR . "public" . DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR;
-          $destino = $diretorio . "site" . DIRECTORY_SEPARATOR . "products" . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR;
-          $destino_excluido = $diretorio . "site" . DIRECTORY_SEPARATOR . "products" . DIRECTORY_SEPARATOR;
-
-          $nomeHash =  md5($image->getClientOriginalName()) . '.' . $image->getClientOriginalExtension();
-
-          if(!$image->move($destino, $nomeHash)){
-            $this->return->setFailed("Ocorreu um erro ao fazer o upload da sua foto.");
-            return;
-          }
-          else{
-
-            $nomeFinal = 'users/' . $nomeHash;
-            if(!Produtos::salvarImagem($data['produto'], $nomeFinal)){
-              $this->return->setFailed("Ocorreu um erro ao salvar esta imagem.");
-              return;
-            }
-          }
-        }
-      }
-      else{
-        $this->return->setFailed("Nenhuma imagem foi encontrada.");
-        return;
-      }
-    }
-
-
-  }
-
-  public function deletePhoto(){
-    $this->isLogged();
-    $data = $this->get_post();
-    $image_id = $data['id'];
-    $product_id = $data['product_id'];
-    $filename = $data['filename'];
-
-    $arquivo = DB::table('product_images')
-    ->select('filename')
-    ->where('id','=', $image_id)
-    ->where('filename', '=', $filename)
-    ->get();
-
-    if(count($arquivo) > 0){
-      $filename = $arquivo[0]->filename;
-    }
-    else{
-      $this->return->setFailed("Nenhum arquivo encontrado.");
-      return;
-    }
-
-
-    $diretorio = realpath(storage_path() . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "..") . DIRECTORY_SEPARATOR . "public" . DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR;
-    $destino = $diretorio . "site" . DIRECTORY_SEPARATOR . "products" . DIRECTORY_SEPARATOR;
-
-    if(!unlink($destino . $filename)){
-      $this->return->setFailed("Erro ao excluir a foto.");
-      return;
-    }
-    else{
-      $deletar = DB::table('product_images')
-      ->where('id', $image_id)
-      ->delete();
-
-      if(!$deletar){
-        $this->return->setFailed("Ocorreu um erro ao excluir esta foto.");
-        return;
-      }
-    }
-  }
-
-  public function removerImagem(){
-    $this->isLogged();
+  public function mudarStatus(){
     $data = $this->get_post();
 
-    $diretorio = realpath(storage_path() . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "..") . DIRECTORY_SEPARATOR . "public" . DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR;
-    $destino = $diretorio . "site" . DIRECTORY_SEPARATOR . "products" . DIRECTORY_SEPARATOR;
-    $filename = $data['filename'];
+    $status = Product::toggleProductStatus($data);
 
-    $imagem = DB::table('product_images')
-    ->select('product_id')
-    ->where('id', '=', $data['id'])
-    ->get();
-
-    if(count($imagem) > 0){
-      $produto_id = $imagem[0]->product_id;
-
-      $store = DB::table('stores')
-      ->join('products', 'products.store_id', '=', 'stores.id')
-      ->where('stores.owner_id', $_SESSION['user_id'])
-      ->where('products.id', $produto_id)
-      ->get();
-
-      if(count($store) > 0){
-        $store = $store[0];
-        if(!unlink($destino . $filename)){
-          $this->return->setFailed("Nenhuma imagem foi removida.");
-          return;
-        }
-        else{
-          $deletar = DB::table('product_images')
-          ->where('id', '=', $data['id'])
-          ->where('product_id', '=', $store->id)
-          ->delete();
-
-          if(!$deletar){
-            $this->return->setFailed("Nenhuma imagem foi removida.");
-            return;
-          }
-        }
-      }
-    }
-    else{
-      $this->return->setFailed("Nenhuma imagem foi encontrada.");
+    if(!$status){
+      $this->return->setFailed("Ocorreu um erro e não foi possível alterar o status do produto.");
       return;
     }
   }
 
-  // Ativar produto
-  public function ativar_produto(){
-    $data = $this->get_post();
-
-    $ativar = Product::ativarProduto($data);
-
-    if(!$ativar){
-      $this->return->setFailed("Ocorreu um erro ao reativar o produto.");
-    }
-  }
-  // Desativar produto
-  public function desativar_produto(){
-    $data = $this->get_post();
-
-    $deletou = Product::desativarProduto($data);
-
-    if(!$deletou){
-      $this->return->setFailed("Erro ao deletar o produto.");
-      return;
-    }
-  }
-
-  // Pegar Produto X
+  // Pegar Produto X url/produtos/uniqueid
   public function getProduct(){
     $data = $this->get_post();
-
-    $produto = Produtos::pegarProduto($data['unique_id']);
-
+    $produto = Product::getViewableProduct($data['unique_id']);
     if($produto != null){
       $this->return->setObject($produto);
     }
@@ -340,8 +129,7 @@ class ProductController extends Controller
 
   public function getProductForEdition(){
     $data = $this->get_post();
-
-    $produto = Produtos::pegarProdutoEdicao($data['unique_id']);
+    $produto = Product::getEditableProduct($data['unique_id'], $_SESSION['user_id']);
 
     if($produto != null){
       $this->return->setObject($produto);
@@ -351,22 +139,6 @@ class ProductController extends Controller
       return;
     }
 
-  }
-
-  // Pegar produto logado
-  public function pegarProdutoLogado(){
-    $this->isLogged();
-    $data = $this->get_post();
-
-    $produto = Produtos::pegarProdutoLogado($data['unique_id'], $_SESSION['user_id']);
-
-    if($produto == null){
-      $this->return->setFailed("Nenhum um produto com este nome pertence à sua loja.");
-      return;
-    }else{
-      $this->return->setObject($produto);
-      return;
-    }
   }
 
   public function listarProdutos(){
@@ -399,7 +171,7 @@ class ProductController extends Controller
       $condicoes[] = ['quality', '=', $data['quality']];
     }
 
-    $produtos = Product::pegarProdutos($condicoes, $gender, $page);
+    $produtos = Product::getProducts($condicoes, $gender, $page);
 
     if($produtos == null){
       $this->return->setFailed("Nenhum produto foi encontrado nesta categoria.");
@@ -409,6 +181,7 @@ class ProductController extends Controller
     }
   }
 
+  // Indica a quantidade de páginas existentes na listagem de produtos /produtos
   public function countActive(){
     $data = $this->get_post();
     $condicoes = array();
@@ -422,7 +195,7 @@ class ProductController extends Controller
       $condicoes[]  = ['gender', '=', $data['filter']];
     }
 
-    $quantidade = Product::numeroProdutosAtivos($condicoes);
+    $quantidade = Product::quantityOfFilteredProducts($condicoes);
 
     $this->return->setObject($quantidade);
   }

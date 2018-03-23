@@ -75,15 +75,15 @@ class StoreController extends Controller
 		$this->isLogged();
 		$data = $this->get_post();
 
-    // Verifica se existe a loja antes de tentar atualizar
-    $existe = Store::existeLoja($_SESSION['user_id']);
+    // Verifica se o usuário logado tem loja
+    $existe = Store::storeExists($_SESSION['user_id']);
 
     if(!$existe){
       $this->return->setFailed("Nenhuma loja foi criada para este usuário.");
       return;
     }
 
-    $alterou = Store::alterarLoja($data, $_SESSION['user_id']);
+    $alterou = Store::updateStore($data, $_SESSION['user_id']);
 
     // Verifica se alterou msm
     if(!$alterou){
@@ -111,7 +111,7 @@ class StoreController extends Controller
       return;
     }
 
-		$imagem = DB::table('stores')
+		$imagem = DB::table(Store::TABLE_NAME)
 		->select('profile_image')
 		->where('owner_id', $_SESSION['user_id'])
 		->where('id', $data['loja'])
@@ -139,7 +139,7 @@ class StoreController extends Controller
 
 			$nome_arquivo = 'users/' . $nomeHash;
 
-			$alterar = DB::table('stores')
+			$alterar = DB::table(Store::TABLE_NAME)
 			->where('id', $data['loja'])
 			->update(['profile_image' => $nome_arquivo]);
 
@@ -232,7 +232,7 @@ class StoreController extends Controller
 	// Ativar/Desativar loja
 	public function toggle_loja(){
 		$this->isLogged();
-		$mudar = Store::mudarStatusLoja($_SESSION['user_id']);
+		$mudar = Store::toggleStatusStore($_SESSION['user_id']);
 
 		if(!$mudar){
 			$this->return->setFailed("Ocorreu um erro ao tentar alterar o status da sua loja.");
@@ -241,11 +241,10 @@ class StoreController extends Controller
 
 	}
 
-	// Pega uma loja baseada no seu id utilizando GET
+	// Pega uma loja baseada no seu unique_id
 	public function getStore(){
 		$data = $this->get_post();
-		// $loja = Store::pegarLoja($data['name']);
-		$loja = Lojas::pegarLoja($data['unique_id']);
+		$loja = Store::getStore($data['unique_id']);
 
 		if($loja == null){
 			$this->return->setFailed("Nenhuma loja encontrada com esse identificador.");
@@ -255,9 +254,10 @@ class StoreController extends Controller
 
 	}
 
-	// Lista todas as lojas criadas
+	// Lista todas as lojas criadas e ativas
 	public function getAllStores(){
-		$lojas = Lojas::pegarTodasLojas();
+		// $lojas = Lojas::pegarTodasLojas();
+		$lojas = Store::getStores();
 
 		if($lojas == null){
 			$this->return->setFailed("Nenhuma loja encontrada.");

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Address;
-use App\Lojas;
-use App\Produtos;
-
 use DB;
+
+use App\Address;
+use App\Store;
+use App\Product;
 
 class CartController extends Controller
 {
@@ -25,11 +25,11 @@ class CartController extends Controller
     $produto_id = $data['id'];
     $quantidade = $data['quantity'];
 
-    $produto = Produtos::pegarProdutoCarrinho($produto_id);
+    $produto = Product::getProductInfoForCart($produto_id, $quantidade);
 
     if($produto != null){
-      $loja_id = $produto['store_id'];
-      if(Lojas::isMyLoja($loja_id)){
+      $loja_id = $produto['loja'];
+      if(!Store::isMyStore($_SESSION['user_id'], $loja_id)){
         $this->return->setFailed("Esse produto pertence a sua loja.");
         return;
       }
@@ -39,8 +39,8 @@ class CartController extends Controller
       return;
     }
 
-    if($quantidade > $produto['estoque']){
-      $quantidade = $produto['estoque'];
+    if($quantidade > $produto['stock']){
+      $quantidade = $produto['stock'];
     }
 
     // Verifica se já existe a loja
@@ -50,8 +50,8 @@ class CartController extends Controller
         // Se existe, aumenta a quantidade
         $futura = $_SESSION['cart'][$loja_id]['produtos'][$produto_id]['quantidade'] + $quantidade;
         // Se a quantidade anterior mais a nova adicionada for maior que o estoque, então a quantidade vai ser o estoque total
-        if($futura > $produto['estoque']){
-          $futura = $produto['estoque'];
+        if($futura > $produto['stock']){
+          $futura = $produto['stock'];
         }
         // Define o valor final da quantidade
         $_SESSION['cart'][$loja_id]['produtos'][$produto_id]['quantidade'] = $futura;
@@ -97,12 +97,9 @@ class CartController extends Controller
     $product_id = $data['product'];
     $valor = $data['value'];
 
-    $produto = DB::table('products')
-    ->select('stock')
-    ->where('id', $product_id)
-    ->get();
+    $estoque = Product::getProductStock($product_id);
 
-    if($produto != null){
+    if($estoque != null){
       $estoque = $produto[0]->stock;
 
       foreach($_SESSION['cart'] as $loja => $pedido){
@@ -203,7 +200,7 @@ class CartController extends Controller
     $carrinho = array();
 
     foreach($_SESSION['cart'] as $loja => $pedido){
-      $nome_da_loja = Lojas::pegaNomeLoja($loja);
+      $nome_da_loja = Store::getStoreName($loja);
       $carrinho[$loja] = array(
         'id' => $loja,
         'nome_loja' => $nome_da_loja,
@@ -219,7 +216,7 @@ class CartController extends Controller
     $produtos = array();
 
     foreach($products as $id => $product){
-      $produto = Produtos::pegarParaCarrinhoFoto($id);
+      $produto = Product::getProductInfoForCart($id, $product['quantidade']);
       unset($produto['estoque']);
       $produtos[$id] = $produto;
       $produtos[$id]['imagem'] = $produto['imagem'];

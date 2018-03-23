@@ -5,10 +5,16 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 
+use App\User;
+use App\Store;
+
 class Product extends Model
 {
+
+  const TABLE_NAME = "products";
+
   public static function pegarInfo($id, $quantidade){
-    $produto = DB::table('products')
+    $produto = DB::table(Product::TABLE_NAME)
     ->select('id', 'name', 'description', 'price', 'price', 'discount')
     ->where('id', $id)
     ->get();
@@ -23,8 +29,8 @@ class Product extends Model
     }
   }
 
-  public static function pegarProdutoCarrinho($id, $quantidade){
-    $produto = DB::table('products')
+  public static function getProductInfoForCart($id, $quantidade){
+    $produto = DB::table(Product::TABLE_NAME)
     ->join('stores', 'stores.id', '=', 'products.store_id')
     ->select('products.id', 'products.name', 'products.price', 'products.discount', 'products.stock', 'stores.id as loja', 'stores.name as loja_nome')
     ->where('products.id', $id)
@@ -41,21 +47,22 @@ class Product extends Model
   }
 
   // Pega produtos da loja do usuário logado.
-  public static function pegarProdutosLogado($id, $page=0){
-    $produtos = DB::table('users')
-    ->join('stores', 'stores.owner_id', '=', 'users.id')
-    ->join('products', 'products.store_id', '=', 'stores.id')
-    ->select('products.*')
+  public static function getLoggedStoreProducts($id, $page=0){
+    $produtos = DB::table(User::TABLE_NAME)
+    ->join(Store::TABLE_NAME, 'stores.owner_id', '=', 'users.id')
+    ->join(Product::TABLE_NAME, 'products.store_id', '=', 'stores.id')
+    ->join('product_images', 'product_images.product_id', 'products.id')
+    ->select('products.*', 'product_images.filename as imagem')
     ->skip($page * 12)
     ->take(12)
     ->where('users.id', '=', $id)
+    ->where('product_images.type', 'profile')
     ->get();
 
-
     // Calcula a Quantidade de paginas
-    $qtd_produtos = DB::table('users')
-    ->join('stores', 'stores.owner_id', '=', 'users.id')
-    ->join('products', 'products.store_id', '=', 'stores.id')
+    $qtd_produtos = DB::table(User::TABLE_NAME)
+    ->join(Store::TABLE_NAME, 'stores.owner_id', '=', 'users.id')
+    ->join(Product::TABLE_NAME, 'products.store_id', '=', 'stores.id')
     ->where('users.id', '=', $id)
     ->count();
 
@@ -84,17 +91,35 @@ class Product extends Model
   }
 
   // Pega determinado produto do usuário logado
-  public static function pegarProdutoLogado($name, $id){
-    $produto = DB::table('users')
-    ->join('stores', 'stores.owner_id', 'users.id')
-    ->join('products', 'products.store_id', 'stores.id')
-    ->where('users.id', $id)
-    ->where('products.name', $name)
+  public static function getEditableProduct($unique_id, $id){
+    $produto = DB::table(User::TABLE_NAME)
+    ->join(Store::TABLE_NAME, 'stores.owner_id', '=', 'users.id')
+    ->join(Product::TABLE_NAME, 'products.store_id', '=', 'stores.id')
+    ->where('users.id', $id) // Garantir que o produto é seu, pertence a sua loja
+    ->where('products.unique_id', $unique_id)
     ->select('products.*')
     ->get();
 
     if(count($produto) > 0){
-      return $produto[0];
+      $produto = $produto[0];
+
+      $imagem = DB::table('product_images')
+      ->select('id', 'filename')
+      ->where('product_images.product_id', '=', $produto->id)
+      ->where('product_images.type', 'profile')
+      ->get();
+
+      $produto->profile_image = $imagem[0];
+
+      $extras = DB::table('product_images')
+      ->select('id', 'filename')
+      ->where('product_images.product_id', '=', $produto->id)
+      ->where('product_images.type', 'extra')
+      ->get();
+
+      $produto->imagens = $extras;
+
+      return $produto;
     }else{
       return null;
     }
@@ -128,7 +153,7 @@ class Product extends Model
   }
 
   // Edita o produto
-  public static function alterarProduto($data){
+  public static function updateProduct($data){
     $alterar = DB::table('products')
     ->where('id', $data['id'])
     ->update($data);
@@ -141,7 +166,7 @@ class Product extends Model
   }
 
   // Salva um produto novo
-  public static function salvarProduto($data){
+  public static function saveProduct($data){
     if(isset($data['imagem'])){
       unset($data['imagem']);
     }
@@ -153,6 +178,10 @@ class Product extends Model
     }else{
       return false;
     }
+  }
+
+  public static function toggleProductStatus($data){
+
   }
 
   // Ativa o produto(torna ele visível e disponível para venda)
@@ -184,7 +213,7 @@ class Product extends Model
   }
 
   // Numero de produtos ativos dividido por 8, retorna a quantidade da paginas
-  public static function numeroProdutosAtivos($condicoes){
+  public static function quantityOfFilteredProducts($condicoes){
     $qtd_produtos = DB::table('products')
     ->where($condicoes)
     ->count();
@@ -202,11 +231,9 @@ class Product extends Model
     }
   }
 
-
   // Retorna o produto de acordo com o nome
-  public static function pegarProduto($unique_id){
+  public static function getViewableProduct($unique_id){
     $produto = DB::table('products')
-    // ->join('product_images', 'product_images.product_id', '=', 'products.id')
     ->select('*')
     ->where('products.unique_id', $unique_id)
     ->get();
@@ -222,7 +249,8 @@ class Product extends Model
       ->get();
 
       if(count($perfil) > 0){
-        $produto['profile_image'] = $perfil[0];
+        $perfil = $perfil[0];
+        $produto['profile_image'] = $perfil->filename;
       }
 
       $outras = DB::table('product_images')
@@ -254,8 +282,22 @@ class Product extends Model
     }
   }
 
+  public static function getProductStock($product_id){
+    $produto = DB::table('products')
+    ->select('stock')
+    ->where('id', $product_id)
+    ->get();
+
+    if(count($produto) > 0){
+      return $produto[0]->stock;
+    }
+    else{
+      return null;
+    }
+  }
+
   // Pega os produtos filtrados
-  public static function pegarProdutos($condicoes, $genero, $page=1){
+  public static function getProducts($condicoes, $genero, $page=1){
     $page = ($page - 1) * 8;
     $skip = false;
 
@@ -317,6 +359,24 @@ class Product extends Model
       return $produtos;
     }else{
       return null;
+    }
+  }
+
+  public static function saveImage($product_id, $nome, $type="extra"){
+    $data = array(
+      'type' => $type,
+      'product_id' => $product_id,
+      'filename' => $nome
+    );
+
+    $added = DB::table('product_images')
+    ->insert($data);
+
+    if($added){
+      return true;
+    }
+    else{
+      return false;
     }
   }
 }

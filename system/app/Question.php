@@ -5,8 +5,15 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 
+use App\User;
+use App\Store;
+use App\Product;
+
+
 class Question extends Model
 {
+
+  const TABLE_NAME = "questions";
 
   // Realizar uma pergunta
   public static function perguntar($produto, $pergunta, $id){
@@ -16,7 +23,7 @@ class Question extends Model
       'question' => $pergunta
     );
 
-    $inseriu = DB::table('questions')->insert($question);
+    $inseriu = DB::table(Question::TABLE_NAME)->insert($question);
 
     if($inseriu){
       return true;
@@ -28,7 +35,7 @@ class Question extends Model
   // Responder uma pergunta
   public static function responder($resposta, $id){
 
-    $respondeu = DB::table('questions')
+    $respondeu = DB::table(Question::TABLE_NAME)
     ->where('id', $id)
     ->update(['answer' => $resposta, 'status' => 'respondida']);
 
@@ -42,9 +49,9 @@ class Question extends Model
 
   // Pegar as perguntas de um produto pelo seu nome
   public static function pegarPerguntas($id){
-    $perguntas = DB::table('products')
+    $perguntas = DB::table(Product::TABLE_NAME)
     ->select('questions.*')
-    ->join('questions', 'questions.product_id', '=', 'products.id')
+    ->join(Question::TABLE_NAME, 'questions.product_id', '=', 'products.id')
     ->where('products.id', '=', $id)
     ->get();
 
@@ -53,7 +60,7 @@ class Question extends Model
 
   // Pegar pergunta por id
   public static function pegarPergunta($id){
-    $pergunta = DB::table('questions')
+    $pergunta = DB::table(Question::TABLE_NAME)
     ->select('*')
     ->where('id', $id)
     // ->where('status', 'criada')
@@ -69,10 +76,10 @@ class Question extends Model
 
   // Pegar perguntas ativas(n respondidas)
   public static function pegarAtivas($id, $page = 0, $take = 8){
-    $perguntas = DB::table('stores')
-    ->join('products', 'products.store_id', '=', 'stores.id')
-    ->join('questions', 'questions.product_id', '=', 'products.id')
-    ->join('users', 'users.id', '=', 'questions.ask_id')
+    $perguntas = DB::table(Store::TABLE_NAME)
+    ->join(Product::TABLE_NAME, 'products.store_id', '=', 'stores.id')
+    ->join(Question::TABLE_NAME, 'questions.product_id', '=', 'products.id')
+    ->join(User::TABLE_NAME, 'users.id', '=', 'questions.ask_id')
     ->select('questions.id as id', 'stores.name as loja', 'questions.created_at as data', 'products.name as produto', 'questions.question as pergunta', 'users.name as nome', 'users.last_name as sobrenome')
     ->where('stores.owner_id', $id)
     ->where('questions.status', 'criada')
@@ -88,10 +95,10 @@ class Question extends Model
   }
 
   public static function pegarPaginas($id, $take = 8){
-    $qtd = DB::table('stores')
-    ->join('products', 'products.store_id', '=', 'stores.id')
-    ->join('questions', 'questions.product_id', '=', 'products.id')
-    ->join('users', 'users.id', '=', 'questions.ask_id')
+    $qtd = DB::table(Store::TABLE_NAME)
+    ->join(Product::TABLE_NAME, 'products.store_id', '=', 'stores.id')
+    ->join(Question::TABLE_NAME, 'questions.product_id', '=', 'products.id')
+    ->join(User::TABLE_NAME, 'users.id', '=', 'questions.ask_id')
     ->where('stores.owner_id', $id)
     ->where('questions.status', 'criada')
     ->count();

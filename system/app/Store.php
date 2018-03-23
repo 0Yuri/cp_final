@@ -7,12 +7,14 @@ use DB;
 
 class Store extends Model
 {
+
+  const TABLE_NAME = "stores";
   // Salva uma nova loja
-  public static function salvarLoja($data){
-    $adicionou = DB::table('stores')
+  public static function saveStore($data){
+    $added = DB::table(Store::TABLE_NAME)
     ->insert($data);
 
-    if($adicionou > 0){
+    if($added){
       return true;
     }
     else{
@@ -20,17 +22,31 @@ class Store extends Model
     }
   }
 
+  // Altera uma loja
+  public static function updateStore($data, $id){
+    $updated = DB::table(Store::TABLE_NAME)
+    ->where('owner_id', $id)
+    ->update($data);
+
+    if($updated){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
+  // Pega nome da loja pelo id do pedido
   public static function getNameStore($order_id){
     $order = DB::table('pedidos')
     ->select('store_id')
     ->where('pedidos.order_id', $order_id)
     ->get();
 
-
     if(count($order) > 0){
       $store_id = $order[0]->store_id;
 
-      $store = DB::table('stores')
+      $store = DB::table(Store::TABLE_NAME)
       ->select('name')
       ->where('id', $store_id)
       ->get();
@@ -46,9 +62,10 @@ class Store extends Model
       return null;
     }
   }
-
+  
+  // Pega o id da loja pelo id do usuário
   public static function getStoreID($user_id){
-    $loja = DB::table('stores')
+    $loja = DB::table(Store::TABLE_NAME)
     ->select('id')
     ->where('stores.owner_id', $user_id)
     ->get();
@@ -61,12 +78,13 @@ class Store extends Model
     }
   }
 
-  public static function mudarProfile($id, $address){
-    $consulta = DB::table('stores')
+  // Muda a logo da loja
+  public static function updateProfilePic($id, $address){
+    $updated = DB::table(Store::TABLE_NAME)
     ->where('owner_id', $id)
     ->update(['profile_image' => $address]);
 
-    if($consulta){
+    if($updated){
       return true;
     }
     else{
@@ -74,17 +92,17 @@ class Store extends Model
     }
   }
 
-  // Desativa / Ativa uma loja
-  public static function mudarStatusLoja($id){
+  // Ativa / Desativa uma loja
+  public static function toggleStatusStore($id){
     $status_loja;
 
-    $loja = DB::table('stores')
+    $store = DB::table(Store::TABLE_NAME)
     ->select('status')
     ->where('owner_id', $id)
     ->get();
 
-    if(count($loja) > 0){
-      $status_loja = (array)$loja[0]->status;
+    if(count($store) > 0){
+      $status_loja = (array)$store[0]->status;
     }else{
       return false;
     }
@@ -95,38 +113,20 @@ class Store extends Model
       $status_loja = 'ativado';
     }
 
-    $alterar = DB::table('stores')
+    $updated = DB::table(Store::TABLE_NAME)
     ->where('owner_id', $id)
     ->update(['status' => $status_loja]);
 
-    if($alterar){
+    if($updated){
       return true;
     }else{
       return false;
     }
 
-  }
+  }  
 
-  // Altera uma loja
-  public static function alterarLoja($data, $id){
-    if(isset($_SESSION['new_pic']) && strlen($_SESSION['new_pic'] > 0)){
-      $data['profile_image'] = $_SESSION['new_pic'];
-    }
-
-    $alterar = DB::table('stores')
-    ->where('owner_id', $id)
-    ->update($data);
-
-    if($alterar){
-      return true;
-    }
-    else{
-      return false;
-    }
-  }
-
-  // Verifica se existe uma loja com o dono sendo o usuário logado.
-  public static function existeLoja($id){
+  // Verifica se o usuário tem uma loja.
+  public static function storeExists($id){
     $loja = DB::table('stores')
     ->select('*')
     ->where('owner_id', $id)
@@ -141,14 +141,14 @@ class Store extends Model
   }
 
   // Verifica se a loja do usuário logado está ativada.
-  public static function statusLoja($id){
-    $loja = DB::table('stores')
+  public static function statusStore($id){
+    $store = DB::table(Store::TABLE_NAME)
     ->select('status')
     ->where('owner_id', $id)
     ->get();
 
-    if(count($loja) > 0){
-      if($loja[0]->status == 'ativado'){
+    if(count($store) > 0){
+      if($store[0]->status == 'ativado'){
         return true;
       }else{
         return false;
@@ -159,14 +159,14 @@ class Store extends Model
   }
 
   // Pega a loja do usuário logado - PAINEL
-  public static function pegarLojaLogado($id){
+  public static function getLoggedStoreInfo($id){
     $fillable = ['id', 'name', 'description'];
-    $loja = DB::table('stores')
+    $store = DB::table(Store::TABLE_NAME)
     ->where('owner_id', $id)
     ->get();
 
-    if(count($loja) > 0){
-      return $loja[0];
+    if(count($store) > 0){
+      return $store[0];
     }
     else{
       return null;
@@ -174,44 +174,61 @@ class Store extends Model
   }
 
   // Pega todas as lojas criadas e ativas
-  public static function pegarTodasLojas(){
-    $lojas = DB::table('stores')
-    ->select('id', 'name', 'description', 'profile_image')
+  public static function getStores(){
+    $fillable = ['id', 'name', 'description', 'profile_image', 'unique_id'];
+
+    $stores = DB::table(Store::TABLE_NAME)
+    ->select($fillable)
     ->where('status', 'ativado')
     ->get();
 
-    if(count($lojas) > 0){
-      return $lojas;
+    if(count($stores) > 0){
+      return $stores;
     }else{
       return null;
     }
   }
 
   // Pega determinada loja para exibir sua página
-  public static function pegarLoja($name){
-    $loja = DB::table('stores')
+  public static function getStore($unique_id){
+    $store = DB::table(Store::TABLE_NAME)
     ->select('id', 'name', 'description', 'profile_image', 'banner_image')
-    ->where('name', '=', $name)
+    ->where('unique_id', '=', $unique_id)
     ->get();
 
-    if(count($loja) > 0){
-      return (array)$loja[0];
+    if(count($store) > 0){
+      return (array)$store[0];
     }else{
       return null;
     }
   }
 
-  public static function pegarNomeLoja($id){
-    $loja = DB::table('stores')
+  public static function getStoreName($id){
+    $store = DB::table(Store::TABLE_NAME)
     ->select('name')
     ->where('id', $id)
     ->get();
 
-    if(count($loja) < 0){
-      return null;
+    if(count($store) > 0){
+      return $store[0]->name;
     }
     else{
-      return $loja[0]->name;
+      return null;
+    }
+  }
+
+  // Verifica se a loja pertence ao usuario logado
+  public static function isMyStore($user_id, $store_id){
+    $store = DB::table('stores')
+    ->where('id', $store_id)
+    ->where('owner_id', $user_id)
+    ->get();
+
+    if(count($store) > 0){
+      return true;
+    }
+    else{
+      return false;
     }
   }
 
