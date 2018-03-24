@@ -41,7 +41,7 @@ class User extends Model
   }
 
   // Altera um usuário
-  public static function update($data){
+  public static function updateUser($data){
     $alterou = DB::table(User::TABLE_NAME)
     ->where('email', $data['email'])
     ->update($data);

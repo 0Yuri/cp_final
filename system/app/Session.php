@@ -33,4 +33,12 @@ class Session extends Model
     }
   }
 
+  // Acaba com a sessão de forma geral
+  public static function logout(){
+    // if(isset($_SESSION['user_id'])){
+    //   unset($_SESSION['user_id']);
+    // }
+    session_unset();    
+  }
+
 }
