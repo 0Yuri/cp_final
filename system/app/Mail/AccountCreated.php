@@ -12,17 +12,18 @@ class AccountCreated extends Mailable
 {
     use Queueable, SerializesModels;
 
-    protected $to;
-    protected $account;
+    public $nome;
+    public $unique_token;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(string $teste)
+    public function __construct($nome, $token)
     {
-        $this->account = $teste;
+        $this->nome = $nome;
+        $this->unique_token = $token;
     }
 
     /**
@@ -32,6 +33,8 @@ class AccountCreated extends Mailable
      */
     public function build()
     {
-        return $this->view('account_created');
+        return $this->view('accountcreated')
+        ->to("yves_henry13@hotmail.com", "Yves")
+        ->subject("teste");
     }
 }

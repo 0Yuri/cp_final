@@ -7,9 +7,7 @@
 
 
 // Route::any('/debugging', 'SessionController@email_testing');
-Route::any('/debugging', function(){
-    return view('account_created', ['nome' => "Testes", 'unique_token' => "https://www.crescendoepassando.com.br/ativarconta/38423984h238942h394823h4"]);
-});
+Route::any('/debugging', 'SessionController@email_testing');
 // Admin
 Route::post('/admin/usuarios/pesquisar', 'AdminController@pesquisarUsuario');
 Route::post('/admin/usuarios/banir', 'AdminController@banirUsuario');

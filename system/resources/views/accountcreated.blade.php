@@ -1,5 +1,5 @@
 <header>
-    <img class="img-circle" src="../resources/assets/images/logo.png" alt="teste" width="auto" height="250px">
+    <img class="img-circle" src="http://www.crescendoepassando.com.br/public/img/site/header/logo.png" alt="teste" width="auto" height="250px">
 </header>
 
 
