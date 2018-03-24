@@ -11,10 +11,15 @@ use App\CPF;
 use App\Order;
 use App\Client;
 use Moip\Exceptions;
-use Moip\Helper\Filters;
-use Moip\Helper\Links;
-use Moip\Helper\Pagination;
+// use Moip\Helper\Filters;
+// use Moip\Helper\Links;
+// use Moip\Helper\Pagination;
 
+/*
+ * Já existe um objeto com nome Moip, por isso MoipConstants
+ * para não gerar conflitos.
+*/
+use App\Moip as MoipConstants;
 use App\MoipAccount;
 use App\MoipClient;
 use App\MoipOrder;

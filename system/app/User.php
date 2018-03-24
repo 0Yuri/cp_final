@@ -100,11 +100,8 @@ class User extends Model
   }
 
   // Pega o usuário pelo seu id
-  public static function grabUserById($id){
-    $fillable = [
-      'name', 'last_name', 'gender', 'created_at'
-    ];
-
+  public static function grabUserByNameId($id){
+ 
     $usuario = DB::table(User::TABLE_NAME)
     ->select('*')
     ->where('name_id', '=', $id)
@@ -115,7 +112,21 @@ class User extends Model
     }else{
       return null;
     }
+  }
 
+  // Pega o usuário pelo seu id
+  public static function grabUserById($id){
+ 
+    $usuario = DB::table(User::TABLE_NAME)
+    ->select('*')
+    ->where('id', $id)
+    ->get();
+
+    if(count($usuario) > 0){
+      return (array)$usuario[0];
+    }else{
+      return null;
+    }
   }
 
   public static function grabMoipAccountId($user_id){

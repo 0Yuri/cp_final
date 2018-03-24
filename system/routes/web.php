@@ -6,7 +6,10 @@
 */
 
 
-
+// Route::any('/debugging', 'SessionController@email_testing');
+Route::any('/debugging', function(){
+    return view('account_created', ['nome' => "Testes", 'unique_token' => "https://www.crescendoepassando.com.br/ativarconta/38423984h238942h394823h4"]);
+});
 // Admin
 Route::post('/admin/usuarios/pesquisar', 'AdminController@pesquisarUsuario');
 Route::post('/admin/usuarios/banir', 'AdminController@banirUsuario');
@@ -60,6 +63,7 @@ Route::post('/order/checkVendedor', 'EvaluationController@vendedorAvaliado');
 Route::post('/user/signup', 'UserController@signup');
 Route::post('/user/update', 'UserController@update');
 Route::post('/user/login', 'SessionController@login');
+Route::post('/user/activate', 'UserController@ativarConta');
 Route::get('/user/logout', 'SessionController@logout');
 Route::get('/user/session', 'SessionController@checkSession');
 Route::get('/user/logged_user', 'SessionController@get_infos');

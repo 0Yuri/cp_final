@@ -72,6 +72,13 @@
       templateUrl: pathTo.mainFolder+'debug.php',
       controller: 'DebugController as vm'
     })
+    // Ativar conta
+    .state({
+      name: 'root.activate',
+      url: '/ativarconta/:token',
+      templateUrl: pathTo.mainFolder+'activate.php',
+      controller: 'ActivateController as vm'
+    })
     // Cadastro
    	.state({
    		name: 'root.signup',

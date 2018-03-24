@@ -12,10 +12,18 @@ use App\FileHandler;
 use App\Order;
 use App\Ban;
 
+use App\Mail\AccountCreated;
+use Illuminate\Support\Facades\Mail;
+
 use DB;
 
 class SessionController extends Controller
 {
+
+  public function email_testing(){
+
+    Mail::to("yves_henry13@hotmail.com")->send("Testes");
+  }
 
   // Realiza o login e seta o id na sessão
   public function login(){

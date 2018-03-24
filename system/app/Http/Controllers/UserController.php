@@ -7,6 +7,7 @@ use Moip\Auth\OAuth;
 
 use App\User;
 use App\CPF;
+use App\Activation;
 use App\Validation;
 
 use App\MoipClient;
@@ -91,6 +92,23 @@ class UserController extends Controller
     }
   }
 
+  public function ativarConta(){
+    $data = $this->get_post();
+    $token = $data['token'];
+
+    if(strlen($token) <= 0){
+      $this->return->setFailed("Ocorreu um erro no envio do token de ativação, tente novamente!");
+      return;
+    }
+
+    $ativado = Activation::activate($token);
+
+    if(!$ativado){
+      $this->return->setFailed("Ocorreu um erro no envio do token de ativação, tente novamente!");
+      return;
+    }
+  }
+
   // Pegar usuário X
   public function getUser(){
     $data = $this->get_post();
@@ -103,7 +121,6 @@ class UserController extends Controller
     }else{
       $this->return->setObject($usuario);
     }
-
   }
 
   // Converte a data introduzida para o formato do banco de dados
