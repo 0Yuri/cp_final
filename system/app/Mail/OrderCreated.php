@@ -10,24 +10,22 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 class OrderCreated extends Mailable
 {
     use Queueable, SerializesModels;
+    
+    public $order_id;
+    public $subject;
+    public $name;
+    public $order;
 
-    /**
-     * Create a new message instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    public function __construct($orderId, $username, $pedido)
     {
-        //
+        $this->order_id = $orderId;
+        $this->subject = "O pedido " . $orderId . " foi criado com sucesso.";
+        $this->name = $username;
+        $this->order = $pedido;
     }
-
-    /**
-     * Build the message.
-     *
-     * @return $this
-     */
+    
     public function build()
     {
-        return $this->view('view.name');
+        return $this->view('ordercreated');
     }
 }

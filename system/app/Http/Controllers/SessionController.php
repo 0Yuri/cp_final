@@ -14,6 +14,7 @@ use App\Order;
 use App\Ban;
 
 use App\Mail\AccountCreated;
+use App\Mail\OrderCreated;
 use Illuminate\Support\Facades\Mail;
 
 use DB;
@@ -22,8 +23,18 @@ class SessionController extends Controller
 {
 
   public function email_testing(){
-    Activation::activate('$2y$10$mpzrc4wsoMGNC0bZnbjdoOdC4ug.Z0WSCh/alT65hOW9g1wGbUlii');
-// Mail::to("yves_henry13@hotmail.com")->send(new AccountCreated("Teste", "token"));
+    $pedido = array(
+      'id' => 1,
+      'produtos' => array(
+        0 => array(
+          "nome" => "Produto 1", "quantidade" => 5
+        ),
+        1 => array(
+          "nome" => "Produto 2", "quantidade" => 6
+        )
+      )
+        );
+    Mail::to("yves_henry13@hotmail.com")->send(new OrderCreated("123456", "Yves", $pedido));
   }
 
   // Realiza o login e seta o id na sessão

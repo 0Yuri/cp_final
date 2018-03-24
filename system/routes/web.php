@@ -6,7 +6,20 @@
 */
 
 
-Route::any('/debugging', 'SessionController@email_testing');
+// Route::any('/debugging', 'SessionController@email_testing');
+Route::any('/debugging', function(){
+    $pedido = array(
+        'id' => 1,
+        'produtos' => array(
+            0 => array(
+              "nome" => "Produto 1", "quantidade" => 5
+            ),
+            1 => array(
+              "nome" => "Produto 2", "quantidade" => 6
+            ))
+            );
+    return view('ordercreated', ['order_id' => 1234, 'name' => 'Yves', 'order' => $pedido]);
+});
 // Admin
 Route::post('/admin/usuarios/pesquisar', 'AdminController@pesquisarUsuario');
 Route::post('/admin/usuarios/banir', 'AdminController@banirUsuario');
