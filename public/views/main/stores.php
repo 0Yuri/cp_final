@@ -1,4 +1,4 @@
-<div class="w3-container" style="padding-bottom:10%">
+<div class="w3-container" style="padding-bottom:15%">
   <h3>Lojas</h3>
   <div class="w3-card-4 w3-round w3-hover-shadow w3-left text-center" style="width:18%;margin-left:2%;margin-bottom:2%" ng-repeat="loja in vm.lojas" ui-sref="root.store(loja)">
     <div class="w3-row">

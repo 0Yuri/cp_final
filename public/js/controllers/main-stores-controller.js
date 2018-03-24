@@ -23,7 +23,6 @@
        if(response.data.success){
          vm.lojas = response.data.object;
        }else{
-         vm.lojas = ['Nenhuma loja foi encontrada.'];
          console.log(response.data.error);
        }
      });

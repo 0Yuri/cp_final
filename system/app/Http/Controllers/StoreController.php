@@ -261,6 +261,8 @@ class StoreController extends Controller
 
 		if($lojas == null){
 			$this->return->setFailed("Nenhuma loja encontrada.");
+			$this->return->setObject(array());
+			return;
 		}else{
 			$this->return->setObject($lojas);
 		}
