@@ -11,7 +11,7 @@ class User extends Model
   const TABLE_NAME = 'users';
 
   // Salva um usuário novo no banco de dados
-  public static function salvar($data){
+  public static function add($data){
     $usuario = (array)$data['user_info'];
     $endereco = (array)$data['address_info'];
 
@@ -28,7 +28,7 @@ class User extends Model
       if($inseriu){
         // Atribui ao campo user_id o id do usuario adicionad
         $endereco['user_id'] = $inseriu;
-        $endereco = Address::salvar($endereco);
+        $endereco = Address::add($endereco);
         if($endereco){
           return $inseriu;
         }else{
@@ -41,7 +41,7 @@ class User extends Model
   }
 
   // Altera um usuário
-  public static function alterar($data){
+  public static function update($data){
     $alterou = DB::table(User::TABLE_NAME)
     ->where('email', $data['email'])
     ->update($data);
@@ -54,7 +54,7 @@ class User extends Model
   }
 
   // Verifica se já existe um usuário com o email cadastrado
-  public static function existe($email){
+  public static function doesEmailExists($email){
     //verifica se já existe.
     $usuario = DB::table(User::TABLE_NAME)
     ->select('email')
@@ -69,7 +69,7 @@ class User extends Model
   }
 
   // Valida a senha com confirmar senha
-  public static function validar_senha($senha,$confirma){
+  public static function validate_password($senha,$confirma){
     if($senha != $confirma){
       return false;
     }
@@ -100,7 +100,7 @@ class User extends Model
   }
 
   // Pega o usuário pelo seu id
-  public static function pegarUsuario($id){
+  public static function grabUserById($id){
     $fillable = [
       'name', 'last_name', 'gender', 'created_at'
     ];
@@ -118,10 +118,10 @@ class User extends Model
 
   }
 
-  public static function pegarAccountID($id){
+  public static function grabMoipAccountId($user_id){
     $account_id = DB::table('moip_accounts')
     ->select('account_id')
-    ->where('user_id', $id)
+    ->where('user_id', $user_id)
     ->get();
 
     if(count($account_id) > 0){
@@ -132,7 +132,7 @@ class User extends Model
     }
   }
 
-  public static function existeNameID($name_id){
+  public static function isNameIdInUse($name_id){
     $existe = DB::table(User::TABLE_NAME)
     ->where('name_id', $name_id)
     ->get();
