@@ -8,6 +8,7 @@ use App\Store;
 use App\Product;
 use App\Produtos;
 use App\Session;
+use App\Activation;
 use App\FileHandler;
 use App\Order;
 use App\Ban;
@@ -28,6 +29,12 @@ class SessionController extends Controller
   // Realiza o login e seta o id na sessão
   public function login(){
     $data = $this->get_post();
+
+    if(!Activation::isUserActivated($data['email'])){
+      $this->return->setFailed("Esta conta não foi ativada, por favor visite seu email e ative-a agora.");
+      return;
+    }
+
     $session = Session::login($data['email'], $data['password']);
 
     if(Ban::verify($session)){

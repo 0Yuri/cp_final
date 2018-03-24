@@ -62,4 +62,18 @@ class Activation extends Model
             return false;
         }
     }
+
+    public static function isUserActivated($email){
+        $user = DB::table(User::TABLE_NAME)
+        ->where('activated', 'yes')
+        ->where('email', $email)
+        ->get();
+
+        if(count($user) > 0){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 }
