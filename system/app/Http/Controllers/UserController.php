@@ -84,7 +84,7 @@ class UserController extends Controller
     $data = $this->get_post();
     $data['birthdate'] = $this->converterData($data['birthdate']);
 
-    $alterou = User::update($data);
+    $alterou = User::updateUser($data);
 
     if(!$alterou){
       $this->return->setFailed("Ocorreu um erro ao alterar o seu cadastro.");

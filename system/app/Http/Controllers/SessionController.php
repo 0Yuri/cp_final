@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Request;
 use App\Resposta;
-use DB;
 use App\User;
 use App\Store;
 use App\Product;
@@ -13,6 +11,8 @@ use App\Session;
 use App\FileHandler;
 use App\Order;
 use App\Ban;
+
+use DB;
 
 class SessionController extends Controller
 {
@@ -39,7 +39,7 @@ class SessionController extends Controller
   // Realiza o logout acabando com a sessão(usuario e carrinho)
   public function logout(){
     if(isset($_SESSION['user_id'])){
-      session_unset();
+      Session::logout();
     }else{
       $this->return->setFailed("Sessão expirada ou inexistente.");
     }
@@ -54,17 +54,16 @@ class SessionController extends Controller
 
   // Pega informações do usuário logado
   public function get_infos(){
-    if(isset($_SESSION['user_id'])){
-      $usuario = User::getLoggedUser($_SESSION['user_id']);
-      if($usuario == null){
-        $this->return->setFailed("Ocorreu um erro ao receber dados do usuario.");
-        return;
-      }else{
-        $this->return->setObject($usuario);
-        return;
-      }
-    }else{
-      $this->return->setFailed("Sessão expirada ou inexistente.");
+    $this->isLogged();
+    $usuario = User::getLoggedUser($_SESSION['user_id']);
+    
+    if($usuario == null){
+      $this->return->setFailed("Ocorreu um erro ao receber dados do usuario.");
+      return;
+    }
+    else{
+      $this->return->setObject($usuario);
+      return;
     }
   }
 

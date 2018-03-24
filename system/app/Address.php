@@ -47,7 +47,7 @@ class Address extends Model
 
   }
   // Salva um endereço
-  public static function salvar($data){
+  public static function add($data){
     $adicionou = DB::table(Address::TABLE_NAME)
     ->insert($data);
     //

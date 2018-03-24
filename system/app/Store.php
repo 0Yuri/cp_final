@@ -7,8 +7,8 @@ use DB;
 
 class Store extends Model
 {
-
   const TABLE_NAME = "stores";
+
   // Salva uma nova loja
   public static function saveStore($data){
     $added = DB::table(Store::TABLE_NAME)
