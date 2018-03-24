@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Mail\AccountCreated;
+use Illuminate\Support\Facades\Mail;
 use App\User;
 
 use DB;
@@ -34,6 +36,28 @@ class Activation extends Model
         }
 
         return Activation::deleteActivation($activation->id);
+    }
+
+    public static function generateActivationToken($user_id, $email, $username){
+        $string = password_hash($user_id, PASSWORD_BCRYPT);
+        $string = str_ireplace("$", "", $string);
+
+        $data = array(
+            'user_id' => $user_id,
+            'token' => $string
+        );
+
+        $added = DB::table(Activation::TABLE_NAME)
+        ->insert($data);
+
+        if($added){
+            // Mail::to($email)->send(new AccountCreated($username, 'http://www.crescendoepassando.com.br/ativarconta/'.$string));
+            Mail::to($email)->send(new AccountCreated($username, 'http://localhost/ativarconta/'.$string));
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
     private static function getActivation($token){

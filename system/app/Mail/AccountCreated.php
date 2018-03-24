@@ -14,27 +14,16 @@ class AccountCreated extends Mailable
 
     public $nome;
     public $unique_token;
+    public $subject = "Link de ativação da sua conta - Crescendo e Passando";
 
-    /**
-     * Create a new message instance.
-     *
-     * @return void
-     */
     public function __construct($nome, $token)
     {
         $this->nome = $nome;
         $this->unique_token = $token;
     }
 
-    /**
-     * Build the message.
-     *
-     * @return $this
-     */
     public function build()
     {
-        return $this->view('accountcreated')
-        ->to("yves_henry13@hotmail.com", "Yves")
-        ->subject("teste");
+        return $this->view('accountcreated');
     }
 }

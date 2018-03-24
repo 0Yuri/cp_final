@@ -78,6 +78,11 @@ class UserController extends Controller
       $status_account = $moip_account->criarConta($this->moip, $inseriu);      
       $status_client = $moip_client->criarCliente($this->moip, $inseriu);
     }
+
+    if(!Activation::generateActivationToken($inseriu, $data['user_info']->email, $data['user_info']->name)){
+      $this->return->setFailed("Ocorreu um erro ao gerar seu link de  ativação.");
+      return;
+    }
   }
 
   // Atualizar cadastro

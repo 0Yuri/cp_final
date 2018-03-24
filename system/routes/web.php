@@ -6,7 +6,6 @@
 */
 
 
-// Route::any('/debugging', 'SessionController@email_testing');
 Route::any('/debugging', 'SessionController@email_testing');
 // Admin
 Route::post('/admin/usuarios/pesquisar', 'AdminController@pesquisarUsuario');

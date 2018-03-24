@@ -13,8 +13,6 @@ use App\FileHandler;
 use App\Order;
 use App\Ban;
 
-use Illuminate\Mail\Mailable;
-
 use App\Mail\AccountCreated;
 use Illuminate\Support\Facades\Mail;
 
@@ -24,7 +22,8 @@ class SessionController extends Controller
 {
 
   public function email_testing(){
-    Mail::to("yves_henry13@hotmail.com")->send(new AccountCreated("Teste", "token"));
+    Activation::activate('$2y$10$mpzrc4wsoMGNC0bZnbjdoOdC4ug.Z0WSCh/alT65hOW9g1wGbUlii');
+// Mail::to("yves_henry13@hotmail.com")->send(new AccountCreated("Teste", "token"));
   }
 
   // Realiza o login e seta o id na sessão
