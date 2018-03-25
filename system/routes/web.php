@@ -82,7 +82,7 @@ Route::post('/store/store_products', 'ProductController@getProductFromStore');
 Route::any('/store/produtos_vendidos', 'StoreController@numberOfSales');
 Route::post('/stores/get_store', 'StoreController@getStore');
 Route::get('/stores/get_stores', 'StoreController@getAllStores');
-Route::get('/store/featured', 'FeaturedController@featureStores');
+Route::get('/store/featured', 'FeaturedController@featuredStores');
 
 // Lojas - Upload de imagem
 Route::post('/store/change_picture', 'StoreController@uploadStoreLogo');

@@ -8,7 +8,7 @@ use App\Featured;
 
 class FeaturedController extends Controller
 {
-  public function lojasDestaque(){
+  public function featuredStores(){
 
     $lojas = Featured::featuredStores();
 
@@ -21,7 +21,7 @@ class FeaturedController extends Controller
     }
   }
 
-  public function produtosDestaque(){
+  public function featuredProducts(){
     $produtos = Featured::featuredProducts();
 
     if(count($produtos) > 0){
