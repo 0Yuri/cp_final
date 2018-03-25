@@ -16,6 +16,7 @@ class MoipClient extends Model
   public function criarCliente(Moip $moip, $id){
     // Retorna um objeto no formato do cliente
     $data = Client::objetoCliente($id);
+    
     if($data == null){
       exit();
     }
