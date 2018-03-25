@@ -7,7 +7,7 @@ use DB;
 
 class EvaluationController extends Controller
 {
-  public function vendedorAvaliado(){
+  public function isSellerEvaluated(){
     $this->isLogged();
     $data = $this->get_post();
 
@@ -28,7 +28,7 @@ class EvaluationController extends Controller
 
   }
 
-  public function compradorAvaliado(){
+  public function isBuyerEvaluated(){
     $this->isLogged();
     $data = $this->get_post();
 
@@ -50,7 +50,7 @@ class EvaluationController extends Controller
 
   }
 
-  public function avaliarComprador(){
+  public function evaluateBuyer(){
     $this->isLogged();
     $data = $this->get_post();
 
@@ -67,7 +67,7 @@ class EvaluationController extends Controller
     }
   }
 
-  public function avaliarVendedor(){
+  public function evaluateSeller(){
     $this->isLogged();
     $data = $this->get_post();
 

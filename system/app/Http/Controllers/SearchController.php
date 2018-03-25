@@ -8,7 +8,7 @@ use App\Store;
 class SearchController extends Controller
 {
   
-  function pesquisar(){
+  function search(){
     $data = $this->get_post();
     $resultado = array(
       'products' => array(

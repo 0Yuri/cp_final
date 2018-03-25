@@ -20,7 +20,7 @@ class OrderController extends Controller
 {
 
   // Definir Pedido - Criar Pedido
-  public function definirPedido(){
+  public function setOrder(){
 
     if(isset($_SESSION['order'])){
       unset($_SESSION['order']);
@@ -156,7 +156,7 @@ class OrderController extends Controller
     }
   }
 
-  public function pedidoID(){
+  public function getOrderID(){
     $data = $this->get_post();
   }
 

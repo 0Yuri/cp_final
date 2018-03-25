@@ -14,7 +14,7 @@ class MessageController extends Controller
     $this->isLogged();
   }
 
-  public function enviadas(){
+  public function sent(){
     $data = $this->get_post();
     $page = 0;
 
@@ -41,7 +41,7 @@ class MessageController extends Controller
 
   }
 
-  public function recebidas(){
+  public function received(){
     $data = $this->get_post();
     $page = 0;
 
@@ -68,7 +68,7 @@ class MessageController extends Controller
     }
   }
 
-  public function pegarMensagem(){
+  public function getMessage(){
     $data = $this->get_post();
 
     $mensagem = DB::table('messages')
@@ -86,17 +86,17 @@ class MessageController extends Controller
     }
   }
 
-  public function escrever(){
+  public function write(){
     $data = $this->get_post();
     print_r($data);
   }
 
-  public function responder(){
+  public function answer(){
     $data = $this->get_post();
     print_r($data);
   }
 
-  public function apagarMensagem(){
+  public function erase(){
     $data = $this->get_post();
   }
 }

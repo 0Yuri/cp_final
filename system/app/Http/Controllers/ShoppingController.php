@@ -11,7 +11,7 @@ use App\MoipOrder;
 class ShoppingController extends Controller
 {
 
-  public function compra(){
+  public function getOrder(){
     $this->isLogged();
     $data = $this->get_post();
     $compra = Compras::get($_SESSION['user_id'], $data['id']);
@@ -76,6 +76,7 @@ class ShoppingController extends Controller
     }
 
     $compras = Compras::getAll($_SESSION['user_id'], $filtro, $pagina);
+    // $compras = Shopping::getAll($_SESSION['user_id'], $filtro, $pagina);
 
     if($compras != null){
       $this->return->setObject($compras);

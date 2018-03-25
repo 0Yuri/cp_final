@@ -10,18 +10,18 @@ use DB;
 class CheckoutController extends Controller
 {
 
-  public function criarPedidoSessao(){
+  public function createSessionOrder(){
     $_SESSION['order'] = array();
 
     if(isset($_SESSION['cart'])){
-      $_SESSION['order'] = $this->transformar($_SESSION['cart']);
+      $_SESSION['order'] = $this->transform($_SESSION['cart']);
     }
     else{
       $this->return->setFailed("Pedido inválido.");
     }
   }
 
-  public function transformar($cart){
+  public function transform($cart){
     $pedidos = array();
 
     foreach($cart as $loja => $pedido){
@@ -46,7 +46,7 @@ class CheckoutController extends Controller
 
   }
 
-  public function pegarPedidos(){
+  public function getOrders(){
     if(count($_SESSION['order']) > 0){
       $this->return->setObject($_SESSION['order']);
     }
@@ -55,7 +55,7 @@ class CheckoutController extends Controller
     }
   }
 
-  public function finalizar(){
+  public function finalize(){
     $data = $this->get_post();
     $data = json_decode(json_encode($data), true);
 
@@ -73,7 +73,7 @@ class CheckoutController extends Controller
     }
   }
 
-  public function definirEntregas(){
+  public function setDeliveries(){
     $data = $this->get_post();
     $data = json_decode(json_encode($data), true);
 
@@ -88,7 +88,7 @@ class CheckoutController extends Controller
     }
   }
 
-  public function revisarPedido(){
+  public function reviewOrder(){
     $this->isLogged();
     if(count($_SESSION['order']) > 0){
       foreach($_SESSION['order'] as $key => $pedido){
@@ -104,28 +104,8 @@ class CheckoutController extends Controller
       return;
     }
   }
-
-  private function validarCarrinho($data){
-    $i = 0;
-    if(count($data) > 0){
-      foreach($data as $pedido){
-        foreach($pedido['produtos'] as $produto){
-          $i += $produto['quantidade'];
-        }
-      }
-      if($i <= 0){
-        return false;
-      }
-      else{
-        return true;
-      }
-    }
-    else{
-      return false;
-    }
-  }
-
-  public function calcularEntrega(){
+  
+  public function calculateDelivery(){
     $data = $this->get_post();
     $data = json_decode(json_encode($data), true);
     $area_total = 0;

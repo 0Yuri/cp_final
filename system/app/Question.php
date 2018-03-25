@@ -16,7 +16,7 @@ class Question extends Model
   const TABLE_NAME = "questions";
 
   // Realizar uma pergunta
-  public static function perguntar($produto, $pergunta, $id){
+  public static function ask($produto, $pergunta, $id){
     $question = array(
       'product_id' => $produto,
       'ask_id' => $id,
@@ -33,7 +33,7 @@ class Question extends Model
   }
 
   // Responder uma pergunta
-  public static function responder($resposta, $id){
+  public static function answer($resposta, $id){
 
     $respondeu = DB::table(Question::TABLE_NAME)
     ->where('id', $id)
@@ -47,8 +47,8 @@ class Question extends Model
     }
   }
 
-  // Pegar as perguntas de um produto pelo seu nome
-  public static function pegarPerguntas($id){
+  // Pegar as perguntas de um produto pelo seu id
+  public static function getQuestions($id){
     $perguntas = DB::table(Product::TABLE_NAME)
     ->select('questions.*')
     ->join(Question::TABLE_NAME, 'questions.product_id', '=', 'products.id')
@@ -59,7 +59,7 @@ class Question extends Model
   }
 
   // Pegar pergunta por id
-  public static function pegarPergunta($id){
+  public static function getQuestion($id){
     $pergunta = DB::table(Question::TABLE_NAME)
     ->select('*')
     ->where('id', $id)
@@ -75,7 +75,7 @@ class Question extends Model
   }
 
   // Pegar perguntas ativas(n respondidas)
-  public static function pegarAtivas($id, $page = 0, $take = 8){
+  public static function getActiveOnes($id, $page = 0, $take = 8){
     $perguntas = DB::table(Store::TABLE_NAME)
     ->join(Product::TABLE_NAME, 'products.store_id', '=', 'stores.id')
     ->join(Question::TABLE_NAME, 'questions.product_id', '=', 'products.id')
@@ -94,7 +94,7 @@ class Question extends Model
     }
   }
 
-  public static function pegarPaginas($id, $take = 8){
+  public static function getPageCount($id, $take = 8){
     $qtd = DB::table(Store::TABLE_NAME)
     ->join(Product::TABLE_NAME, 'products.store_id', '=', 'stores.id')
     ->join(Question::TABLE_NAME, 'questions.product_id', '=', 'products.id')

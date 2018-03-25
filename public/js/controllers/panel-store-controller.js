@@ -28,6 +28,9 @@
 					case '/minhaloja':
 						free = true;
 						break;
+					default:
+						free = true;
+						break;
 				}
 				if(free){
 					if(response.data.success){

@@ -96,7 +96,8 @@ class SessionController extends Controller
   // Checa o status se a loja foi criada
   public function checkStore(){
     $this->isLogged();
-    $loja = Store::pegarLojaLogado($_SESSION['user_id']);
+
+    $loja = Store::storeExists($_SESSION['user_id']);
 
     if($loja == null){
 			$this->return->setFailed("O usuário não possui loja cadastrada.");
@@ -137,6 +138,17 @@ class SessionController extends Controller
       $this->return->setFailed("Esta loja não possui nenhum produto.");
     }else{
       $this->return->setObject($produtos);
+    }
+  }
+
+  public function isStoreCreated(){
+    $this->isLogged();
+
+    $status = Store::storeExists($_SESSION['user_id']);
+
+    if(!$status){
+      $this->return->setFailed("O usuário não possui loja.");
+      return;
     }
   }
 

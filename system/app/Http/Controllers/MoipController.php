@@ -42,7 +42,7 @@ class MoipController extends Controller
     $this->moip = new Moip(new OAuth($this->access_token), Moip::ENDPOINT_SANDBOX);
   }
 
-  public function pagarBoleto(){
+  public function payWithBoleto(){
     $this->isLogged();
     $logged_id = $_SESSION['user_id'];
 
@@ -97,7 +97,7 @@ class MoipController extends Controller
 
   }
 
-  public function pagarCartao(){
+  public function payWithCreditCard(){
     $this->isLogged();
     $data = $this->get_post();
     $logged_id = $_SESSION['user_id'];
@@ -163,7 +163,7 @@ class MoipController extends Controller
 
 
   // Sacar dinheiro
-  public function sacarDinheiro(){
+  public function withdrawMoney(){
     $data = $this->get_post();
 
     $token = $this->onlyToken($_SESSION['user_id']);
@@ -188,7 +188,7 @@ class MoipController extends Controller
     }
   }
   // Pegar Saldo
-  public function pegarSaldo(){
+  public function getAccountBalance(){
     $this->isLogged();
 
     $Authorization = MoipAccount::getAuthorizationBearer($_SESSION['user_id']);

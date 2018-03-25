@@ -9,7 +9,7 @@ use DB;
 class FavoritesController extends Controller
 {
     // Adicionar Novo Favorito a lista do usuário
-    public function adicionar_favorito(){
+    public function addFavorite(){
       $this->isLogged();
       $data = $this->get_post();
 
@@ -44,7 +44,7 @@ class FavoritesController extends Controller
     }
 
     // Remover dos favoritos
-    public function remover_favorito(){
+    public function removeFavorite(){
       $data = $this->get_post();
 
       $remover = Favoritos::removerFavorito($data['id']);
@@ -59,7 +59,7 @@ class FavoritesController extends Controller
     }
 
     // Pegar lista de favoritos do usuário
-    public function pegar_favoritos(){
+    public function getFavorites(){
       $this->isLogged();
       $data = $this->get_post();
       $page = 0;

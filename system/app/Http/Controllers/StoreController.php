@@ -16,10 +16,9 @@ class StoreController extends Controller
 	// Campos que eu quero receber do banco de dados
 	protected $campos = ['id', 'name', 'description'];
 
-	// Criar Loja
-	public function nova_loja(){
+	// Criar Loja - OK
+	public function newStore(){
 		$this->isLogged();
-		// $data = $this->get_post();
 		$data = $_POST;
 
 		$data['owner_id'] = $_SESSION['user_id'];
@@ -62,7 +61,7 @@ class StoreController extends Controller
 
 		$data['profile_image'] = 'users' . DIRECTORY_SEPARATOR . $nomeHash;
 
-		$inseriu = Store::salvarLoja($data);
+		$inseriu = Store::add($data);
 
 		if(!$inseriu){
 			$this->return->setFailed("Ocorreu um erro ao criar sua loja.");
@@ -70,8 +69,8 @@ class StoreController extends Controller
 		}
 	}
 
-	// Alterar Loja
-	public function alterar_loja(){
+	// Alterar Loja - OK
+	public function updateStore(){
 		$this->isLogged();
 		$data = $this->get_post();
 
@@ -94,8 +93,8 @@ class StoreController extends Controller
 		}
 	}
 
-	// alterar imagem da loja
-	public function alterarImagem(){
+	// Alterar imagem da loja - OK
+	public function uploadStoreLogo(){
 		$this->isLogged();
 		$data = $_POST;
 
@@ -162,7 +161,8 @@ class StoreController extends Controller
 
 	}
 
-	public function alterarBanner(){
+	// Alterar banner da loja - OK
+	public function uploadBannerImage(){
 		$this->isLogged();
 
 		$data = $_POST;
@@ -230,7 +230,7 @@ class StoreController extends Controller
 	}
 
 	// Ativar/Desativar loja
-	public function toggle_loja(){
+	public function toggleStatusStore(){
 		$this->isLogged();
 		$mudar = Store::toggleStatusStore($_SESSION['user_id']);
 
@@ -281,7 +281,7 @@ class StoreController extends Controller
 		$this->return->setObject($numero);
 	}
 
-	public function lojaID(){
+	public function getStoreID(){
 		$data = $this->get_post();
 	}
 

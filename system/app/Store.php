@@ -10,7 +10,7 @@ class Store extends Model
   const TABLE_NAME = "stores";
 
   // Salva uma nova loja
-  public static function saveStore($data){
+  public static function add($data){
     $added = DB::table(Store::TABLE_NAME)
     ->insert($data);
 
@@ -128,7 +128,6 @@ class Store extends Model
   // Verifica se o usuário tem uma loja.
   public static function storeExists($id){
     $loja = DB::table('stores')
-    ->select('*')
     ->where('owner_id', $id)
     ->get();
 
@@ -143,16 +142,12 @@ class Store extends Model
   // Verifica se a loja do usuário logado está ativada.
   public static function statusStore($id){
     $store = DB::table(Store::TABLE_NAME)
-    ->select('status')
     ->where('owner_id', $id)
+    ->where('status', 'ativado')
     ->get();
 
     if(count($store) > 0){
-      if($store[0]->status == 'ativado'){
-        return true;
-      }else{
-        return false;
-      }
+      return true;
     }else{
       return false;
     }

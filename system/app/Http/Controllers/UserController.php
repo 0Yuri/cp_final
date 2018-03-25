@@ -19,7 +19,6 @@ use DB;
 class UserController extends Controller
 {
   protected $access_token = MoipConstants::ACCESS_TOKEN;
-  // protected $access_token = "a4face756e9e4e5c977b0b6449d4e168_v2";
   protected $moip;
 
   // Cadastro de novo usuario
@@ -53,8 +52,8 @@ class UserController extends Controller
     $data['user_info']->name_id = $name_id;
 
     // Inverter as datas para o formato correto de DD-MM-YYYY para YYYY-MM-DD
-    $data['user_info']->birthdate = $this->converterData($data['user_info']->birthdate);
-    $data['user_info']->issue_date = $this->converterData($data['user_info']->issue_date);
+    $data['user_info']->birthdate = $this->transformDate($data['user_info']->birthdate);
+    $data['user_info']->issue_date = $this->transformDate($data['user_info']->issue_date);
 
     // Verifica se o CPF é válido
     $isCpfValid = CPF::validate($data['user_info']->cpf);    
@@ -88,7 +87,7 @@ class UserController extends Controller
   // Atualizar cadastro
   public function update(){
     $data = $this->get_post();
-    $data['birthdate'] = $this->converterData($data['birthdate']);
+    $data['birthdate'] = $this->transformDate($data['birthdate']);
 
     $alterou = User::updateUser($data);
 
@@ -97,7 +96,7 @@ class UserController extends Controller
     }
   }
 
-  public function ativarConta(){
+  public function activateAccount(){
     $data = $this->get_post();
     $token = $data['token'];
 
@@ -129,7 +128,7 @@ class UserController extends Controller
   }
 
   // Converte a data introduzida para o formato do banco de dados
-  private function converterData($string){
+  private function transformDate($string){
     $data = explode("-", $string);
     $d = mktime(0,0,0, $data[1], $data[0], $data[2]);
     $data = date("Y-m-d", $d);

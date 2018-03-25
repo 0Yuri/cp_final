@@ -6,29 +6,29 @@ use App\Brand;
 
 class BrandController extends Controller
 {
-  // Nova marca
-  public function nova_marca(){
+  // Cria uma nova marca
+  public function newBrand(){
     $this->isLogged();
 
-    $categoria = $this->get_post();
+    $categories = $this->get_post();
 
-    $adicionou = Brand::saveBrand($categoria);
+    $added = Brand::saveBrand($categories);
 
-    if(!$adicionou){
+    if(!$added){
       $this->return->setFailed("Erro ao adicionar nova marca.");
       return;
     }
   }
 
-  // Pega todas as marcas existentes
-  public function pegar_marcas(){
-    $marcas = Brand::getBrands();
+  // Pega todas as marcas existentes e ativas
+  public function getBrands(){
+    $brands = Brand::getBrands();
 
-    if($marcas == null){
+    if($brands == null){
       $this->return->setFailed("Nenhuma marca foi encontrada.");
       return;
     }else{
-      $this->return->setObject($marcas);
+      $this->return->setObject($brands);
     }
 
   }

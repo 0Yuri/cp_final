@@ -19,7 +19,7 @@ class CartController extends Controller
   }
 
   // Adicionar produto ao carrinho
-  public function adicionar(){
+  public function addProduct(){
     $data = $this->get_post();
 
     $produto_id = $data['id'];
@@ -76,7 +76,7 @@ class CartController extends Controller
     }
   }
   // Remove produto do carrinho
-  public function remover(){
+  public function removeProduct(){
     $data = $this->get_post();
 
     $product_id = $data['product'];
@@ -92,7 +92,7 @@ class CartController extends Controller
 
   }
   // Altera a quantidade
-  public function quantidade(){
+  public function changeQuantityOfProduct(){
     $data = $this->get_post();
     $product_id = $data['product'];
     $valor = $data['value'];
@@ -157,7 +157,7 @@ class CartController extends Controller
   }
 
   // Calcula o frete de cada pedido no carrinho
-  public function calcularFrete(){
+  public function GetDeliveryValues(){
     $data = $this->get_post();
 
     $cep_destino = str_ireplace("-", "", $data['cep']);

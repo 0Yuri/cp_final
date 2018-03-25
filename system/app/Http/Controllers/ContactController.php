@@ -8,7 +8,7 @@ use App\Contatos;
 
 class ContactController extends Controller
 {
-  public function fale_conosco(){
+  public function contact_us(){
     $data = $this->get_post();
 
     $adicionou = Contatos::salvar($data);

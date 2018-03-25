@@ -13,7 +13,7 @@ use Validator;
 class ProductController extends Controller
 {
   // Criar produto
-  public function novoProduto(){
+  public function newProduct(){
     $this->isLogged();
 
     if(!$this->checkStore()){
@@ -31,9 +31,9 @@ class ProductController extends Controller
       $data['local'] = 1;
     }
 
-    $data['price'] = $this->converterPreco($data['price']);
+    $data['price'] = $this->transformPrice($data['price']);
 
-    $data['original_price'] = $this->converterPreco($data['original_price']);
+    $data['original_price'] = $this->transformPrice($data['original_price']);
 
     $loja_id = Store::getStoreID($_SESSION['user_id']);
 
@@ -85,7 +85,7 @@ class ProductController extends Controller
   }
 
   // Alterar produto
-  public function alterar_produto(){
+  public function updateProduct(){
     $data = $this->get_post();
 
     if(isset($data['profile_image'])){
@@ -103,7 +103,8 @@ class ProductController extends Controller
 
   }
 
-  public function mudarStatus(){
+  // Alterna o status do produto de ativado para desativado e vice versa
+  public function toggleStatus(){
     $data = $this->get_post();
 
     $status = Product::toggleProductStatus($data);
@@ -127,6 +128,7 @@ class ProductController extends Controller
     }
   }
 
+  // Pega o produto para edição na tela de alterar produto
   public function getProductForEdition(){
     $data = $this->get_post();
     $produto = Product::getEditableProduct($data['unique_id'], $_SESSION['user_id']);
@@ -141,7 +143,8 @@ class ProductController extends Controller
 
   }
 
-  public function listarProdutos(){
+  // Pega os produtos de acordo com os filtros determinados
+  public function getProducts(){
     $data = $this->get_post();
     $condicoes = array();
 
@@ -182,7 +185,7 @@ class ProductController extends Controller
   }
 
   // Indica a quantidade de páginas existentes na listagem de produtos /produtos
-  public function countActive(){
+  public function getPageCount(){
     $data = $this->get_post();
     $condicoes = array();
     $condicoes[] = ['status', '=', 'ativado'];
@@ -233,8 +236,8 @@ class ProductController extends Controller
     }
   }
 
-  // Converte String para preço
-  private function converterPreco($price){
+  // Converte String para double(preço)
+  private function transformPrice($price){
     $price = explode(',', $price);
     $inteiro = (double) 0;
     $decimal = (double) 0;

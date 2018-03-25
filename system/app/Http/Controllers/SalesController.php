@@ -16,7 +16,7 @@ use DB;
 class SalesController extends Controller
 {
 
-  public function rastreio(){
+  public function addTrackingCode(){
     $data = $this->get_post();
     $condicoes = array(['id', $data['id']]);
     $venda = array('tracking_code' => $data['tracking_code']);
@@ -34,7 +34,7 @@ class SalesController extends Controller
     }
   }
 
-  public function venda(){
+  public function getOrder(){
     $this->isLogged();
     $data = $this->get_post();
 
@@ -90,7 +90,7 @@ class SalesController extends Controller
     }
   }
 
-  public function pegarVendas(){
+  public function getSales(){
     $this->isLogged();
     $data = $this->get_post();
     $filtro = null;
