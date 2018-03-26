@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Request;
-use DB;
-use App\Resposta;
-use App\Store;
-use App\Lojas;
-use App\Validation;
+
 use Illuminate\Support\Facades\Input;
 use Validator;
+use Request;
+
+use App\Product;
+use App\Resposta;
+use App\Store;
+use App\Validation;
+
+use DB;
 
 class StoreController extends Controller
 {
@@ -279,6 +282,11 @@ class StoreController extends Controller
 		->sum('products.solds');
 
 		$this->return->setObject($numero);
+	}
+
+	// Pega os produtos da loja
+	public function getStoreProducts(){
+		
 	}
 
 	public function getStoreID(){

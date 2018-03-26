@@ -136,6 +136,7 @@ class SessionController extends Controller
 
     if($produtos == null){
       $this->return->setFailed("Esta loja não possui nenhum produto.");
+      return;
     }else{
       $this->return->setObject($produtos);
     }

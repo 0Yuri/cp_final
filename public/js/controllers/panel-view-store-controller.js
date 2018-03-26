@@ -20,6 +20,7 @@
 		vm.setPage = setPage;
 
 		vm.store_status = false;
+		vm.msg = "Consultando os produtos da loja...";
 		vm.store_active;
 		vm.pagina;
 		vm.paginas;
@@ -103,7 +104,7 @@
 					vm.produtos_lista = response.data.object.produtos;
 					vm.paginas = response.data.object.paginas;
 				}else{
-					console.log(response.data.error);
+					vm.msg = "Esta loja não possui nenhum produto.";
 				}
 			});
 		}
