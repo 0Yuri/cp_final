@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 use App\Product;
 
+use DB;
+
 class Favorites extends Model
 {
     const TABLE_NAME = "favorites";
@@ -13,7 +15,7 @@ class Favorites extends Model
     public static function add($data){
         $added = DB::table(Favorites::TABLE_NAME)->insert($data);
     
-        if($adicionou){
+        if($added){
             return true;
         }
         else{

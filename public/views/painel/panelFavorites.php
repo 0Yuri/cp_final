@@ -10,7 +10,7 @@
 			Ações
 		</div>
 	</div>
-	<div ng-show="vm.status">
+	<div ng-show="vm.favorites">
 		<div class="w3-row repeater" ng-repeat="favorito in vm.favorites">
 			<div class="w3-third">
 				<a ui-sref="root.product(favorito)">{{favorito.name}}</a>
@@ -24,7 +24,7 @@
 			<button type="button" class="btn btn-default" ng-click="vm.setPage(+1)" ng-show="vm.pagina < vm.paginas - 1">Próximo</button>
 		</div>
 	</div>
-	<div class="w3-padding-16" ng-show="!vm.status">
+	<div class="w3-padding-16" ng-show="!vm.favorites">
 		<h3>{{vm.favorites_error}}</h3>
 	</div>
 

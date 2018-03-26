@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Favoritos;
+use App\Favorites;
 use App\Product;
 use DB;
 
@@ -22,7 +22,7 @@ class FavoritesController extends Controller
         $id_produto = $id_produto[0]->id;
       }
 
-      $existe = Favoritos::existeFavorito($_SESSION['user_id'],$id_produto);
+      $existe = Favorites::isFavoriteAlready($_SESSION['user_id'],$id_produto);
 
       if($existe){
         $this->return->setFailed("Já foi adicionado aos favoritos.");
@@ -34,7 +34,7 @@ class FavoritesController extends Controller
         'product_id' => $id_produto
       );
 
-      $adicionou = Favoritos::salvarFavorito($favorito);
+      $adicionou = Favorites::add($favorito);
 
       if(!$adicionou){
         $this->return->setFailed("Ocorreu um erro ao adicionar aos favoritos.");
@@ -45,9 +45,10 @@ class FavoritesController extends Controller
 
     // Remover dos favoritos
     public function removeFavorite(){
+      $this->isLogged();
       $data = $this->get_post();
 
-      $remover = Favoritos::removerFavorito($data['id']);
+      $remover = Favorites::remove($data['id'], $_SESSION['user_id']);
 
       if($remover){
         return;
@@ -68,9 +69,9 @@ class FavoritesController extends Controller
         $page = $data['page'];
       }
 
-      $favoritos = Favoritos::pegarFavoritos($_SESSION['user_id'], $page);
+      $favoritos = Favorites::getFavorites($_SESSION['user_id'], $page);
 
-      if($favoritos == null){
+      if($favoritos['favoritos'] == null){
         $this->return->setFailed("Nenhum favorito foi encontrado.");
         exit();
       }else{
