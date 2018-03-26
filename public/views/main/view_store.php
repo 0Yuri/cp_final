@@ -26,25 +26,30 @@
       </div>
     </div>
     <div class="row">
-      <p>Nossos Produtos</p>
-      <div ng-repeat="produto in vm.produtos">
-        <div class="col-md-4 col-xs-6 min-margin w3-left-align">
-          <a ui-sref="root.product(produto)">
-            <div class="w3-card-4 product-box">
-              <div class="product-img-box">
-                <img class="img-responsive no-margin" src="{{imgFolder}}site/products/{{produto.imagem}}" width="auto">
+      <div ng-show="vm.produtos">
+        <p>Nossos Produtos</p>
+        <div ng-repeat="produto in vm.produtos">
+          <div class="col-md-4 col-xs-6 min-margin w3-left-align">
+            <a ui-sref="root.product(produto)">
+              <div class="w3-card-4 product-box">
+                <div class="product-img-box">
+                  <img class="img-responsive no-margin" src="{{imgFolder}}site/products/{{produto.imagem}}" width="auto">
+                </div>
+                <div class="w3-row-padding product-info-box">
+                    <b>{{produto.name}}</b> <br>
+                    Para {{produto.gender}}
+                </div>
+                <div class="w3-row-padding product-price-box">
+                  <span class="bold" style="color:#87CEEB">R$ {{produto.price}}</span> <br>
+                  <span class="bold" style="color:#fec860">12x R$ 00,00</span>
+                </div>
               </div>
-              <div class="w3-row-padding product-info-box">
-                  <b>{{produto.name}}</b> <br>
-                  Para {{produto.gender}}
-              </div>
-              <div class="w3-row-padding product-price-box">
-                <span class="bold" style="color:#87CEEB">R$ {{produto.price}}</span> <br>
-                <span class="bold" style="color:#fec860">12x R$ 00,00</span>
-              </div>
-            </div>
-          </a>
+            </a>
+          </div>
         </div>
+      </div>
+      <div ng-show="!vm.produtos">
+        <h3>{{vm.msg}}</h3>
       </div>
     </div>
   </div>

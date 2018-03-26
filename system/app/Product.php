@@ -211,10 +211,37 @@ class Product extends Model
     ->select('products.unique_id', 'products.name', 'products.quality', 'products.price', 'products.gender', 'product_images.filename as imagem')
     ->where('stores.unique_id', '=', $store_id)
     ->where('product_images.type', 'profile')
+    ->where("products.status", "ativado")
     ->get();
 
     return $products;
 
+  }
+
+  // Aumenta quantidade de unidades vendidas
+  public static function increaseSolds($amount){
+    $status = DB::table(Product::TABLE_NAME)
+    ->increment('solds', $amount);
+
+    if($status){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
+  // Diminui a quantidade de estoque
+  public static function lowerStock($amount){
+    $status = DB::table(Product::TABLE_NAME)
+    ->decrement("stock", $amount);
+
+    if($status){
+      return true;
+    }
+    else{
+      return false;
+    }
   }
 
   // Numero de produtos ativos dividido por 8, retorna a quantidade da paginas

@@ -12,6 +12,7 @@
 		vm.pegarProdutos = pegarProdutos;
 		vm.pegarQtdVendas = pegarQtdVendas;
 
+		vm.msg = "Consultando os produtos..."
 		vm.produtos_vendidos;
 
 		_init();
@@ -43,6 +44,7 @@
 			 if(response.data.success){
 				 vm.produtos = response.data.object;
 			 }else{
+				 vm.msg = "Nenhum produto foi encontrado.";
 				 console.log(response.data.error);
 			 }
 		 });
