@@ -11,8 +11,7 @@
 		var vm = this;
 
 		vm.pegarProdutos = pegarProdutos;
-		vm.ativarProduto = ativarProduto;
-		vm.desativarProduto = desativarProduto;
+		vm.toggleProduct = toggleProduct;
 
 		vm.getLoja = getLoja;
 		vm.mudarStatus = mudarStatus;
@@ -66,19 +65,8 @@
 			});
 		}
 
-		function desativarProduto(field){
-			$http.post('system/public/product/deactivate', field)
-			.then(function(response){
-				if(response.data.success){
-					$state.reload();
-				}else{
-					alert(response.data.error);
-				}
-			})
-		}
-
-		function ativarProduto(field){
-			$http.post('system/public/product/activate', field)
+		function toggleProduct(field){
+			$http.post('system/public/product/toggleStatus', field)
 			.then(function(response){
 				if(response.data.success){
 					$state.reload();

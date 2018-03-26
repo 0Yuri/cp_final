@@ -61,7 +61,6 @@ class SessionController extends Controller
     }
 
   }
-
   // Realiza o logout acabando com a sessão(usuario e carrinho)
   public function logout(){
     if(isset($_SESSION['user_id'])){
@@ -70,14 +69,12 @@ class SessionController extends Controller
       $this->return->setFailed("Sessão expirada ou inexistente.");
     }
   }
-
   // Retorna TRUE para sessão ativa, e FALSE para sessão inexistente
   public function checkSession(){
     if(!Session::checkSession()){
       $this->return->setFailed("Sessão expirada ou inexistente.");
     }
   }
-
   // Pega informações do usuário logado
   public function get_infos(){
     $this->isLogged();
@@ -92,7 +89,6 @@ class SessionController extends Controller
       return;
     }
   }
-
   // Checa o status se a loja foi criada
   public function checkStore(){
     $this->isLogged();
@@ -104,7 +100,6 @@ class SessionController extends Controller
 			return;
 		}
   }
-
   // Pega a loja do usuario logado
 	public function logged_store(){
 		$this->isLogged();
@@ -122,7 +117,6 @@ class SessionController extends Controller
       $this->return->setObject($loja);
     }
 	}
-
   // Pega os produtos da loja do usuário logado
   public function logged_products(){
     $this->isLogged();
@@ -141,7 +135,6 @@ class SessionController extends Controller
       $this->return->setObject($produtos);
     }
   }
-
   public function isStoreCreated(){
     $this->isLogged();
 
@@ -152,7 +145,6 @@ class SessionController extends Controller
       return;
     }
   }
-
   // Status da loja
   public function status_store(){
     $this->isLogged();

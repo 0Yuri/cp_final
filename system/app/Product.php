@@ -180,10 +180,29 @@ class Product extends Model
     }
   }
 
+  // Alterna de ativado e desativado
   public static function toggleProductStatus($data){
+    $status;
+    if($data['status'] == 'ativado'){
+      $status = 'desativado';
+    }
+    else{
+      $status = 'ativado';
+    }
 
+    $updated = DB::table(Product::TABLE_NAME)
+    ->where('unique_id', $data['unique_id'])
+    ->update(['status' => $status]);
+
+    if($updated){
+      return true;
+    }
+    else{
+      return false;
+    }
   }
 
+  // Pega os produtos de uma loja
   public static function getProductsFromStore($store_id){
 
     $products = DB::table('stores')

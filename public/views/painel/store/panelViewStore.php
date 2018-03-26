@@ -40,8 +40,12 @@
                 </div>
                 <div class="col-sm-4">
                   <button class="btn" ui-sref="root.panel.edit_product(produto)" style="background-color:transparent"><i class="fa fa-pencil"> Editar</i></button>
-                  <button class="btn" ng-show="produto.status == 'desativado'" style="background-color:transparent"><i class="fa fa-times" aria-hidden="true" ng-click="vm.ativarProduto(produto)"> Ativar</i></button>
-                  <button class="btn" ng-show="produto.status == 'ativado'" style="background-color:transparent"><i class="fa fa-times" aria-hidden="true" ng-click="vm.desativarProduto(produto)"> Desativar</i></button>
+                  <button class="btn" style="background-color:transparent">
+                    <i class="fa fa-times" ng-click="vm.toggleProduct(produto)">
+                      <span ng-show="produto.status == 'desativado'">Ativar</span>
+                      <span ng-show="produto.status == 'ativado'">Desativar</span>
+                    </i>
+                  </button>
                 </div>
               </div>
             </li>
