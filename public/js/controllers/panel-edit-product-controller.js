@@ -64,7 +64,7 @@
 		}
 
 		function removerImagem(image){
-			$http.post('system/public/product/remover_image', image)
+			$http.post('system/public/product/extra/remove', image)
 			.then(function(response){
 				if(response.data.success){
 					$state.reload();
@@ -87,7 +87,7 @@
     }
 
 		function pegarCategorias(){
-			$http.get('system/public/categories/getAll')
+			$http.get('system/public/categories/getCategories')
 			.then(function(response){
 				if(response.data.success){
 					vm.categorias = response.data.object;
@@ -98,7 +98,7 @@
 		}
 
 		function pegarMarcas(){
-			$http.get('system/public/brands/get_brands')
+			$http.get('system/public/brands/getBrands')
 			.then(function(response){
 				if(response.data.success){
 					vm.marcas = response.data.object;

@@ -32,7 +32,9 @@ class Product extends Model
   public static function getProductInfoForCart($id, $quantidade){
     $produto = DB::table(Product::TABLE_NAME)
     ->join('stores', 'stores.id', '=', 'products.store_id')
-    ->select('products.id', 'products.name', 'products.price', 'products.discount', 'products.stock', 'stores.id as loja', 'stores.name as loja_nome')
+    ->join('product_images', 'product_images.product_id', 'products.id')
+    ->select('products.id', 'products.name', 'products.price as preco', 'products.discount', 'products.stock', 'stores.id as loja', 'stores.name as loja_nome', 'product_images.filename as imagem')
+    ->where('product_images.type', 'profile')
     ->where('products.id', $id)
     ->get();
 

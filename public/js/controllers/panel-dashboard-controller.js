@@ -26,7 +26,7 @@
 		};
 
 		function checkLoja(){
-			$http.get('system/public/store/status_store')
+			$http.get('system/public/store/statusStore')
 			.then(function(response){
 				vm.store_active = response.data.success;
 			});

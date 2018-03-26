@@ -22,7 +22,7 @@
 			var fd = new FormData();
 			fd.append('imagem', $scope.myFile);
 			fd.append('loja', store.id);
-			$http.post('system/public/store/change_picture', fd,{
+			$http.post('system/public/store/uploadNewLogo', fd,{
 				transformRequest: angular.identity,
 				headers: {'Content-Type':undefined}
 			}).then(function(response){
@@ -44,7 +44,7 @@
 				fd.append('imagem', $scope.bannerFile);
 				fd.append('loja', store.id);
 
-				$http.post('system/public/store/change_banner', fd,{
+				$http.post('system/public/store/uploadNewBanner', fd,{
 					transformRequest: angular.identity,
 					headers:{'Content-Type':undefined}
 				}).then(function(response){
@@ -60,7 +60,7 @@
 		}
 
 		function getStore(){
-			$http.get('system/public/store/logged_store')
+			$http.get('system/public/store/loggedStore')
 			.then(function(response){
 				if(response.data.success){
 					vm.loja = response.data.object;
@@ -72,7 +72,7 @@
 
     function updateStore(field){
 			// Atualiza a loja
-      $http.post('system/public/store/update_store', field)
+      $http.post('system/public/store/updateStore', field)
       .then(function(response){
         if(response.data.success){
           $state.go('root.panel.store', {}, {reload : "root.panel.store"});

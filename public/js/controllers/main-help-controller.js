@@ -11,7 +11,7 @@
 
 
     function fale_conosco(){
-      $http.post('system/public/contact/contact_us', vm.message)
+      $http.post('system/public/contact/contactUs', vm.message)
       .then(function(response){
         if(response.data.success){
           alert('Agradecemos e entraremos em contato em breve!');

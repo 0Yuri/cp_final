@@ -68,8 +68,8 @@
 			<div class="panel-body w3-padding-16">
 				<div class="w3-row" class="">
 					<a href="" ui-sref="root.panel.store" class="">
-						<img ng-show="vm.store_active" class="img-vc" class="w3-image" style="max-width:350px" src="{{imgFolder}}site/misc/MENINO.png">
-						<img ng-show="!vm.store_active" class="img-vc" class="w3-image" style="max-width:350px" src="{{imgFolder}}site/misc/btn-vc.png">
+						<span ng-show="vm.store_active">Loja ativada</span>
+						<span ng-show="!vm.store_active">Loja desativada</span>
 					</a>
 				</div>
 			</div>

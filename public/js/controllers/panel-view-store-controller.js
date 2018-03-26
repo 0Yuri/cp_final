@@ -34,7 +34,7 @@
 		}
 
 		function getLoja(){
-			$http.get('system/public/store/logged_store')
+			$http.get('system/public/store/loggedStore')
 			.then(function(response){
 				vm.store_status = response.data.success;
 				if(response.data.success){
@@ -48,7 +48,7 @@
 		}
 
 		function mudarStatus(){
-			$http.get('system/public/store/toggle_store')
+			$http.get('system/public/store/toggleStore')
 			.then(function(response){
 				if(response.data.success){
 					$state.go('root.panel.dashboard');
@@ -59,7 +59,7 @@
 		}
 
 		function statusStore(){
-			$http.get('system/public/store/status_store')
+			$http.get('system/public/store/statusStore')
 			.then(function(response){
 				vm.store_active = response.data.success;
 			});
@@ -86,7 +86,7 @@
 			var content = {
 				page: vm.pagina
 			};
-			$http.post('system/public/product/logged_products', content)
+			$http.post('system/public/product/loggedProducts', content)
 			.then(function(response){
 				if(response.data.success){
 					vm.produtos_lista = response.data.object.produtos;

@@ -7,7 +7,10 @@ use DB;
 
 class Shopping extends Model
 {
-  public static function pegarPedidos($id, $filters, $page=0){
+
+  const TABLE_NAME = "pedidos";
+  
+  public static function getAll($id, $filters, $page=0){
     $condicoes = array();
     $condicoes[] = ['buyer_id', '=', $id];
     $filtros = ['CREATED','WAITING','IN_ANALYSIS','PRE_AUTHORIZED','AUTHORIZED','CANCELLED', 'REFUNDED', 'REVERSED', 'SETTLED', 'PAID'];
@@ -29,7 +32,7 @@ class Shopping extends Model
       }
     }
 
-    $pedidos = DB::table('orders')
+    $pedidos = DB::table(Shopping::TABLE_NAME)
     ->select('*')
     ->orderBy('created_at', 'desc')
     ->skip($page * 8)
@@ -38,7 +41,7 @@ class Shopping extends Model
     ->whereIn('status', $filtros)
     ->get();
 
-    $qtd_pedidos = DB::table('orders')
+    $qtd_pedidos = DB::table(Shopping::TABLE_NAME)
     ->select('*')
     ->where($condicoes)
     ->whereIn('status', $filtros)
@@ -62,10 +65,10 @@ class Shopping extends Model
     );
   }
 
-  public static function pegarCompra($user_id, $order_id){
+  public static function getOrder($user_id, $order_id){
     $condicoes = array(['buyer_id', '=', $user_id], ['unique_id', '=', $order_id]);
 
-    $pedido = DB::table('orders')
+    $pedido = DB::table(Shopping::TABLE_NAME)
     ->select('*')
     ->where($condicoes)
     ->get();
