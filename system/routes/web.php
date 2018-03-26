@@ -78,11 +78,14 @@ Route::post('/favorites/get', 'FavoritesController@getFavorites');
 Route::post('/store/new_store', 'StoreController@newStore');
 Route::post('/store/update_store', 'StoreController@alterar_loja');
 Route::get('/store/toggle_store', 'StoreController@toggleStatusStore');
-Route::post('/store/store_products', 'ProductController@getProductFromStore');
+Route::post('/store/store_products', 'StoreController@getStoreProducts');
 Route::any('/store/produtos_vendidos', 'StoreController@numberOfSales');
 Route::post('/stores/get_store', 'StoreController@getStore');
 Route::get('/stores/get_stores', 'StoreController@getAllStores');
+
+// Destaques - OK
 Route::get('/store/featured', 'FeaturedController@featuredStores');
+Route::get('/product/featured', 'FeaturedController@featuredProducts');
 
 // Lojas - Upload de imagem
 Route::post('/store/change_picture', 'StoreController@uploadStoreLogo');
@@ -114,7 +117,6 @@ Route::post('/product/update', 'ProductController@updateProduct');
 Route::post('/product/toggleStatus', 'ProductController@toggleStatus');
 Route::post('/product/get', 'ProductController@getProduct');
 Route::post('/product/getAll', 'ProductController@getProducts');
-Route::get('/product/featured', 'FeaturedController@featuredProducts');
 Route::post('/product/numberOfAll', 'ProductController@getPageCount');
 
 // Produtos - Upload de Imagens

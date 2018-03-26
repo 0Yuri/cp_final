@@ -286,7 +286,17 @@ class StoreController extends Controller
 
 	// Pega os produtos da loja
 	public function getStoreProducts(){
+		$data = $this->get_post();
 		
+		$products = Product::getProductsFromStore($data['unique_id']);
+
+    if(count($products) > 0){
+			$this->return->setObject($products);
+		}
+		else{			
+      $this->return->setFailed("Esta loja não possui produtos ainda.");
+      return;      
+    }
 	}
 
 	public function getStoreID(){

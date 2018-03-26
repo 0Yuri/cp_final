@@ -230,7 +230,8 @@ class ProductController extends Controller
     ->get();
 
     if(count($produtos) <= 0){
-      $this->return->setFailed("Não existe nenhum produto nesta loja.");
+      $this->return->setFailed("Esta loja não possui produtos ainda.");
+      return;
     }else{
       $this->return->setObject($produtos);
     }

@@ -184,31 +184,17 @@ class Product extends Model
 
   }
 
-  // Ativa o produto(torna ele visível e disponível para venda)
-  public static function ativarProduto($data){
-    $ativou = DB::table('products')
-    ->where('id', $data['id'])
-    ->update(['status' => 'ativado']);
+  public static function getProductsFromStore($store_id){
 
-    if($ativou){
-      return true;
-    }else{
-      return false;
-    }
-  }
+    $products = DB::table('stores')
+    ->join('products', 'products.store_id', '=', 'stores.id')
+    ->join('product_images', 'product_images.product_id', '=', 'products.id')
+    ->select('products.unique_id', 'products.name', 'products.quality', 'products.price', 'products.gender', 'product_images.filename as imagem')
+    ->where('stores.unique_id', '=', $store_id)
+    ->where('product_images.type', 'profile')
+    ->get();
 
-  // Desativa um produto (torna ele indisponível para venda)
-  public static function desativarProduto($data){
-
-    $desativou = DB::table('products')
-    ->where('id', $data['id'])
-    ->update(['status' => 'desativado']);
-
-    if($desativou){
-      return true;
-    }else{
-      return false;
-    }
+    return $products;
 
   }
 
