@@ -49,14 +49,14 @@ class Product extends Model
   }
 
   // Pega produtos da loja do usuário logado.
-  public static function getLoggedStoreProducts($id, $page=0){
+  public static function getLoggedStoreProducts($id, $page=0, $take = 8){
     $produtos = DB::table(User::TABLE_NAME)
     ->join(Store::TABLE_NAME, 'stores.owner_id', '=', 'users.id')
     ->join(Product::TABLE_NAME, 'products.store_id', '=', 'stores.id')
     ->join('product_images', 'product_images.product_id', 'products.id')
     ->select('products.*', 'product_images.filename as imagem')
-    ->skip($page * 12)
-    ->take(12)
+    ->skip($page * $take)
+    ->take($take)
     ->where('users.id', '=', $id)
     ->where('product_images.type', 'profile')
     ->get();
@@ -69,13 +69,13 @@ class Product extends Model
     ->count();
 
     // Se os produtos forem menor que a de exibição(12) Existe apenas uma página
-    if($qtd_produtos < 12){
+    if($qtd_produtos < $take){
       $qtd_paginas = 1;
     }
     else{
-      $resto = $qtd_produtos%12;
+      $resto = $qtd_produtos%$take;
 
-      $qtd_paginas = ($qtd_produtos - $resto) / 12;
+      $qtd_paginas = ($qtd_produtos - $resto) / $take;
 
       if($resto > 0){
         $qtd_paginas++;
