@@ -11,23 +11,24 @@ class SoldProduct extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $products;
+    public $seller_name;
+    public $buyer_name;
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($produtos, $nome_vendedor, $nome_comprador)
     {
-        //
+        $this->products = $produtos;
+        $this->seller_name = $nome_vendedor;
+        $this->buyer_name = $nome_comprador;
     }
 
-    /**
-     * Build the message.
-     *
-     * @return $this
-     */
     public function build()
     {
-        return $this->view('view.name');
+        return $this->view('soldproduct');
     }
 }

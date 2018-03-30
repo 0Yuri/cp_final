@@ -11,14 +11,20 @@ class OrderShipped extends Mailable
 {
     use Queueable, SerializesModels;
 
+
+    public $order_id;
+    public $tracking_code;
+    public $buyer_name;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($order_id, $track_code, $buyer_name)
     {
-        //
+        $this->order_id = $order_id;
+        $this->tracking_code = $track_code;
+        $this->buyer_name = $buyer_name;
     }
 
     /**
@@ -28,6 +34,6 @@ class OrderShipped extends Mailable
      */
     public function build()
     {
-        return $this->view('view.name');
+        return $this->view('ordershipped');
     }
 }

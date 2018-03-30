@@ -6,7 +6,9 @@
 */
 
 
-// Route::any('/debugging', 'SessionController@email_testing');
+Route::any('/debugging', function(){
+    return view('ordershipped', ['buyer_name'=> "Comprador X", 'order_id' => 2131231, 'tracking_code' => '4343242342']);
+});
 // Admin
 Route::post('/admin/users/search', 'AdminController@pesquisarUsuario');
 Route::post('/admin/users/ban', 'AdminController@banirUsuario');
