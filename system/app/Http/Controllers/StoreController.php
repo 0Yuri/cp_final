@@ -284,6 +284,38 @@ class StoreController extends Controller
 		$this->return->setObject($numero);
 	}
 
+	public function numberOfSolds(){
+		$this->isLogged();
+		$numero = DB::table('stores')
+		->join('products', 'products.store_id', '=', 'stores.id')
+		->where('stores.id', '=', $_SESSION['user_id'])
+		->sum('products.solds');
+
+		$this->return->setObject($numero);
+	}
+
+	public function numberOfActive(){
+		$this->isLogged();
+		$numero = DB::table('stores')
+		->join('products','products.store_id', 'stores.id')
+		->where('stores.owner_id', $_SESSION['user_id'])
+		->where('products.status', 'ativado')
+		->count();
+
+		$this->return->setObject($numero);
+	}
+
+	public function numberOfNonActive(){
+		$this->isLogged();
+		$numero = DB::table('stores')
+		->join('products','products.store_id', 'stores.id')
+		->where('stores.owner_id', $_SESSION['user_id'])
+		->where('products.status', 'desativado')
+		->count();
+
+		$this->return->setObject($numero);
+	}
+
 	// Pega os produtos da loja
 	public function getStoreProducts(){
 		$data = $this->get_post();

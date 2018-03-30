@@ -8,15 +8,7 @@
 						<h5>Vendidos</h5>
 					</td>
 					<td>
-						<span ng-bind="vm.valor"></span>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<h5>Reservados</h5>
-					</td>
-					<td>
-						<span ng-bind="vm.valor"></span>
+						<span ng-bind="vm.vendidos"></span>
 					</td>
 				</tr>
 				<tr>
@@ -24,7 +16,7 @@
 						<h5>Publicados</h5>
 					</td>
 					<td>
-						<span ng-bind="vm.valor"></span>
+						<span ng-bind="vm.ativos"></span>
 					</td>
 				</tr>
 				<tr>
@@ -32,7 +24,7 @@
 						<h5>Não Publicados</h5>
 					</td>
 					<td>
-						<span ng-bind="vm.valor"></span>
+						<span ng-bind="vm.desativados"></span>
 					</td>
 				</tr>
 			</table>
@@ -42,7 +34,7 @@
 	</div>
 </div>
 
-<div class="w3-third w3-padding">
+<div class="w3-third w3-padding w3-responsive">
 	<div class="w3-row">
 		<div class="panel panel-default">
 			<div class="panel-body">
@@ -50,13 +42,16 @@
 					<h4>AVALIAÇÕES</h4>
 				</div>
 				<table class="dash-table">
-					<tr ng-repeat="avaliacao in [1,2,3]">
+					<tr ng-repeat="avaliacao in vm.avaliacoes">
 						<td>
-							<h5>Av. {{avaliacao}}</h5>
+							De: <h5 style="text-transform:capitalize">{{avaliacao.name}} {{avaliacao.last_name}}</h5>
 						</td>
+						<td>
+							Sua Nota: <h5>{{avaliacao.rate}}</h5>
+						</td>						
 					</tr>
 				</table>
-				<button class="btn btn-warning dash-btn">Gerenciar avaliações</button>
+				<!-- <button class="btn btn-warning dash-btn">Gerenciar avaliações</button> -->
 			</div>
 		</div>
 	</div>

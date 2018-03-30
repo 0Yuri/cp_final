@@ -32,10 +32,10 @@ class Address extends Model
     }
   }
 
-  public static function pegarEndereco($id){
+  public static function getUserAddress($user_id){
     $endereco = DB::table(Address::TABLE_NAME)
     ->select('number as numero', 'city as localidade', 'cep', 'UF as uf', 'complement as complemento', 'neighborhood as bairro', 'street as logradouro', 'reference as referencia')
-    ->where('user_id', $id)
+    ->where('user_id', $user_id)
     ->get();
 
     if(count($endereco) > 0){
@@ -46,6 +46,7 @@ class Address extends Model
     }
 
   }
+
   // Salva um endereço
   public static function add($data){
     $adicionou = DB::table(Address::TABLE_NAME)
@@ -57,8 +58,9 @@ class Address extends Model
       return false;
     }
   }
+
   // Pega o CEP da loja de acordo com seu ID
-  public static function getCEP($store_id){
+  public static function getCepByStore($store_id){
     $cep = DB::table('stores')
     ->select('address.cep')
     ->where('stores.id', '=', $store_id)
@@ -167,7 +169,7 @@ class Address extends Model
     }
   }
 
-  public static function calcularValores($cep_origem, $cep_destino, $peso, $dimensao, $preco_declarado = '0'){
+  public static function calculateValues($cep_origem, $cep_destino, $peso, $dimensao, $preco_declarado = '0'){
     $altura = $largura = $comprimento = $dimensao;
     // Altura
     if($altura < 2){

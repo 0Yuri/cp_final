@@ -52,12 +52,15 @@ class CartController extends Controller
     $estoque = Product::getProductStock($product_id);
 
     if($estoque != null){
-      $estoque = $produto[0]->stock;
-
+      // Varre cada pedido
       foreach($_SESSION['cart'] as $loja => $pedido){
+        // Verifica se o produto existe nesse pedido
         if(array_key_exists($product_id, $pedido['produtos'])){
+          // Soma a quantidade final desejada
           $atual = $pedido['produtos'][$product_id]['quantidade'] + $valor;
+          // Verifica se a quantidade é maior que o estoque disponível
           if($atual > $estoque){
+            // Se for, estoque será a quantidade máxima é definida
             $atual = $estoque;
           }else if($atual <= 0){
             $atual = 1;
@@ -95,7 +98,7 @@ class CartController extends Controller
     $data = $this->get_post();
 
     $cep_destino = str_ireplace("-", "", $data['cep']);
-    $cep_origem = str_ireplace("-", "", Address::getCEP($data['id']));
+    $cep_origem = str_ireplace("-", "", Address::getCepByStore($data['id']));
 
     $area_total = 0;
     $peso = 0;
@@ -123,7 +126,7 @@ class CartController extends Controller
     $dimensoes = (String)round(pow($area_total, 1/3));
     $peso = (String)$peso;
 
-    $precos = Address::calcularValores($cep_origem, $cep_destino, $peso, $dimensoes, $preco);
+    $precos = Address::calculateValues($cep_origem, $cep_destino, $peso, $dimensoes, $preco);
 
     $this->return->setObject($precos);
 

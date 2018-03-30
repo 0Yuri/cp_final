@@ -29,9 +29,10 @@ use DateTime;
 
 class MoipController extends Controller
 {
-  protected $access_token = "a4face756e9e4e5c977b0b6449d4e168_v2";
+  // protected $access_token = "a4face756e9e4e5c977b0b6449d4e168_v2";
+  protected $access_token = MoipConstants::ACCESS_TOKEN;
   protected $moip;
-  const ACCOUNT_ID = "MPA-B4ABF9C3ED72";
+  const ACCOUNT_ID = MoipConstants::OWNER_ACCOUNT;
 
   public function __construct(){
     parent::__construct();

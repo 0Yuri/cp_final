@@ -112,6 +112,12 @@ Route::get('/store/checkStore', 'SessionController@isStoreCreated');
 Route::get('/store/loggedStore', 'SessionController@logged_store');
 Route::get('/store/statusStore', 'SessionController@status_store');
 
+Route::get('/store/solds', 'StoreController@numberOfSolds'); // Retorna o número de produtos vendidos
+Route::get('/store/active', 'StoreController@numberOfActive'); // Retorna o número de produtos ativos
+Route::get('/store/noActive', 'StoreController@numberOfNonActive'); // Retorna o número de produtos não ativos
+
+Route::get('/evaluations/get', 'EvaluationController@getMyEvaluations');
+
 // Produtos - OK
 Route::post('/product/add', 'ProductController@newProduct');
 Route::post('/product/update', 'ProductController@updateProduct');

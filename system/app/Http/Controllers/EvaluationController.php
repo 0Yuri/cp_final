@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Evaluation;
+use App\User;
 use DB;
 
 class EvaluationController extends Controller
@@ -89,6 +90,24 @@ class EvaluationController extends Controller
     }
     else{
       $this->return->setFailed("Nenhuma loja foi encontrada para ser avaliada.");
+      return;
+    }
+  }
+
+  public function getMyEvaluations(){
+    $this->isLogged();
+
+    $consulta = DB::table(Evaluation::TABLE_NAME)
+    ->join(User::TABLE_NAME, User::TABLE_NAME . '.id', '=', Evaluation::TABLE_NAME . '.evaluator_id')
+    ->select(Evaluation::TABLE_NAME . '.rate', Evaluation::TABLE_NAME . '.evaluator_id', User::TABLE_NAME . '.name', User::TABLE_NAME . '.last_name')
+    ->where(Evaluation::TABLE_NAME . '.evaluated_id', $_SESSION['user_id'])
+    ->get();
+
+    if(count($consulta) > 0){
+      $this->return->setObject($consulta);
+    }
+    else{
+      $this->return->setFailed("Nenhuma avaliação foi encontrada.");
       return;
     }
   }

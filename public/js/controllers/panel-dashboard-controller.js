@@ -7,14 +7,14 @@
 
 	function PanelDashboardController ($state, $http, userService) {
 		var vm = this;
-
-		userService.onlyUsers();
-		vm.valor = 12;
-		vm.freeze = freeze;
-		vm.gerenciarProdutos = gerenciarProdutos;
 		vm.checkLoja = checkLoja;
 		vm.store_active;
-		vm.getSaldo = getSaldo;
+		vm.getBalance = getBalance;
+		vm.getEvaluations = getEvaluations;
+
+		vm.getSolds = getSolds;
+		vm.getActiveProducts = getActiveProducts;
+		vm.getNonActiveProducts = getNonActiveProducts;		
 
 		_init();
 
@@ -22,7 +22,11 @@
 
 		function _init () {
 			checkLoja();
-			getSaldo();
+			getBalance();
+			getSolds();
+			getActiveProducts();
+			getNonActiveProducts();
+			getEvaluations();
 		};
 
 		function checkLoja(){
@@ -32,7 +36,7 @@
 			});
 		}
 
-		function getSaldo(){
+		function getBalance(){
 			$http.get('system/public/moip/balance')
 			.then(function(response){
 				if(response.data.success){
@@ -44,10 +48,44 @@
 			});
 		}
 
-		function freeze (){
-		};
+		function getSolds(){
+			$http.get('system/public/store/solds')
+			.then(function(response){
+				if(response.data.success){
+					vm.vendidos = response.data.object;
+				}
+			});
+		}
 
-		function gerenciarProdutos () {
-		};
+		function getEvaluations(){
+			$http.get('system/public/evaluations/get')
+			.then(function(response){
+				if(response.data.success){
+					vm.avaliacoes = response.data.object;
+				}
+				else{
+					console.log(response.data.error);
+				}
+			});
+		}
+		
+		function getActiveProducts(){
+			$http.get('system/public/store/active')
+			.then(function(response){
+				if(response.data.success){
+					vm.ativos = response.data.object;
+				}
+			});
+		}
+
+		function getNonActiveProducts(){
+			$http.get('system/public/store/noActive')
+			.then(function(response){
+				if(response.data.success){
+					vm.desativados = response.data.object;
+				}
+			});
+		}
+		
 	};
 })();

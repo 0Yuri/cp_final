@@ -13,7 +13,7 @@
 	<div ng-show="vm.favorites">
 		<div class="w3-row repeater" ng-repeat="favorito in vm.favorites">
 			<div class="w3-third">
-				<a ui-sref="root.product(favorito)">{{favorito.name}}</a>
+				<a target="_blank" ui-sref="root.product(favorito)">{{favorito.name}}</a>
 			</div>
 			<div class="w3-third w3-right">
 				<a ng-click="vm.removerFavorito(favorito)" data-toggle="tooltip" data-placement="right" title="Excluir um favorito ficou bem fácil!">Remover</a>
