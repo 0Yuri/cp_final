@@ -156,6 +156,9 @@
 					</div> -->
 				</div>
 			</div>
+			<div class="w3-row" ng-show="vm.lista_produtos.length <= 0">
+				<h3>Nenhum produto foi encontrado.</h3>
+	</div>
 			<div class="w3-row">
 				<ul class="pager">
 					<li>
@@ -166,10 +169,8 @@
 					</li>
 				</ul>
 			</div>
-		</div>
-		<div class="w3-rest" ng-show="!vm.show_error">
-			<h3>{{vm.msg_error}}</h3>
-		</div>
+		</div>		
 	</div>
+	
 
 </div>
