@@ -26,7 +26,7 @@ class Cart extends Model
 
         // O Produto pertence ao usuário?
         if(isset($_SESSION['user_id'])){
-            if(Store::isMyStore($_SESSION['user_id'], $produto->loja)){
+            if(Store::isMyStore($_SESSION['user_id'], $produto['loja'])){
                 $response->message .= "Este produto pertence à sua loja.";
                 return $response;
             }
@@ -123,5 +123,17 @@ class Cart extends Model
             $produtos[$id]['quantidade'] = $product['quantidade'];
         }
         return $produtos;
+    }
+
+    public static function clearCart(){
+        // Pedido
+        if(isset($_SESSION['order'])){
+            unset($_SESSION['order']);
+        }
+        // Carrinho
+        if(isset($_SESSION['cart'])){
+            unset($_SESSION['cart']);
+        }
+        $_SESSION['cart'] = array();
     }
 }

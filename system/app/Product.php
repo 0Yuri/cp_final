@@ -247,22 +247,25 @@ class Product extends Model
   }
 
   // Numero de produtos ativos dividido por 8, retorna a quantidade da paginas
-  public static function quantityOfFilteredProducts($condicoes){
+  public static function quantityOfFilteredProducts($condicoes, $take= 8){
     $qtd_produtos = DB::table('products')
     ->where($condicoes)
     ->count();
-
-    if($qtd_produtos < 8){
+    
+    if($qtd_produtos < $take){
       return 1;
     }
-    else{
-      $resto = $qtd_produtos%8;
-      $qtd_paginas = ($qtd_produtos - $resto)/8;
-      if($resto > 0){
-        $qtd_paginas++;
-      }
-      return $qtd_paginas;
+    
+    $resto = $qtd_produtos%$take;
+
+    $qtd_paginas = ($qtd_produtos-$resto)/$take;
+
+    if($resto > 0){
+      $qtd_paginas++;
     }
+
+    return $qtd_paginas;
+    
   }
 
   // Retorna o produto de acordo com o nome
@@ -331,69 +334,27 @@ class Product extends Model
   }
 
   // Pega os produtos filtrados
-  public static function getProducts($condicoes, $genero, $page=1){
-    $page = ($page - 1) * 8;
-    $skip = false;
+  public static function getProducts($condicoes, $page=0, $take = 8){
+    $products = DB::table(Product::TABLE_NAME)
+    ->join('product_images', 'product_images.product_id', '=', Product::TABLE_NAME . '.id')
+    ->select(
+      Product::TABLE_NAME . '.name',
+      Product::TABLE_NAME . '.price',
+      Product::TABLE_NAME . '.quality',
+      Product::TABLE_NAME . '.discount',
+      Product::TABLE_NAME . '.gender',
+      Product::TABLE_NAME . '.unique_id',
+      'product_images.filename as imagem'
+      )
+    ->where($condicoes)
+    ->where('product_images.type', 'profile')
+    ->where('status', 'ativado')
+    ->skip($page * $take)
+    ->take($take)
+    ->get();
 
-    switch($genero){
-      case 'meninos':
-        $condicoes[] = ['gender', '=' , 'meninos'];
-        break;
-      case 'meninas':
-        $condicoes[] = ['gender', '=', 'meninas'];
-        break;
-      case 'unisex':
-        $produtos = DB::table('products')
-        ->join('brands', 'brands.id', 'products.brand_id')
-        ->join('product_images', 'product_images.product_id', '=', 'products.id')
-        ->select('products.id', 'products.name', 'products.description',
-        'products.gender', 'products.quality', 'products.price', 'products.original_price',
-        'products.discount', 'brands.name as brand', 'product_images.filename as imagem', 'products.unique_id')
-        ->orderBy('created_at')
-        ->skip($page)
-        ->take(8)
-        ->where($condicoes)
-        ->where('product_images.type', '=', 'profile')
-        ->whereIn('gender', ['meninas', 'meninos'])
-        ->get();
-        $skip = true;
-        break;
-      case 'papai':
-        $condicoes[] = ['gender', '=', 'papai'];
-        break;
-      case 'mamae':
-        $condicoes[] = ['gender', '=', 'mamae'];
-        break;
-      default:
-        break;
-    }
+    return $products;
 
-    if($skip == false){
-      $produtos = DB::table('products')
-      ->join('brands', 'brands.id', 'products.brand_id')
-      ->join('product_images', 'product_images.product_id', '=', 'products.id')
-      ->select('products.id', 'products.name', 'products.description',
-      'products.gender', 'products.quality', 'products.price', 'products.original_price',
-      'products.discount', 'brands.name as brand', 'product_images.filename as imagem', 'products.unique_id')
-      ->orderBy('created_at')
-      ->skip($page)
-      ->take(8)
-      ->where($condicoes)
-      ->where('product_images.type', '=', 'profile')
-      ->get();
-    }
-
-    if(count($produtos) > 0){
-      for($i=0;$i < sizeof($produtos)-1;$i++){
-        if($produtos[$i]->id == $produtos[$i+1]->id){
-          unset($produtos[$i+1]);
-        }
-      }
-
-      return $produtos;
-    }else{
-      return null;
-    }
   }
 
   public static function saveImage($product_id, $nome, $type="extra"){

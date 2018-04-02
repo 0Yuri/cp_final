@@ -146,41 +146,43 @@ class ProductController extends Controller
   // Pega os produtos de acordo com os filtros determinados
   public function getProducts(){
     $data = $this->get_post();
-    $condicoes = array();
+    $conditions = array();
 
-    $condicoes[] = ['products.status', '=', 'ativado'];
-
-    if(strlen($data['category']) > 0){
-      if($data['category'] != 0){
-        $condicoes[] = ['category_id', '=', $data['category']];
-      }
+    // OK
+    if($data['category'] != 0){
+      $conditions[] = ['category_id', '=', $data['category']];
     }
 
-    if(strlen($data['page']) > 0){
-      $page = $data['page'];
+    // OK
+    if(isset($data['filter'])){
+      if($data['filter'] != 'unisex'){
+        $conditions[] = ['gender', '=', $data['filter']];
+      }      
     }
-    else{
-      $page = 1;
-    }
-
-    if(isset($data['filter']) && strlen($data['filter']) > 0){
-      $gender = $data['filter'];
+    
+    if(isset($data['page'])){
+      $page = $data['page'] - 1;
     }
     else{
-      $gender = null;
+      $page = 0;
     }
 
-    if(isset($data['quality']) && $data['quality'] != 'wherever'){
-      $condicoes[] = ['quality', '=', $data['quality']];
+    // OK
+    if(isset($data['quality'])){
+      $quality = $data['quality'];
+      if($quality != 'wherever'){
+        $conditions[] = ['quality', '=', $quality];
+      }      
     }
 
-    $produtos = Product::getProducts($condicoes, $gender, $page);
+    $products = Product::getProducts($conditions, $page);
 
-    if($produtos == null){
-      $this->return->setFailed("Nenhum produto foi encontrado nesta categoria.");
+    if($products != null){
+      $this->return->setObject($products);
       return;
-    }else{
-      $this->return->setObject($produtos);
+    }
+    else{
+      return;
     }
   }
 
@@ -190,12 +192,23 @@ class ProductController extends Controller
     $condicoes = array();
     $condicoes[] = ['status', '=', 'ativado'];
 
-    if(strlen($data['category']) > 0){
+    $categoria = $data['category'];
+    if(isset($categoria) && strlen($categoria) > 0){
       $condicoes[] = ['category_id', '=', $data['category']];
     }
 
-    if(isset($data['filter']) && strlen($data['filter']) > 0){
-      $condicoes[]  = ['gender', '=', $data['filter']];
+    $filtro = $data['filter'];    
+    if(isset($filtro) && strlen($filtro) > 0){
+      if($filtro != 'unisex'){
+        $condicoes[]  = ['gender', '=', $filtro];
+      }      
+    }
+
+    $qualidade = $data['quality'];
+    if(isset($qualidade) && strlen($qualidade) > 0){
+      if($qualidade != 'wherever'){
+        $condicoes[] = ['quality', '=', $qualidade];
+      }      
     }
 
     $quantidade = Product::quantityOfFilteredProducts($condicoes);

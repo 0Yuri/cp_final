@@ -162,7 +162,7 @@
 						<a ng-click="vm.changePage(-1)" ng-show="vm.pagina > 1">Anterior</a>
 					</li>
 					<li>
-						<a ng-click="vm.changePage(+1)" ng-show="vm.pagina < vm.numeroPaginas">Próxima</a>
+						<a ng-click="vm.changePage(+1)" ng-show="vm.pagina < vm.paginas">Próxima</a>
 					</li>
 				</ul>
 			</div>
