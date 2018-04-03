@@ -20,7 +20,7 @@
 		</div>
 		<div class="w3-row w3-padding" ng-repeat="pedido in vm.vendas">
 			<div class="w3-third text-left">
-				<a ui-sref="root.panel.sale({id: pedido.unique_id})">{{pedido.order_id}}</a>
+				<a ui-sref="root.panel.sale(pedido)">{{pedido.unique_id}}</a>
 			</div>
 			<div class="w3-third">
 				{{pedido.status}}

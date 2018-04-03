@@ -48,4 +48,5 @@ class EmailSender extends Model
     public static function enviarPedidoEnviado($order_id, $cod_rastreio, $comprador, $email){
         Mail::to($email)->send(new OrderShipped($order_id, $cod_rastreio, $comprador));
     }
+
 }

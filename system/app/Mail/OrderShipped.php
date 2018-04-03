@@ -15,6 +15,7 @@ class OrderShipped extends Mailable
     public $order_id;
     public $tracking_code;
     public $buyer_name;
+    public $subject;
     /**
      * Create a new message instance.
      *
@@ -25,6 +26,7 @@ class OrderShipped extends Mailable
         $this->order_id = $order_id;
         $this->tracking_code = $track_code;
         $this->buyer_name = $buyer_name;
+        $this->subject = "O pedido " . $order_id . " foi enviado.";
     }
 
     /**

@@ -14,6 +14,7 @@ class SoldProduct extends Mailable
     public $products;
     public $seller_name;
     public $buyer_name;
+    public $subject = "Você realizou uma venda.";
 
     /**
      * Create a new message instance.

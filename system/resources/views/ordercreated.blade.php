@@ -34,7 +34,7 @@ tr:nth-child(even) {
   <tr>
     <td>{{$produto['nome']}}</td>
     <td>{{$produto['quantidade']}}</td>
-    <td>R$ preco</td>
+    <td>R$ {{$produto['preco']}}</td>
   </tr>
   @endforeach
 </table>

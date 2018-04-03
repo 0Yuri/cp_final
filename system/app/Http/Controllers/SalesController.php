@@ -9,7 +9,7 @@ use App\MoipOrder;
 use App\User;
 use App\Store;
 use App\Sales;
-use App\Vendas;
+use App\EmailSender;
 
 use DB;
 
@@ -25,7 +25,20 @@ class SalesController extends Controller
     ->where($condicoes)
     ->update($venda);
 
+    $pedido = DB::table('pedidos')
+    ->join(User::TABLE_NAME, User::TABLE_NAME . '.id', '=', 'pedidos.buyer_id')
+    ->select('pedidos.order_id', 'pedidos.tracking_code', 'pedidos.buyer_id', User::TABLE_NAME . '.name', User::TABLE_NAME . '.last_name', User::TABLE_NAME . '.email')
+    ->where('pedidos.unique_id', $data['unique_id'])
+    ->get();
+
     if($alterou){
+      if(count($pedido) > 0){
+        $pedido = (array)$pedido[0];
+        $pedido['email'] = "yves_henry13@hotmail.com";
+        $user = User::grabUserById($_SESSION['user_id']);
+        EmailSender::enviarPedidoEnviado($pedido['order_id'], $pedido['tracking_code'], $user['name'] . " " .$user['last_name'], $pedido['email']);
+      }
+      
       return;
     }
     else{
@@ -45,7 +58,7 @@ class SalesController extends Controller
       return;
     }
 
-    $venda = Vendas::get($data['id'], $loja_id);
+    $venda = Sales::getOrder($data['unique_id'], $loja_id);
 
     if($venda != null){
       $access_token = "a4face756e9e4e5c977b0b6449d4e168_v2";
@@ -108,11 +121,11 @@ class SalesController extends Controller
 
     // Verifica a página
     if(!isset($data['page']) || $data['page'] < 0){
-      $vendas = Vendas::getAll($store_id, $filtro);
+      $vendas = Sales::getAll($store_id, $filtro);
     }
     else{
       $page = $data['page'] - 1;
-      $vendas = Vendas::getAll($store_id, $filtro, $page);
+      $vendas = Sales::getAll($store_id, $filtro, $page);
     }
 
     if($vendas != null){

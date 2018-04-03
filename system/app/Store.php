@@ -212,6 +212,22 @@ class Store extends Model
     }
   }
 
+  // Pega o dono da loja
+  public static function getOwnerOfStore($store_id){
+    $user = DB::table(Store::TABLE_NAME)
+    ->join(User::TABLE_NAME, User::TABLE_NAME . '.id', '=', Store::TABLE_NAME . '.owner_id')
+    ->select(User::TABLE_NAME . '.*')
+    ->where(Store::TABLE_NAME . '.id', $store_id)
+    ->get();
+
+    if(count($user) > 0){
+      return (array)$user[0];
+    }
+    else{
+      return null;
+    }
+  }
+
   // Verifica se a loja pertence ao usuario logado
   public static function isMyStore($user_id, $store_id){
     $store = DB::table('stores')
