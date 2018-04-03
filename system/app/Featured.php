@@ -16,7 +16,8 @@ class Featured extends Model
     $products = DB::table(Product::TABLE_NAME)
     ->join('product_images', 'product_images.product_id', '=', Product::TABLE_NAME . '.id')
     ->join(Category::TABLE_NAME, Category::TABLE_NAME . '.id', '=', Product::TABLE_NAME . '.category_id')
-    ->select(Product::TABLE_NAME . '.*', 'product_images.filename', Category::TABLE_NAME . '.name as categoria')
+    ->join(Brand::TABLE_NAME, Brand::TABLE_NAME . '.id', '=', Product::TABLE_NAME . '.brand_id')
+    ->select(Product::TABLE_NAME . '.unique_id', Product::TABLE_NAME . '.name', Product::TABLE_NAME . '.price', Product::TABLE_NAME . '.solds as vendidos','product_images.filename', Category::TABLE_NAME . '.name as category', Brand::TABLE_NAME . '.name as brand')
     ->take(8)
     ->orderBy('solds', 'asc')
     ->where('product_images.type', 'profile')
@@ -36,12 +37,12 @@ class Featured extends Model
     $stores = DB::table(Store::TABLE_NAME)
     ->select('*')
     ->take(8)
-    ->orderBy('sales', 'asc')
     ->get();
 
     if(count($stores) > 0){
       foreach($stores as $store){
         $store->n_produtos = Featured::numberOfProduct($store->id);
+        $store->sales = Featured::numberOfSales($store->id);
       }
       return $stores;
     }
@@ -50,10 +51,18 @@ class Featured extends Model
     }
   }
 
-  public static function numberOfProduct($product_id){
+  public static function numberOfSales($store_id){
+    $vendas = DB::table(Product::TABLE_NAME)
+    ->where("store_id", $store_id)
+    ->sum('solds');
+
+    return $vendas;
+  }
+
+  public static function numberOfProduct($store_id){
     $product = DB::table(Product::TABLE_NAME)
     ->where("status", "ativado")
-    ->where("store_id", $product_id)
+    ->where("store_id", $store_id)
     ->count();
 
     return $product;

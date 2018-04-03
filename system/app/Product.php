@@ -221,8 +221,9 @@ class Product extends Model
   }
 
   // Aumenta quantidade de unidades vendidas
-  public static function increaseSolds($amount){
+  public static function increaseSolds($product_id, $amount){
     $status = DB::table(Product::TABLE_NAME)
+    ->where('id', $product_id)
     ->increment('solds', $amount);
 
     if($status){
@@ -234,8 +235,9 @@ class Product extends Model
   }
 
   // Diminui a quantidade de estoque
-  public static function lowerStock($amount){
+  public static function lowerStock($product_id, $amount){
     $status = DB::table(Product::TABLE_NAME)
+    ->where('id', $product_id)
     ->decrement("stock", $amount);
 
     if($status){

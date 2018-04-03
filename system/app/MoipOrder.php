@@ -29,6 +29,8 @@ class MoipOrder extends Model
         $valor = MoipOrder::getPrice($produto['preco']);
         $discount += MoipOrder::getDiscount($produto['preco'], $produto['desconto']);
         $order->addItem($produto['nome'], $produto['quantidade'], "Descricao teste", $valor);
+        Product::increaseSolds($produto['id'], $produto['quantidade']);
+        Product::lowerStock($produto['id'], $produto['quantidade']);
       }
 
       $frete = 0;
