@@ -21,11 +21,13 @@ class MoipOrder extends Model
   // CRIAR TIPOS DE PEDIDOS
 
   public static function criarPedidoSimples(Moip $moip, $pedido, $customer, $payment_method){
+    $discount = 0;
     try{
       $order = $moip->orders()->setOwnId(uniqid());
 
       foreach($pedido['produtos'] as $produto){
-        $valor = (int)($produto['preco'] * 100);
+        $valor = MoipOrder::getPrice($produto['preco']);
+        $discount += MoipOrder::getDiscount($produto['preco'], $produto['desconto']);
         $order->addItem($produto['nome'], $produto['quantidade'], "Descricao teste", $valor);
       }
 
@@ -44,7 +46,7 @@ class MoipOrder extends Model
 
       $order->setShippingAmount($frete)
       ->setAddition(0)
-      ->setDiscount(0)
+      ->setDiscount($discount)
       ->setCustomer($customer)
       ->addReceiver($seller_id, 'PRIMARY', 0, MoipOrder::SELLER_AMOUNT, false)
       ->addReceiver(MoipOrder::ACCOUNT_ID, 'SECONDARY', NULL, MoipOrder::CP_AMOUNT, true)
@@ -77,6 +79,7 @@ class MoipOrder extends Model
 
   public static function criarMultiPedidos(Moip $moip, $pedidos, $customer, $payment_method){
     $pedidos_moip = $moip;
+    $discount = 0;
 
     $moip_pedidos = array();
 
@@ -85,9 +88,11 @@ class MoipOrder extends Model
       // PEDIDO POR PEDIDO
       foreach($pedidos as $pedido){
         $order = $pedidos_moip->orders()->setOwnId(uniqid());
+        
         // PRODUTOS
         foreach($pedido['produtos'] as $produto){
-          $valor = (int)($produto['preco'] * 100);
+          $valor = MoipOrder::getPrice($produto['preco']);
+          $discount += MoipOrder::getDiscount($produto['preco'], $produto['discount']);
           $order->addItem($produto['nome'], $produto['quantidade'], "Teste de descricao", $valor);
         }
 
@@ -104,7 +109,7 @@ class MoipOrder extends Model
 
         $order->setShippingAmount($frete)
         ->setAddition(0)
-        ->setDiscount(0)
+        ->setDiscount($discount)
         ->setCustomer($customer)
         ->addReceiver($seller_id, 'PRIMARY', 0, MoipOrder::SELLER_AMOUNT, false)
         ->addReceiver(MoipOrder::ACCOUNT_ID, 'SECONDARY', 0, MoipOrder::CP_AMOUNT, true);
@@ -171,5 +176,16 @@ class MoipOrder extends Model
     catch (\Moip\Exceptions\UnexpectedException $e) {
       print_r($e->getMessage());
     }
+  }
+
+  private static function getPrice($price){
+    $price = (int)($price * 100);
+    return $price;
+  }
+
+  private static function getDiscount($price, $discount){
+    $discounted = $price * ($discount / 100);
+    $discounted = (int) ($discounted * 100);
+    return $discounted;
   }
 }

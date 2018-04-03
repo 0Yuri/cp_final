@@ -13,6 +13,7 @@ use DB;
 class Activation extends Model
 {
     const TABLE_NAME = 'activation';
+    const URL = "http://localhost/ativarconta/";
 
     public static function activate($token){
         $activation = Activation::getActivation($token);
@@ -47,17 +48,22 @@ class Activation extends Model
             'token' => $string
         );
 
-        $added = DB::table(Activation::TABLE_NAME)
-        ->insert($data);
+        $added = Activation::saveActivation($data);
 
         if($added){
-            // Mail::to($email)->send(new AccountCreated($username, 'http://www.crescendoepassando.com.br/ativarconta/'.$string));
-            Mail::to($email)->send(new AccountCreated($username, 'http://localhost/ativarconta/'.$string));
+            Mail::to($email)->send(new AccountCreated($username, Activation::URL . $string));
             return true;
         }
         else{
             return false;
         }
+    }
+
+    public static function saveActivation($data){
+        $added = DB::table(Activation::TABLE_NAME)
+        ->insert($data);
+
+        return  $added;
     }
 
     private static function getActivation($token){

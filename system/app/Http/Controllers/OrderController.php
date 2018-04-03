@@ -32,7 +32,8 @@ class OrderController extends Controller
       foreach($_SESSION['cart'] as $key => $pedido){
         $produtos = array();
         foreach($pedido['produtos'] as $ind => $produto){
-          array_push($produtos, Product::pegarProdutoCarrinho($produto['id'], $produto['quantidade']));
+          // array_push($produtos, Product::pegarProdutoCarrinho($produto['id'], $produto['quantidade']));
+          array_push($produtos, Product::getProductInfoForCart($produto['id'], $produto['quantidade']));
         }
         array_push($pedidos, array('nome_loja' => $pedido['nome_loja'], 'id_loja' => $pedido['id_loja'], 'produtos' => $produtos));
       }

@@ -37,6 +37,7 @@ class CheckoutController extends Controller
         $pedidos[$loja]['produtos'][$id] = array(
           'id' => $product['id'],
           'nome' => $product['nome'],
+          'desconto' => $product['discount'],
           'preco' => $product['preco'],
           'quantidade' => $produto['quantidade'],
           'imagem' => $product['imagem']
