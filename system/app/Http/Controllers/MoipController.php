@@ -61,7 +61,6 @@ class MoipController extends Controller
         if($pagamento != null){
           $pagamento = json_decode(json_encode($pagamento), true);
           $this->return->setObject($pagamento['_links']['checkout']['payBoleto']['printHref']);
-          return;
         }
         else{
           $this->return->setFailed("Ocorreu um erro ao gerar o seu boleto.");
@@ -79,7 +78,6 @@ class MoipController extends Controller
         $pagamento = MoipPayment::pagarBoletoSimples($order);
         if($pagamento != null){
           $this->return->setObject($pagamento->getHrefBoleto());
-          return;
         }
         else{
           $this->return->setFailed("Ocorreu um erro ao gerar o seu boleto.");
@@ -91,7 +89,8 @@ class MoipController extends Controller
         return;
       }
     }
-
+    // Limpa os pedidos
+    Session::cleanAll();
   }
 
   public function payWithCreditCard(){

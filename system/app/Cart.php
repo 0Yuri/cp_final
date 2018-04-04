@@ -34,6 +34,12 @@ class Cart extends Model
         
         $produto_id = $produto['id'];
         $loja_id = $produto['loja'];
+
+        if($produto['stock'] <= 0){
+            $response->success = false;
+            $response->message .= "O produto que você está adicionando não possui mais unidades em estoque.";
+            return $response;
+        }
         // A loja já existe?
         if(array_key_exists($loja_id, $_SESSION['cart'])){
             // Se o produto já existe

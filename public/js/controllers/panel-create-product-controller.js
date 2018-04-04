@@ -13,20 +13,8 @@
 		vm.pegarCategorias = pegarCategorias;
 		vm.pegarMarcas = pegarMarcas;
 
-		vm.field = {
-			name: "Produto teste",
-			gender: "unisex",
-			description: "Este é um produto teste.",
-			quality: 'Novo',
-			price: 20.10,
-			original_price: 25.00,
-			shipping: true,
-			local: true,
-			height: 15,
-			width: 20,
-			length: 30,
-			weight: 100
-		};
+		vm.field = {};
+		vm.field.stock = 1;
 
 		_init();
 
@@ -75,6 +63,7 @@
 			fd.append('width', vm.field.width);
 			fd.append('length', vm.field.length);
 			fd.append('weight', vm.field.weight);
+			fd.append('stock', vm.field.stock);
 
 
 			$http.post('system/public/product/add', fd, {

@@ -236,6 +236,21 @@ class Product extends Model
 
   // Diminui a quantidade de estoque
   public static function lowerStock($product_id, $amount){
+    $product = DB::table(Product::TABLE_NAME)
+    ->select("stock")
+    ->where("id", $product_id)
+    ->get();
+
+    if(count($product) > 0){
+      $product = $product[0];
+      if($product->stock == 0){
+        return false;
+      }
+    }
+    else{
+      return false;
+    }
+
     $status = DB::table(Product::TABLE_NAME)
     ->where('id', $product_id)
     ->decrement("stock", $amount);
@@ -351,6 +366,7 @@ class Product extends Model
     ->where($condicoes)
     ->where('product_images.type', 'profile')
     ->where('status', 'ativado')
+    ->where('stock', '>', 0)
     ->skip($page * $take)
     ->take($take)
     ->get();

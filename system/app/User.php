@@ -42,8 +42,27 @@ class User extends Model
 
   // Altera um usuário
   public static function updateUser($data){
+    $usuario = DB::table(User::TABLE_NAME)
+    ->where("name_id", $data['name_id'])
+    ->where("cpf", $data['cpf'])
+    ->get();
+
+    if(count($usuario) <= 0){
+      return false;
+    }
+
+    if(isset($data['cpf'])){
+      unset($data['cpf']);
+    }
+    if(isset($data['rg'])){
+      unset($data['rg']);
+    }
+    if(isset($data['email'])){
+      unset($data['email']);
+    }
+
     $alterou = DB::table(User::TABLE_NAME)
-    ->where('email', $data['email'])
+    ->where('name_id', $data['name_id'])
     ->update($data);
 
     if($alterou){
@@ -80,7 +99,7 @@ class User extends Model
 
   // Pega o usuário logado pelo seu id
   public static function getLoggedUser($id){
-    $fillable = [ 'name', 'last_name', 'birthdate', 'email', 'rg', 'cpf', 'ddd_1', 'tel_1', 'ddd_2', 'tel_2'];
+    $fillable = [ 'name', 'last_name', 'birthdate', 'email', 'rg', 'cpf', 'ddd_1', 'tel_1', 'ddd_2', 'tel_2', 'name_id'];
 
     $usuario = DB::table(User::TABLE_NAME)
     ->select($fillable)

@@ -41,4 +41,13 @@ class Session extends Model
     session_unset();    
   }
 
+  public static function cleanAll(){
+    if(isset($_SESSION['cart'])){
+      unset($_SESSION['cart']);
+    }
+    if(isset($_SESSION['order'])){
+      unset($_SESSION['order']);
+    }
+  }
+
 }

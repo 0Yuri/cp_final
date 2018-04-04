@@ -23,12 +23,16 @@
           <label>Estado:</label>
           {{vm.produto.quality}}
         </div>
+        <div class="w3-row">
+          <span ng-show="vm.produto.stock > 0">Restam {{vm.produto.stock}} unidades.</span>
+          <span ng-show="vm.produto.stock <= 0" style="font-size:130%">Este produto não possui mais unidades.</span>
+        </div>
         <!-- Quantidade -->
         <div class="w3-row">
           <div class="w3-third w3-hide-small"><p></p></div>
           <div class="w3-third" style="padding:0% 10%">
             Quantidade
-            <input type="number" ng-model="vm.produto.quantity" required class="w3-input w3-border w3-round " min=1>
+            <input type="number" ng-disabled="vm.produto.stock == 0" ng-model="vm.produto.quantity" required class="w3-input w3-border w3-round " min=1>
           </div>
         </div>
         <div class="w3-row w3-padding-16">
@@ -37,7 +41,9 @@
         </div>
 
         <div class="w3-row w3-padding-16">
-          <button type="button" ng-click="vm.adicionarCarrinho(vm.produto)" class="btn btn-default">Adicionar ao carrinho</button>
+          <div class="w3-row">
+          <button type="button" ng-disabled="vm.produto.stock == 0" ng-click="vm.adicionarCarrinho(vm.produto)" class="btn btn-default">Adicionar ao carrinho</button>
+          </div>
         </div>
       </div>
     </div>
