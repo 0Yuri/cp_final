@@ -10,7 +10,7 @@
             <button type="button" class="btn btn-default" ng-click="vm.uploadProfile(vm.produto)">Enviar</button>
           </div>
           <label>
-            <img class="productImage" ng-show="!profilepreview" src="{{imgFolder}}/site/products/{{vm.produto.profile_image}}" width="250px" height="250px">
+            <img class="productImage" ng-show="!profilepreview" src="{{imgFolder}}/site/products/{{vm.produto.profile_image.filename}}" width="250px" height="250px">
             <img class="productImage" ng-src={{profilepreview}} ng-show="profilepreview" width="250px" height="250px">
             <input type="file" file-model="profilePic" filepreview="profilepreview" fileinput="profilePic" style="display:none">
           </label>
@@ -36,23 +36,27 @@
       </div>
       <div class="w3-row">
         <h5>Informações Básicas</h5>
-        <div class="w3-third">
+        <div class="w3-quarter">
           <label>Nome:</label>
           <input type="text" required ng-model="vm.produto.name" class="w3-input w3-border w3-round">
         </div>
-        <div class="w3-third" style="padding-left: 2%">
+        <div class="w3-quarter" style="padding-left: 2%">
           <label>Categoria:</label>
           <select class="w3-select w3-round w3-border" required ng-model="vm.produto.category_id">
             <option value="" selected disabled>Selecione uma categoria</option>
             <option ng-value="categoria.id" ng-repeat="categoria in vm.categorias">{{categoria.name}}</option>
           </select>
         </div>
-        <div class="w3-third" style="padding-left: 2%">
+        <div class="w3-quarter" style="padding-left: 2%">
           <label>Marca:</label>
           <select class="w3-select w3-round w3-border" required ng-model="vm.produto.brand_id">
             <option value="" selected disabled>Selecione uma marca</option>
             <option ng-value="marca.id" ng-repeat="marca in vm.marcas">{{marca.name}}</option>
           </select>
+        </div>
+        <div class="w3-quarter" style="padding-left: 2%">
+          <label>Estoque:</label>
+          <input type="number" required ng-model="vm.produto.stock" class="w3-input w3-border w3-round">
         </div>
       </div>
       <div class="w3-row">

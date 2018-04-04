@@ -8,7 +8,7 @@ use DB;
 class Account extends Model
 {
   // Salva a conta no banco de dados
-  public static function salvarConta($account_id, $user_id, $token){
+  public static function add($account_id, $user_id, $token){
     if($account_id == null | $user_id == null | $token == null){
       return null;
     }
@@ -55,21 +55,5 @@ class Account extends Model
         return null;
       }
   }
-
-  // Pega o ID da conta moip através do id da loja
-  public static function getAccountId($store_id){
-    $id = DB::table('stores')
-    ->select('moip_accounts.account_id')
-    ->join('moip_accounts', 'stores.owner_id', '=', 'moip_accounts.user_id')
-    ->where('stores.id', $store_id)
-    ->get();
-
-
-    if(count($id) > 0){
-      return $id[0]->account_id;
-    }
-    else{
-      return null;
-    }
-  }
+  
 }

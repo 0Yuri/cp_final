@@ -8,7 +8,10 @@ use DB;
 
 class Evaluation extends Model
 {
-  public static function salvarAvaliacao($avaliador, $avaliado, $avaliacao, $order_id){
+
+  const TABLE_NAME = "evaluations";
+
+  public static function evaluate($avaliador, $avaliado, $avaliacao, $order_id){
 
     $data = array(
       'rate' => $avaliacao,
@@ -17,7 +20,7 @@ class Evaluation extends Model
       'order_id' => $order_id
     );
 
-    $inserir = DB::table('evaluations')
+    $inserir = DB::table(Evaluation::TABLE_NAME)
     ->insert($data);
 
     if($inserir){

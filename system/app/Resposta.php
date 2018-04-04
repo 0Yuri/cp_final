@@ -17,7 +17,7 @@ class Resposta extends Model
         $this->data = [
             'success' => self::SUCCESS_STATUS,
             'error' => self::MSG_ERROR,
-            'object' => null
+            'object' => array()
         ];
     }
 

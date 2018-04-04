@@ -19,7 +19,7 @@
 		}
 
 		function getUserInfo () {
-			$http.get('system/public/user/logged_user')
+			$http.get('system/public/user/loggedUser')
 			.then(function(response){
 				if(response.data.success){
 					vm.user = response.data.object;
@@ -33,8 +33,7 @@
 			$http.post('system/public/user/update', vm.user)
 			.then(function(response){
 				if(response.data.success){
-					vm.msg_status = "Alterado com sucesso!";
-					// $state.reload();
+					$state.reload();
 				}else{
 					vm.msg_status = response.data.error;
 				}

@@ -1,5 +1,7 @@
 <?php
 
+use App\Moip as MoipConstants;
+
 return [
 
     /*
@@ -29,7 +31,7 @@ return [
     |
     */
 
-    'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
+    'host' => env('MAIL_HOST', 'mx1.hostinger.com.br'),
 
     /*
     |--------------------------------------------------------------------------
@@ -56,8 +58,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
-        'name' => env('MAIL_FROM_NAME', 'Example'),
+        'address' => env('MAIL_FROM_ADDRESS', 'testes@crescendoepassando.com.br'),
+        'name' => env('MAIL_FROM_NAME', 'Crescendo e Passando'),
     ],
 
     /*

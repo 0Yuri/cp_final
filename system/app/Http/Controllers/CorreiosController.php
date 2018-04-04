@@ -62,7 +62,7 @@ class CorreiosController extends Controller
 
     }
 
-    public function pegarEndereco(){
+    public function getAddress(){
       $data = $this->get_post();
       $data = $data['info'];
       $class = new BuscaViaCEPJSONP();
@@ -79,7 +79,7 @@ class CorreiosController extends Controller
       }
     }
 
-    public function pegarEnderecoCadastro(){
+    public function getAddressForSignup(){
       $data = $this->get_post();
       $data = $data['cep'];
       $class = new BuscaViaCEPJSONP();

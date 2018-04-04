@@ -7,7 +7,7 @@ use App\Address;
 
 class DeliveryController extends Controller
 {
-  public function setEntregas(){
+  public function setDelivery(){
     $this->isLogged();
     $data = $this->get_post();
     $message = "";

@@ -24,7 +24,7 @@
 			fd.append('phone', loja.phone);
 			fd.append('description', loja.description);
 
-			$http.post('system/public/store/new_store', fd,{
+			$http.post('system/public/store/newStore', fd,{
 				transformRequest: angular.identity,
 				headers: {'Content-Type':undefined}
 			}).then(function(response){

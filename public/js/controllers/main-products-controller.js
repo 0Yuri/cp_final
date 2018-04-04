@@ -14,7 +14,7 @@
 		vm.filtrarQualidade = filtrarQualidade;
 		vm.filtro;
 		vm.pagina;
-		vm.numeroPaginas;
+		vm.paginas;
 
 		_init();
 
@@ -74,7 +74,7 @@
 			$http.post('system/public/product/numberOfAll', content)
 			.then(function(response){
 				if(response.data.success){
-					vm.numeroPaginas = response.data.object;
+					vm.paginas = response.data.object;
 				}
 				else{
 					console.log(response.data.error);

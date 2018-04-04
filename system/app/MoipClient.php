@@ -10,10 +10,13 @@ use DB;
 class MoipClient extends Model
 {
 
+  const TABLE_NAME = "moip_accounts";
+
   // Cria um novo cliente através do id do usuário
   public function criarCliente(Moip $moip, $id){
     // Retorna um objeto no formato do cliente
     $data = Client::objetoCliente($id);
+    
     if($data == null){
       exit();
     }
@@ -33,7 +36,7 @@ class MoipClient extends Model
       $user_id = $data['id'];
       $client_id = $customer->getId();
       // Salva o cliente no banco de dados
-      $status = Client::salvarCliente($user_id, $client_id);
+      $status = Client::add($user_id, $client_id);
       return true;
     }
     catch(Exception $e){
@@ -56,7 +59,7 @@ class MoipClient extends Model
 
   // Pega o ID do cliente moip através do id do usuário
   public static function getClientId($id){
-    $customer_id = DB::table('moip_accounts')
+    $customer_id = DB::table(MoipClient::TABLE_NAME)
     ->select('client_id')
     ->where('user_id', $id)
     ->get();
@@ -71,38 +74,41 @@ class MoipClient extends Model
 
   // Consulta um cliente pelo seu ID
   public static function consultarCliente(Moip $moip, $customer_id){
+
     if($customer_id == null){
       return null;
     }
-    else{
-      try{
-        $customer = $moip->customers()->get($customer_id);
-        return $customer;
-      }
-      catch(Exception $e){
-        printf($e->__toString());
-      }
-      catch (\Moip\Exceptions\UnautorizedException $e) {
-        //StatusCode 401
-        echo $e->getMessage();
-      }
-      catch (\Moip\Exceptions\ValidationException $e) {
-        //StatusCode entre 400 e 499 (exceto 401)
-        printf($e->__toString());
-      }
-      catch (\Moip\Exceptions\UnexpectedException $e) {
-        //StatusCode >= 500
-        echo $e->getMessage();
-      }
+
+    try{
+      $customer = $moip->customers()->get($customer_id);
+      return $customer;
     }
+    catch(Exception $e){
+      printf($e->__toString());
+    }
+    catch (\Moip\Exceptions\UnautorizedException $e) {
+      //StatusCode 401
+      echo $e->getMessage();
+    }
+    catch (\Moip\Exceptions\ValidationException $e) {
+      //StatusCode entre 400 e 499 (exceto 401)
+      printf($e->__toString());
+    }
+    catch (\Moip\Exceptions\UnexpectedException $e) {
+      //StatusCode >= 500
+      echo $e->getMessage();
+    }
+
     return null;
   }
 
   public static function createClient(Moip $moip, $id){
     $data = Client::objetoCliente($id);
+
     if($data == null){
       exit();
     }
+    
     try{
       $customer = $moip->customers()->setOwnId(uniqid())
           ->setFullname('Fulano de Tal')

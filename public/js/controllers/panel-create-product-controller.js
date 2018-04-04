@@ -13,20 +13,8 @@
 		vm.pegarCategorias = pegarCategorias;
 		vm.pegarMarcas = pegarMarcas;
 
-		vm.field = {
-			name: "Produto teste",
-			gender: "unisex",
-			description: "Este é um produto teste.",
-			quality: 'Novo',
-			price: 20.10,
-			original_price: 25.00,
-			shipping: true,
-			local: true,
-			height: 15,
-			width: 20,
-			length: 30,
-			weight: 100
-		};
+		vm.field = {};
+		vm.field.stock = 1;
 
 		_init();
 
@@ -36,7 +24,7 @@
 		}
 
 		function pegarCategorias(){
-			$http.get('system/public/categories/getAll')
+			$http.get('system/public/categories/getCategories')
 			.then(function(response){
 				if(response.data.success){
 					vm.categorias = response.data.object;
@@ -47,7 +35,7 @@
 		};
 
 		function pegarMarcas(){
-			$http.get('system/public/brands/get_brands')
+			$http.get('system/public/brands/getBrands')
 			.then(function(response){
 				if(response.data.success){
 					vm.marcas = response.data.object;
@@ -75,6 +63,7 @@
 			fd.append('width', vm.field.width);
 			fd.append('length', vm.field.length);
 			fd.append('weight', vm.field.weight);
+			fd.append('stock', vm.field.stock);
 
 
 			$http.post('system/public/product/add', fd, {

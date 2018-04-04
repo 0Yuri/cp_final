@@ -2,18 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use DB;
 use Moip\Moip;
 use Moip\Auth\OAuth;
+
 use App\User;
 use App\CPF;
+use App\Activation;
 use App\Validation;
+
 use App\MoipClient;
 use App\MoipAccount;
+use App\Moip as MoipConstants;
+
+use DB;
 
 class UserController extends Controller
 {
-  protected $access_token = "a4face756e9e4e5c977b0b6449d4e168_v2";
+  protected $access_token = MoipConstants::ACCESS_TOKEN;
   protected $moip;
 
   // Cadastro de novo usuario
@@ -23,7 +28,7 @@ class UserController extends Controller
     $this->moip = new Moip(new OAuth($this->access_token), Moip::ENDPOINT_SANDBOX);
 
     // Validar confirmar senha e depois removê-lo
-    if(!User::validar_senha($data['user_info']->password, $data['user_info']->confirmpassword)){
+    if(!User::validate_password($data['user_info']->password, $data['user_info']->confirmpassword)){
       $this->return->setFailed("Senhas não são iguais.");
       return;
     }
@@ -32,37 +37,34 @@ class UserController extends Controller
     }
 
     // Verificar se o email já é cadastrado.
-    if(User::existe($data['user_info']->email)){
+    if(User::doesEmailExists($data['user_info']->email)){
       $this->return->setFailed("Ocorreu um erro ao realizar o cadastro, esse email já foi cadastrado.");
       return;
     }
 
-    // Criar o name_id e fica gerando caso já exista
+    // Cria o name_id e fica gerando caso já exista
     do{
       $name_id = uniqid($data['user_info']->name);
       $name_id = str_ireplace(" ", "", $name_id);
-      User::existeNameID($name_id);
     }
-    while(User::existeNameID($name_id));
+    while(User::isNameIdInUse($name_id));
 
     $data['user_info']->name_id = $name_id;
 
     // Inverter as datas para o formato correto de DD-MM-YYYY para YYYY-MM-DD
-    $data['user_info']->birthdate = $this->converterData($data['user_info']->birthdate);
-    $data['user_info']->issue_date = $this->converterData($data['user_info']->issue_date);
+    $data['user_info']->birthdate = $this->transformDate($data['user_info']->birthdate);
+    $data['user_info']->issue_date = $this->transformDate($data['user_info']->issue_date);
 
-    $isCpfValid = CPF::validate($data['user_info']->cpf);
-
-    // Salvar no banco de dados
-
-    if($isCpfValid){
-      // TODO: Hashear a senha
-      $inseriu = User::salvar($data);
-    }
-    else{
+    // Verifica se o CPF é válido
+    $isCpfValid = CPF::validate($data['user_info']->cpf);    
+    if(!$isCpfValid){
       $this->return->setFailed("CPF inválido.");
-      return;
+      return; 
     }
+
+    // Adiciona o usuário no banco de dados
+    $inseriu = User::add($data);
+
     // Se não inseriu, retornar error
     if($inseriu < 0){
       $this->return->setFailed("Ocorreu um erro ao tentar cadastrar.");
@@ -70,17 +72,71 @@ class UserController extends Controller
     }
     else{
       $moip_account = new MoipAccount();
-      $accessToken = $moip_account->criarConta($this->moip, $inseriu);
-
       $moip_client = new MoipClient();
-      $status = $moip_client->criarCliente($this->moip, $inseriu);
+      // Ambas recebem o objeto Moip e o ID do usuário adicionado para referenciar no banco de dados      
+      $status_account = $moip_account->criarConta($this->moip, $inseriu);      
+      $status_client = $moip_client->criarCliente($this->moip, $inseriu);
+    }
 
+    if(!Activation::generateActivationToken($inseriu, $data['user_info']->email, $data['user_info']->name)){
+      $this->return->setFailed("Ocorreu um erro ao gerar seu link de  ativação.");
+      return;
     }
   }
 
+  // Atualizar cadastro
+  public function update(){
+    $data = $this->get_post();
+    $data['birthdate'] = $this->transformDate($data['birthdate']);
+
+    $alterou = User::updateUser($data);
+
+    if(!$alterou){
+      $this->return->setFailed("Ocorreu um erro ao alterar o seu cadastro.");
+    }
+  }
+
+  public function activateAccount(){
+    $data = $this->get_post();
+    $token = $data['token'];
+
+    if(strlen($token) <= 0){
+      $this->return->setFailed("Ocorreu um erro no envio do token de ativação, tente novamente!");
+      return;
+    }
+
+    $ativado = Activation::activate($token);
+
+    if(!$ativado){
+      $this->return->setFailed("Ocorreu um erro no envio do token de ativação, tente novamente!");
+      return;
+    }
+  }
+
+  // Pegar usuário X
+  public function getUser(){
+    $data = $this->get_post();
+
+    $usuario = User::grabUserById($data['id']);
+
+    if($usuario == null){
+      $this->return->setFailed("Nenhum usuário encontrado com este identificador.");
+      exit();
+    }else{
+      $this->return->setObject($usuario);
+    }
+  }
+
+  // Converte a data introduzida para o formato do banco de dados
+  private function transformDate($string){
+    $data = explode("-", $string);
+    $d = mktime(0,0,0, $data[1], $data[0], $data[2]);
+    $data = date("Y-m-d", $d);
+    return $data;
+  }
+  
   public function admin(){
     $this->isLogged();
-
     $status = Validation::validateAdmin($_SESSION['user_id']);
 
     if($status){
@@ -90,67 +146,6 @@ class UserController extends Controller
       $this->return->setFailed("Operação inválida.");
       return;
     }
-  }
-
-  // Atualizar cadastro
-  public function update(){
-    $data = $this->get_post();
-
-    $data['birthdate'] = $this->converterData($data['birthdate']);
-
-    $alterou = User::alterar($data);
-
-    if(!$alterou){
-      $this->return->setFailed("Ocorreu um erro ao alterar o seu cadastro.");
-    }
-  }
-
-  // Pegar usuário X
-  public function getUser(){
-    $data = $this->get_post();
-
-    $usuario = User::pegarUsuario($data['id']);
-
-    if($usuario == null){
-      $this->return->setFailed("Nenhum usuário encontrado com este identificador.");
-      exit();
-    }else{
-      $this->return->setObject($usuario);
-    }
-
-  }
-
-
-  // TODO: Não lembro qual a funcao
-  public function destinatario($id){
-    if($id != null){
-      $usuario = DB::table('users')
-      ->select('name_id', 'name', 'last_name')
-      ->where('name_id', $id)
-      ->get();
-
-      if(count($usuario) > 0){
-        $usuario = $usuario[0];
-        $this->return->setObject($usuario);
-        return;
-      }
-      else{
-        $this->return->setFailed("Nenhum destinatário foi encontrado.");
-        return;
-      }
-    }
-    else{
-      $this->return->setFailed("Nenhum destinatário foi encontrado.");
-      return;
-    }
-  }
-
-  // Converte a data introduzida para o formato do banco de dados
-  private function converterData($string){
-    $data = explode("-", $string);
-    $d = mktime(0,0,0, $data[1], $data[0], $data[2]);
-    $data = date("Y-m-d", $d);
-    return $data;
   }
 
 

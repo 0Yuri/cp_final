@@ -9,7 +9,7 @@
       </label>
     </div>
     <div class="w3-row">
-      <div class="col-sm-5">
+      <div class="col-sm-3">
         <label>Nome do produto:</label>
         <input type="text" required ng-model="vm.field.name" class="w3-input w3-round w3-border" placeholder="Digite o nome do produto">
       </div>
@@ -36,6 +36,10 @@
           <option value="" disabled selected>Selecione a marca</option>
           <option value="{{marca.id}}" ng-repeat="marca in vm.marcas">{{marca.name}}</option>
         </select>
+      </div>
+      <div class="col-sm-2">
+        <label>Estoque:</label>
+        <input type="number" required ng-model="vm.field.stock" class="w3-input w3-round w3-border">
       </div>
     </div>
     <div class="w3-row">

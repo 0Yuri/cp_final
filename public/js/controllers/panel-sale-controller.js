@@ -29,7 +29,7 @@
             avaliacao: info,
             pedido: $stateParams.id
           };
-          $http.post('system/public/order/avaliar_comprador', post)
+          $http.post('system/public/order/evaluateBuyer', post)
           .then(function(response){
             if(response.data.success){
               $state.reload();
@@ -41,7 +41,7 @@
         }
 
         function checkComprador(info){
-          $http.post('system/public/order/checkComprador', info)
+          $http.post('system/public/order/getBuyerStatus', info)
           .then(function(response){
             vm.avaliou = response.data.success;
             if(response.data.success){
@@ -54,7 +54,7 @@
         }
 
         function checkVendedor(info){
-          $http.post('system/public/order/checkVendedor', info)
+          $http.post('system/public/order/getSellerStatus', info)
           .then(function(response){
             vm.fuiavaliado = response.data.success;
             if(response.data.success){
@@ -95,7 +95,7 @@
         }
 
         function cadastrarRastreio(info){
-          $http.post('system/public/orders/rastreio', info)
+          $http.post('system/public/orders/tracking', info)
           .then(function(response){
             if(response.data.success){
               $state.reload();
@@ -107,7 +107,7 @@
         }
 
         function pegarVenda(info){
-          $http.post('system/public/orders/venda', info)
+          $http.post('system/public/orders/sellOrder', info)
           .then(function(response){
             if(response.data.success){
               vm.pedido = response.data.object;

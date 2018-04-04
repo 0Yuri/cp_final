@@ -8,23 +8,22 @@
 	function StoresController ($state, $http, $stateParams){
 		var vm = this;
     vm.pegarLoja = pegarLoja;
+    vm.lojas = [];
+    vm.msg = "Consultando lojas..."
 
 		_init();
-
-	 ///////// Functions /////////
 
 	 function _init () {
      pegarLoja();
 	 }
 
    function pegarLoja(){
-     $http.get('system/public/stores/get_stores')
+     $http.get('system/public/stores/getStores')
      .then(function(response){
        if(response.data.success){
          vm.lojas = response.data.object;
        }else{
-         vm.lojas = ['Nenhuma loja foi encontrada.'];
-         console.log(response.data.error);
+         vm.msg = "Nenhuma loja ativa foi encontrada.";
        }
      });
    }

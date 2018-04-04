@@ -67,7 +67,7 @@
 		}
 
 		function pegarQtdCarrinho(){
-			$http.get('system/public/cart/products_on_cart')
+			$http.get('system/public/cart/productsCart')
 			.then(function(response){
 				if(response.data.success){
 					vm.numero_carrinho = response.data.object;
@@ -78,7 +78,7 @@
 		}
 
 		function pegarCategorias() {
-			$http.get('system/public/categories/getAll')
+			$http.get('system/public/categories/getCategories')
 			.then(function(response){
 				if(response.data.success){
 					vm.produtos = response.data.object;

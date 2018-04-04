@@ -10,7 +10,7 @@ use DB;
 class QuestionController extends Controller
 {
 
-  public function perguntar(){
+  public function ask(){
     $this->isLogged();
     $data = $this->get_post();
 
@@ -24,14 +24,14 @@ class QuestionController extends Controller
     if(count($produto_id) > 0){
       $produto_id = $produto_id[0]->id;
 
-      if($this->isMeuProduto($produto->unique_id, $_SESSION['user_id'])){
+      if($this->isMyProduct($produto->unique_id, $_SESSION['user_id'])){
         $this->return->setFailed("Você não pode perguntar neste produto.");
         return;
       }
 
       $question = $data['pergunta']->content;
 
-      $inserir = Question::perguntar($produto_id, $question, $_SESSION['user_id']);
+      $inserir = Question::ask($produto_id, $question, $_SESSION['user_id']);
 
       if(!$inserir){
         $this->return->setFailed("Falha ao realizar pergunta.");
@@ -45,10 +45,10 @@ class QuestionController extends Controller
     }
   }
 
-  public function responder(){
+  public function answer(){
     $data = $this->get_post();
 
-    $responder = Question::responder($data['answer'], $data['id']);
+    $responder = Question::answer($data['answer'], $data['id']);
 
     if(!$responder){
       $this->return->setFailed("Erro ao responder pergunta.");
@@ -56,7 +56,7 @@ class QuestionController extends Controller
     }
   }
 
-  public function pegarPerguntas(){
+  public function getQuestions(){
     $data = $this->get_post();
 
     $produto = DB::table('products')
@@ -66,7 +66,7 @@ class QuestionController extends Controller
 
     if(count($produto) > 0){
       $produto = $produto[0];
-      $perguntas = Question::pegarPerguntas($produto->id);
+      $perguntas = Question::getQuestions($produto->id);
 
       $this->return->setObject($perguntas);
       return;
@@ -79,7 +79,7 @@ class QuestionController extends Controller
 
   }
 
-  public function pegarPergunta(){
+  public function getQuestion(){
     $data = $this->get_post();
 
     if(is_null($data)){
@@ -87,7 +87,7 @@ class QuestionController extends Controller
       return;
     }
 
-    $pergunta = Question::pegarPergunta($data['id']);
+    $pergunta = Question::getQuestion($data['id']);
 
     if($pergunta == null){
       $this->return->setObject("ERRO");
@@ -99,7 +99,7 @@ class QuestionController extends Controller
     }
   }
 
-  public function perguntasAtivas(){
+  public function getActiveQuestions(){
     $data = $this->get_post();
 
     if(isset($data['page']) && strlen($data['page']) > 0){
@@ -109,13 +109,13 @@ class QuestionController extends Controller
       $page = 0;
     }
 
-    $perguntas = Question::pegarAtivas($_SESSION['user_id'], $page);
+    $perguntas = Question::getActiveOnes($_SESSION['user_id'], $page);
 
     if(count($perguntas) <= 0){
       $this->return->setFailed("Nenhuma pergunta foi encontrada.");
     }
 
-    $paginas = Question::pegarPaginas($_SESSION['user_id']);
+    $paginas = Question::getPageCount($_SESSION['user_id']);
 
     $this->return->setObject(array(
       'perguntas' => $perguntas,
@@ -124,7 +124,7 @@ class QuestionController extends Controller
 
   }
 
-  private function isMeuProduto($id, $user_id){
+  private function isMyProduct($id, $user_id){
     $produto = DB::table('stores')
     ->join('products', 'products.store_id', '=', 'stores.id')
     ->where('stores.owner_id', '=', $user_id)

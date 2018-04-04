@@ -2,32 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\Categorias;
+use App\Category;
 
 class CategoryController extends Controller
 {
   // Criar categoria
-  public function nova_categoria(){
+  public function newCategory(){
     $this->isLogged();
     $data = $this->get_post();
-    $adicionou = Categorias::salvarCategoria($data);
+    $added = Category::saveCategory($data);
 
-    if($adicionou){
-      return;
-    }else{
+    if(!$added){
       $this->return->setFailed("Erro ao tentar adicionar nova categoria.");
-      exit();
+      return;
     }
   }
 
-  // Listar categorias
-  public function pegar_categorias(){
-    $categorias = Categorias::pegarCategorias();
-    if($categorias == null){
+  // Pega todas as categorias existentes e ativas
+  public function getCategories(){
+    $categories = Category::getCategories();
+
+    if($categories == null){
       $this->return->setFailed("Nenhuma categoria foi encontrada.");
-      exit();
+      return;
     }else{
-      $this->return->setObject($categorias);
+      $this->return->setObject($categories);
     }
   }
 

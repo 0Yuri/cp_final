@@ -2,24 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use Request;
-use DB;
-use App\Resposta;
-use App\Store;
-use App\Lojas;
-use App\Validation;
+
 use Illuminate\Support\Facades\Input;
 use Validator;
+use Request;
+
+use App\Product;
+use App\Resposta;
+use App\Store;
+use App\Validation;
+
+use DB;
 
 class StoreController extends Controller
 {
 	// Campos que eu quero receber do banco de dados
 	protected $campos = ['id', 'name', 'description'];
 
-	// Criar Loja
-	public function nova_loja(){
+	// Criar Loja - OK
+	public function newStore(){
 		$this->isLogged();
-		// $data = $this->get_post();
 		$data = $_POST;
 
 		$data['owner_id'] = $_SESSION['user_id'];
@@ -62,7 +64,7 @@ class StoreController extends Controller
 
 		$data['profile_image'] = 'users' . DIRECTORY_SEPARATOR . $nomeHash;
 
-		$inseriu = Store::salvarLoja($data);
+		$inseriu = Store::add($data);
 
 		if(!$inseriu){
 			$this->return->setFailed("Ocorreu um erro ao criar sua loja.");
@@ -70,20 +72,20 @@ class StoreController extends Controller
 		}
 	}
 
-	// Alterar Loja
-	public function alterar_loja(){
+	// Alterar Loja - OK
+	public function updateStore(){
 		$this->isLogged();
 		$data = $this->get_post();
 
-    // Verifica se existe a loja antes de tentar atualizar
-    $existe = Store::existeLoja($_SESSION['user_id']);
+    // Verifica se o usuário logado tem loja
+    $existe = Store::storeExists($_SESSION['user_id']);
 
     if(!$existe){
       $this->return->setFailed("Nenhuma loja foi criada para este usuário.");
       return;
     }
 
-    $alterou = Store::alterarLoja($data, $_SESSION['user_id']);
+    $alterou = Store::updateStore($data, $_SESSION['user_id']);
 
     // Verifica se alterou msm
     if(!$alterou){
@@ -94,8 +96,8 @@ class StoreController extends Controller
 		}
 	}
 
-	// alterar imagem da loja
-	public function alterarImagem(){
+	// Alterar imagem da loja - OK
+	public function uploadStoreLogo(){
 		$this->isLogged();
 		$data = $_POST;
 
@@ -111,7 +113,7 @@ class StoreController extends Controller
       return;
     }
 
-		$imagem = DB::table('stores')
+		$imagem = DB::table(Store::TABLE_NAME)
 		->select('profile_image')
 		->where('owner_id', $_SESSION['user_id'])
 		->where('id', $data['loja'])
@@ -139,7 +141,7 @@ class StoreController extends Controller
 
 			$nome_arquivo = 'users/' . $nomeHash;
 
-			$alterar = DB::table('stores')
+			$alterar = DB::table(Store::TABLE_NAME)
 			->where('id', $data['loja'])
 			->update(['profile_image' => $nome_arquivo]);
 
@@ -162,7 +164,8 @@ class StoreController extends Controller
 
 	}
 
-	public function alterarBanner(){
+	// Alterar banner da loja - OK
+	public function uploadBannerImage(){
 		$this->isLogged();
 
 		$data = $_POST;
@@ -230,9 +233,9 @@ class StoreController extends Controller
 	}
 
 	// Ativar/Desativar loja
-	public function toggle_loja(){
+	public function toggleStatusStore(){
 		$this->isLogged();
-		$mudar = Store::mudarStatusLoja($_SESSION['user_id']);
+		$mudar = Store::toggleStatusStore($_SESSION['user_id']);
 
 		if(!$mudar){
 			$this->return->setFailed("Ocorreu um erro ao tentar alterar o status da sua loja.");
@@ -241,11 +244,10 @@ class StoreController extends Controller
 
 	}
 
-	// Pega uma loja baseada no seu id utilizando GET
+	// Pega uma loja baseada no seu unique_id
 	public function getStore(){
 		$data = $this->get_post();
-		// $loja = Store::pegarLoja($data['name']);
-		$loja = Lojas::pegarLoja($data['unique_id']);
+		$loja = Store::getStore($data['unique_id']);
 
 		if($loja == null){
 			$this->return->setFailed("Nenhuma loja encontrada com esse identificador.");
@@ -255,12 +257,15 @@ class StoreController extends Controller
 
 	}
 
-	// Lista todas as lojas criadas
+	// Lista todas as lojas criadas e ativas
 	public function getAllStores(){
-		$lojas = Lojas::pegarTodasLojas();
+		// $lojas = Lojas::pegarTodasLojas();
+		$lojas = Store::getStores();
 
 		if($lojas == null){
 			$this->return->setFailed("Nenhuma loja encontrada.");
+			$this->return->setObject(array());
+			return;
 		}else{
 			$this->return->setObject($lojas);
 		}
@@ -279,7 +284,54 @@ class StoreController extends Controller
 		$this->return->setObject($numero);
 	}
 
-	public function lojaID(){
+	public function numberOfSolds(){
+		$this->isLogged();
+		$numero = DB::table('stores')
+		->join('products', 'products.store_id', '=', 'stores.id')
+		->where('stores.id', '=', $_SESSION['user_id'])
+		->sum('products.solds');
+
+		$this->return->setObject($numero);
+	}
+
+	public function numberOfActive(){
+		$this->isLogged();
+		$numero = DB::table('stores')
+		->join('products','products.store_id', 'stores.id')
+		->where('stores.owner_id', $_SESSION['user_id'])
+		->where('products.status', 'ativado')
+		->count();
+
+		$this->return->setObject($numero);
+	}
+
+	public function numberOfNonActive(){
+		$this->isLogged();
+		$numero = DB::table('stores')
+		->join('products','products.store_id', 'stores.id')
+		->where('stores.owner_id', $_SESSION['user_id'])
+		->where('products.status', 'desativado')
+		->count();
+
+		$this->return->setObject($numero);
+	}
+
+	// Pega os produtos da loja
+	public function getStoreProducts(){
+		$data = $this->get_post();
+		
+		$products = Product::getProductsFromStore($data['unique_id']);
+
+    if(count($products) > 0){
+			$this->return->setObject($products);
+		}
+		else{			
+      $this->return->setFailed("Esta loja não possui produtos ainda.");
+      return;      
+    }
+	}
+
+	public function getStoreID(){
 		$data = $this->get_post();
 	}
 

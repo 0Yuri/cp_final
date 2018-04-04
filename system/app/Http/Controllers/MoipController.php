@@ -11,10 +11,11 @@ use App\CPF;
 use App\Order;
 use App\Client;
 use Moip\Exceptions;
-use Moip\Helper\Filters;
-use Moip\Helper\Links;
-use Moip\Helper\Pagination;
-
+/*
+ * Já existe um objeto com nome Moip, por isso MoipConstants
+ * para não gerar conflitos.
+*/
+use App\Moip as MoipConstants;
 use App\MoipAccount;
 use App\MoipClient;
 use App\MoipOrder;
@@ -28,16 +29,17 @@ use DateTime;
 
 class MoipController extends Controller
 {
-  protected $access_token = "a4face756e9e4e5c977b0b6449d4e168_v2";
+  // protected $access_token = "a4face756e9e4e5c977b0b6449d4e168_v2";
+  protected $access_token = MoipConstants::ACCESS_TOKEN;
   protected $moip;
-  const ACCOUNT_ID = "MPA-B4ABF9C3ED72";
+  const ACCOUNT_ID = MoipConstants::OWNER_ACCOUNT;
 
   public function __construct(){
     parent::__construct();
     $this->moip = new Moip(new OAuth($this->access_token), Moip::ENDPOINT_SANDBOX);
   }
 
-  public function pagarBoleto(){
+  public function payWithBoleto(){
     $this->isLogged();
     $logged_id = $_SESSION['user_id'];
 
@@ -59,7 +61,6 @@ class MoipController extends Controller
         if($pagamento != null){
           $pagamento = json_decode(json_encode($pagamento), true);
           $this->return->setObject($pagamento['_links']['checkout']['payBoleto']['printHref']);
-          return;
         }
         else{
           $this->return->setFailed("Ocorreu um erro ao gerar o seu boleto.");
@@ -77,7 +78,6 @@ class MoipController extends Controller
         $pagamento = MoipPayment::pagarBoletoSimples($order);
         if($pagamento != null){
           $this->return->setObject($pagamento->getHrefBoleto());
-          return;
         }
         else{
           $this->return->setFailed("Ocorreu um erro ao gerar o seu boleto.");
@@ -89,10 +89,11 @@ class MoipController extends Controller
         return;
       }
     }
-
+    // Limpa os pedidos
+    Session::cleanAll();
   }
 
-  public function pagarCartao(){
+  public function payWithCreditCard(){
     $this->isLogged();
     $data = $this->get_post();
     $logged_id = $_SESSION['user_id'];
@@ -158,7 +159,7 @@ class MoipController extends Controller
 
 
   // Sacar dinheiro
-  public function sacarDinheiro(){
+  public function withdrawMoney(){
     $data = $this->get_post();
 
     $token = $this->onlyToken($_SESSION['user_id']);
@@ -183,7 +184,7 @@ class MoipController extends Controller
     }
   }
   // Pegar Saldo
-  public function pegarSaldo(){
+  public function getAccountBalance(){
     $this->isLogged();
 
     $Authorization = MoipAccount::getAuthorizationBearer($_SESSION['user_id']);

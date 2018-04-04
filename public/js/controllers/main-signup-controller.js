@@ -34,7 +34,7 @@
 		};
 
 		function cepAddress(cep){
-			$http.post('system/public/address/getSignup', cep)
+			$http.post('system/public/address/getForSignup', cep)
 			.then(function(response){
 				if(response.data.success){
 					vm.address = response.data.object;

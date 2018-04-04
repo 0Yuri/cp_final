@@ -25,30 +25,39 @@
 
     <div class="w3-row w3-padding-16">
       <h3>Gerencie seus produtos</h3>
-      <ul class="list-group">
-        <div class="w3-row">
-          <li class="list-group-item" ng-repeat="produto in vm.produtos_lista">
-            <div class="w3-row">
-              <div class="col-sm-1">
-                <img id="preview-image" class="img-responsive img-rounded" src="{{imgFolder}}site/products/{{produto.imagem}}">
+      <div ng-show="vm.produtos_lista">
+        <ul class="list-group">
+          <div class="w3-row">
+            <li class="list-group-item" ng-repeat="produto in vm.produtos_lista">
+              <div class="w3-row">
+                <div class="col-sm-1">
+                  <img id="preview-image" class="img-responsive img-rounded" src="{{imgFolder}}site/products/{{produto.imagem}}">
+                </div>
+                <div class="col-sm-3">
+                  <a ui-sref="root.product(produto)">{{produto.name}}</a>
+                </div>
+                <div class="col-sm-4">
+                </div>
+                <div class="col-sm-4">
+                  <button class="btn" ui-sref="root.panel.edit_product(produto)" style="background-color:transparent"><i class="fa fa-pencil"> Editar</i></button>
+                  <button class="btn" style="background-color:transparent">
+                    <i class="fa fa-times" ng-click="vm.toggleProduct(produto)">
+                      <span ng-show="produto.status == 'desativado'">Ativar</span>
+                      <span ng-show="produto.status == 'ativado'">Desativar</span>
+                    </i>
+                  </button>
+                </div>
               </div>
-              <div class="col-sm-3">
-                <a ui-sref="root.product(produto)">{{produto.name}}</a>
-              </div>
-              <div class="col-sm-4">
-              </div>
-              <div class="col-sm-4">
-                <button class="btn" ui-sref="root.panel.edit_product(produto)" style="background-color:transparent"><i class="fa fa-pencil"> Editar</i></button>
-                <button class="btn" ng-show="produto.status == 'desativado'" style="background-color:transparent"><i class="fa fa-times" aria-hidden="true" ng-click="vm.ativarProduto(produto)"> Ativar</i></button>
-                <button class="btn" ng-show="produto.status == 'ativado'" style="background-color:transparent"><i class="fa fa-times" aria-hidden="true" ng-click="vm.desativarProduto(produto)"> Desativar</i></button>
-              </div>
-            </div>
-          </li>
+            </li>
+          </div>
+        </ul>
+        <div class="w3-padding-16">
+          <button type="button" class="btn btn-default" ng-click="vm.setPage(-1)" ng-show="vm.pagina > 0">Anterior</button>
+          <button type="button" class="btn btn-default" ng-click="vm.setPage(+1)" ng-show="vm.pagina < (vm.paginas - 1)">Próximo</button>
         </div>
-      </ul>
-      <div class="w3-padding-16">
-        <button type="button" class="btn btn-default" ng-click="vm.setPage(-1)" ng-show="vm.pagina > 0">Anterior</button>
-        <button type="button" class="btn btn-default" ng-click="vm.setPage(+1)" ng-show="vm.pagina < (vm.paginas - 1)">Próximo</button>
+      </div>
+      <div ng-show="!vm.produtos_lista">
+        {{vm.msg}}
       </div>
     </div>
   </div>

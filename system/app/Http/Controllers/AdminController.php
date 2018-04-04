@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use DB;
 
+use App\User;
+use App\Address;
+use App\Ban;
+
 class AdminController extends Controller
 {
 
@@ -15,8 +19,8 @@ class AdminController extends Controller
   public function pesquisarUsuario(){
     $data = $this->get_post();
 
-    $usuarios = DB::table('users')
-    ->join('address', 'address.user_id', '=', 'users.id')
+    $usuarios = DB::table(User::TABLE_NAME)
+    ->join(Address::TABLE_NAME, Address::TABLE_NAME . '.user_id', '=', User::TABLE_NAME . '.id')
     ->where('name', 'like', '%'.$data['name'].'%')
     ->get();
 
@@ -40,8 +44,7 @@ class AdminController extends Controller
       'reason' => 'testing'
     );
 
-    $inserir = DB::table('banned_users')
-    ->insert($usuario);
+    $inserir = Ban::ban($usuario);
 
     if($inserir){
       return;
@@ -55,9 +58,7 @@ class AdminController extends Controller
   public function desbanirUsuario(){
     $data = $this->get_post();
 
-    $deletar = DB::table('banned_users')
-    ->where('banned_id', $data['id'])
-    ->delete();
+    $deletar = Ban::unban($data['id']);
 
     if($deletar){
       return;
@@ -71,10 +72,11 @@ class AdminController extends Controller
   public function pesquisarLoja(){
     $data = $this->get_post();
 
-    $loja = DB::table('stores')
-    ->join('users', 'users.id', '=', 'stores.owner_id')
-    ->select('users.name as first_name', 'users.last_name as last_name', 'users.cpf', 'users.email', 'stores.*')
-    ->where('stores.name', 'like', '%'.$data['name'].'%')
+    $loja = DB::table(Store::TABLE_NAME)
+    ->join(User::TABLE_NAME, User::TABLE_NAME . '.id', '=', Store::TABLE_NAME . '.owner_id')
+    ->select(User::TABLE_NAME . '.name as first_name', User::TABLE_NAME . '.last_name as last_name',
+     User::TABLE_NAME . '.cpf', User::TABLE_NAME . '.email', Store::TABLE_NAME . 'stores.*')
+    ->where(Store::TABLE_NAME . '.name', 'like', '%'.$data['name'].'%')
     ->get();
 
     if(count($loja) > 0){
@@ -90,7 +92,7 @@ class AdminController extends Controller
   public function toggleLoja(){
     $data = $this->get_post();
 
-    $loja = DB::table('stores')
+    $loja = DB::table(Store::TABLE_NAME)
     ->select('status')
     ->where('stores.id', $data['id'])
     ->get();
@@ -155,11 +157,10 @@ class AdminController extends Controller
 
   }
 
-
   // Verifica se o usuario é administrador para realizar as operações deste controlador
   private function checkPermissionLevel(){
     if(isset($_SESSION['user_id'])){
-      $usuario = DB::table('users')
+      $usuario = DB::table(User::TABLE_NAME)
       ->where('id', $_SESSION['user_id'])
       ->where('account_type', 'admin')
       ->count();

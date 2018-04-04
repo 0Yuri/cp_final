@@ -50,7 +50,7 @@
 
         // Usuários
         function pesquisarUsuario(info){
-          $http.post('system/public/admin/usuarios/pesquisar', info)
+          $http.post('system/public/admin/users/search', info)
           .then(function(response){
             vm.user = false;
             if(response.data.success){
@@ -62,7 +62,7 @@
           })
         }
         function banirUsuario(info){
-          $http.post('system/public/admin/usuarios/banir', info)
+          $http.post('system/public/admin/users/ban', info)
           .then(function(response){
             vm.user = false;
             if(response.data.success){
@@ -74,7 +74,7 @@
           })
         }
         function desbanirUsuario(info){
-          $http.post('system/public/admin/usuarios/desbanir', info)
+          $http.post('system/public/admin/users/unban', info)
           .then(function(response){
             vm.user = false;
             if(response.data.success){
@@ -91,7 +91,7 @@
 
         // Lojas
         function pesquisarLoja(info){
-          $http.post('system/public/admin/lojas/pesquisar', info)
+          $http.post('system/public/admin/stores/search', info)
           .then(function(response){
             vm.store = false;
             if(response.data.success){
@@ -120,7 +120,7 @@
 
         // Compras
         function estatisticas(){
-          $http.get('system/public/admin/estatisticas')
+          $http.get('system/public/admin/stats')
           .then(function(response){
             if(response.data.success){
               vm.stats = response.data.object;

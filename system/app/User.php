@@ -4,12 +4,14 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
-use App\Enderecos;
+use App\Address;
 
 class User extends Model
 {
+  const TABLE_NAME = 'users';
+
   // Salva um usuário novo no banco de dados
-  public static function salvar($data){
+  public static function add($data){
     $usuario = (array)$data['user_info'];
     $endereco = (array)$data['address_info'];
 
@@ -20,13 +22,13 @@ class User extends Model
       // Insere o usuario e retorna o id para referenciar no endereco
       $usuario['password'] = password_hash($usuario['password'], PASSWORD_DEFAULT);
 
-      $inseriu = DB::table('users')
+      $inseriu = DB::table(User::TABLE_NAME)
       ->insertGetId($usuario);
 
       if($inseriu){
         // Atribui ao campo user_id o id do usuario adicionad
         $endereco['user_id'] = $inseriu;
-        $endereco = Enderecos::salvar($endereco);
+        $endereco = Address::add($endereco);
         if($endereco){
           return $inseriu;
         }else{
@@ -39,9 +41,28 @@ class User extends Model
   }
 
   // Altera um usuário
-  public static function alterar($data){
-    $alterou = DB::table('users')
-    ->where('email', $data['email'])
+  public static function updateUser($data){
+    $usuario = DB::table(User::TABLE_NAME)
+    ->where("name_id", $data['name_id'])
+    ->where("cpf", $data['cpf'])
+    ->get();
+
+    if(count($usuario) <= 0){
+      return false;
+    }
+
+    if(isset($data['cpf'])){
+      unset($data['cpf']);
+    }
+    if(isset($data['rg'])){
+      unset($data['rg']);
+    }
+    if(isset($data['email'])){
+      unset($data['email']);
+    }
+
+    $alterou = DB::table(User::TABLE_NAME)
+    ->where('name_id', $data['name_id'])
     ->update($data);
 
     if($alterou){
@@ -52,9 +73,9 @@ class User extends Model
   }
 
   // Verifica se já existe um usuário com o email cadastrado
-  public static function existe($email){
+  public static function doesEmailExists($email){
     //verifica se já existe.
-    $usuario = DB::table('users')
+    $usuario = DB::table(User::TABLE_NAME)
     ->select('email')
     ->where('email', '=', $email)
     ->get();
@@ -67,7 +88,7 @@ class User extends Model
   }
 
   // Valida a senha com confirmar senha
-  public static function validar_senha($senha,$confirma){
+  public static function validate_password($senha,$confirma){
     if($senha != $confirma){
       return false;
     }
@@ -78,9 +99,9 @@ class User extends Model
 
   // Pega o usuário logado pelo seu id
   public static function getLoggedUser($id){
-    $fillable = [ 'name', 'last_name', 'birthdate', 'email', 'rg', 'cpf', 'ddd_1', 'tel_1', 'ddd_2', 'tel_2'];
+    $fillable = [ 'name', 'last_name', 'birthdate', 'email', 'rg', 'cpf', 'ddd_1', 'tel_1', 'ddd_2', 'tel_2', 'name_id'];
 
-    $usuario = DB::table('users')
+    $usuario = DB::table(User::TABLE_NAME)
     ->select($fillable)
     ->where('id', $id)
     ->get();
@@ -98,12 +119,9 @@ class User extends Model
   }
 
   // Pega o usuário pelo seu id
-  public static function pegarUsuario($id){
-    $fillable = [
-      'name', 'last_name', 'gender', 'created_at'
-    ];
-
-    $usuario = DB::table('users')
+  public static function grabUserByNameId($id){
+ 
+    $usuario = DB::table(User::TABLE_NAME)
     ->select('*')
     ->where('name_id', '=', $id)
     ->get();
@@ -113,13 +131,27 @@ class User extends Model
     }else{
       return null;
     }
-
   }
 
-  public static function pegarAccountID($id){
+  // Pega o usuário pelo seu id
+  public static function grabUserById($id){
+ 
+    $usuario = DB::table(User::TABLE_NAME)
+    ->select('*')
+    ->where('id', $id)
+    ->get();
+
+    if(count($usuario) > 0){
+      return (array)$usuario[0];
+    }else{
+      return null;
+    }
+  }
+
+  public static function grabMoipAccountId($user_id){
     $account_id = DB::table('moip_accounts')
     ->select('account_id')
-    ->where('user_id', $id)
+    ->where('user_id', $user_id)
     ->get();
 
     if(count($account_id) > 0){
@@ -130,8 +162,8 @@ class User extends Model
     }
   }
 
-  public static function existeNameID($name_id){
-    $existe = DB::table('users')
+  public static function isNameIdInUse($name_id){
+    $existe = DB::table(User::TABLE_NAME)
     ->where('name_id', $name_id)
     ->get();
 
@@ -144,7 +176,7 @@ class User extends Model
   }
 
   public static function createHolder($user_id){
-    $usuario = DB::table('users')
+    $usuario = DB::table(User::TABLE_NAME)
     ->join('address', 'address.user_id', '=', 'users.id')
     ->select('users.name', 'users.last_name', 'users.birthdate as aniversario', 'users.cpf', 'users.ddd_1 as ddd', 'users.tel_1 as telefone',
     'address.*')

@@ -47,7 +47,7 @@
 		};
 
 		function getLogged(){
-			$http.get('system/public/user/logged_user')
+			$http.get('system/public/user/loggedUser')
 			.then(function(response){
 				if(response.data.success){
 					vm.usuario = response.data.object;

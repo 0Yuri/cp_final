@@ -11,8 +11,7 @@
 		var vm = this;
 
 		vm.pegarProdutos = pegarProdutos;
-		vm.ativarProduto = ativarProduto;
-		vm.desativarProduto = desativarProduto;
+		vm.toggleProduct = toggleProduct;
 
 		vm.getLoja = getLoja;
 		vm.mudarStatus = mudarStatus;
@@ -20,6 +19,7 @@
 		vm.setPage = setPage;
 
 		vm.store_status = false;
+		vm.msg = "Consultando os produtos da loja...";
 		vm.store_active;
 		vm.pagina;
 		vm.paginas;
@@ -34,7 +34,7 @@
 		}
 
 		function getLoja(){
-			$http.get('system/public/store/logged_store')
+			$http.get('system/public/store/loggedStore')
 			.then(function(response){
 				vm.store_status = response.data.success;
 				if(response.data.success){
@@ -48,7 +48,7 @@
 		}
 
 		function mudarStatus(){
-			$http.get('system/public/store/toggle_store')
+			$http.get('system/public/store/toggleStore')
 			.then(function(response){
 				if(response.data.success){
 					$state.go('root.panel.dashboard');
@@ -59,25 +59,14 @@
 		}
 
 		function statusStore(){
-			$http.get('system/public/store/status_store')
+			$http.get('system/public/store/statusStore')
 			.then(function(response){
 				vm.store_active = response.data.success;
 			});
 		}
 
-		function desativarProduto(field){
-			$http.post('system/public/product/deactivate', field)
-			.then(function(response){
-				if(response.data.success){
-					$state.reload();
-				}else{
-					alert(response.data.error);
-				}
-			})
-		}
-
-		function ativarProduto(field){
-			$http.post('system/public/product/activate', field)
+		function toggleProduct(field){
+			$http.post('system/public/product/toggleStatus', field)
 			.then(function(response){
 				if(response.data.success){
 					$state.reload();
@@ -97,13 +86,13 @@
 			var content = {
 				page: vm.pagina
 			};
-			$http.post('system/public/product/logged_products', content)
+			$http.post('system/public/product/loggedProducts', content)
 			.then(function(response){
 				if(response.data.success){
 					vm.produtos_lista = response.data.object.produtos;
 					vm.paginas = response.data.object.paginas;
 				}else{
-					console.log(response.data.error);
+					vm.msg = "Esta loja não possui nenhum produto.";
 				}
 			});
 		}

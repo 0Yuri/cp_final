@@ -38,7 +38,7 @@ class MoipAccount extends Model
       $user_id = $data['id'];
       $access_token = $account->getAccessToken();
       // Salva a conta no banco de dados
-      $status = Conta::salvarConta($account_id, $user_id, $access_token);
+      $status = Account::add($account_id, $user_id, $access_token);
       return $status;
     }
     catch (\Moip\Exceptions\UnautorizedException $e) {

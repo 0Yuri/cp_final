@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Address;
-use App\Lojas;
-use App\Produtos;
-
 use DB;
+
+use App\Address;
+use App\Store;
+use App\Product;
+use App\Cart;
 
 class CartController extends Controller
 {
@@ -19,96 +20,47 @@ class CartController extends Controller
   }
 
   // Adicionar produto ao carrinho
-  public function adicionar(){
+  public function addProduct(){
     $data = $this->get_post();
 
     $produto_id = $data['id'];
     $quantidade = $data['quantity'];
 
-    $produto = Produtos::pegarProdutoCarrinho($produto_id);
+    $status = Cart::add($produto_id, $quantidade);
 
-    if($produto != null){
-      $loja_id = $produto['store_id'];
-      if(Lojas::isMyLoja($loja_id)){
-        $this->return->setFailed("Esse produto pertence a sua loja.");
-        return;
-      }
-    }
-    else{
-      $this->return->setFailed("Nenhum produto foi encontrado com este identificador.");
+    if(!$status->success){
+      $this->return->setFailed($status->message);
+      $this->return->setObject($status);
       return;
-    }
-
-    if($quantidade > $produto['estoque']){
-      $quantidade = $produto['estoque'];
-    }
-
-    // Verifica se já existe a loja
-    if(array_key_exists($loja_id, $_SESSION['cart'])){
-      // Verifica se já existe o produto
-      if(array_key_exists($produto_id, $_SESSION['cart'][$loja_id]['produtos'])){
-        // Se existe, aumenta a quantidade
-        $futura = $_SESSION['cart'][$loja_id]['produtos'][$produto_id]['quantidade'] + $quantidade;
-        // Se a quantidade anterior mais a nova adicionada for maior que o estoque, então a quantidade vai ser o estoque total
-        if($futura > $produto['estoque']){
-          $futura = $produto['estoque'];
-        }
-        // Define o valor final da quantidade
-        $_SESSION['cart'][$loja_id]['produtos'][$produto_id]['quantidade'] = $futura;
-      }
-      else{
-        // se não, cria o produto
-        $_SESSION['cart'][$loja_id]['produtos'][$produto_id] = array(
-          'quantidade' => $quantidade
-        );
-      }
-    }
-    // Caso não exista loja
-    else{
-      // Cria a loja
-      $_SESSION['cart'][$loja_id] = array(
-        'produtos' => array(
-          $produto_id => array(
-            'quantidade' => $quantidade
-          )
-        )
-      );
-    }
+    }    
   }
   // Remove produto do carrinho
-  public function remover(){
+  public function removeProduct(){
     $data = $this->get_post();
-
-    $product_id = $data['product'];
-
-    foreach($_SESSION['cart'] as $loja => $pedido){
-      if(array_key_exists($product_id, $pedido['produtos'])){
-        unset($_SESSION['cart'][$loja]['produtos'][$product_id]);
-        if(count($_SESSION['cart'][$loja]['produtos']) <= 0){
-          unset($_SESSION['cart'][$loja]);
-        }
-      }
+    $status = Cart::remove($data['product']);
+    if(!$status){
+      $this->return->setFailed("Não foi possível excluir o produto do carrinho.");
+      return;
     }
-
   }
   // Altera a quantidade
-  public function quantidade(){
+  public function changeQuantityOfProduct(){
     $data = $this->get_post();
     $product_id = $data['product'];
     $valor = $data['value'];
 
-    $produto = DB::table('products')
-    ->select('stock')
-    ->where('id', $product_id)
-    ->get();
+    $estoque = Product::getProductStock($product_id);
 
-    if($produto != null){
-      $estoque = $produto[0]->stock;
-
+    if($estoque != null){
+      // Varre cada pedido
       foreach($_SESSION['cart'] as $loja => $pedido){
+        // Verifica se o produto existe nesse pedido
         if(array_key_exists($product_id, $pedido['produtos'])){
+          // Soma a quantidade final desejada
           $atual = $pedido['produtos'][$product_id]['quantidade'] + $valor;
+          // Verifica se a quantidade é maior que o estoque disponível
           if($atual > $estoque){
+            // Se for, estoque será a quantidade máxima é definida
             $atual = $estoque;
           }else if($atual <= 0){
             $atual = 1;
@@ -125,26 +77,8 @@ class CartController extends Controller
 
   }
   // Número de produtos ativos
-  public function number(){
-    if(count($_SESSION['cart']) > 0){
-      $qtd = 0;
-
-      foreach($_SESSION['cart'] as $pedido){
-        foreach($pedido['produtos'] as $produto){
-          $qtd += $produto['quantidade'];
-        }
-      }
-
-      if($qtd <= 0){
-        $this->return->setObject("Vaz.");
-      }
-      else{
-        $this->return->setObject($qtd);
-      }
-    }
-    else{
-      $this->return->setObject("Vaz.");
-    }
+  public function number(){    
+    $this->return->setObject(Cart::getAmountOfProducts());
   }
   // Limpa o carrinho
   public function clear(){
@@ -160,11 +94,11 @@ class CartController extends Controller
   }
 
   // Calcula o frete de cada pedido no carrinho
-  public function calcularFrete(){
+  public function GetDeliveryValues(){
     $data = $this->get_post();
 
     $cep_destino = str_ireplace("-", "", $data['cep']);
-    $cep_origem = str_ireplace("-", "", Address::getCEP($data['id']));
+    $cep_origem = str_ireplace("-", "", Address::getCepByStore($data['id']));
 
     $area_total = 0;
     $peso = 0;
@@ -192,7 +126,7 @@ class CartController extends Controller
     $dimensoes = (String)round(pow($area_total, 1/3));
     $peso = (String)$peso;
 
-    $precos = Address::calcularValores($cep_origem, $cep_destino, $peso, $dimensoes, $preco);
+    $precos = Address::calculateValues($cep_origem, $cep_destino, $peso, $dimensoes, $preco);
 
     $this->return->setObject($precos);
 
@@ -200,33 +134,7 @@ class CartController extends Controller
 
   // Retorna a sacolinha
   public function get(){
-    $carrinho = array();
-
-    foreach($_SESSION['cart'] as $loja => $pedido){
-      $nome_da_loja = Lojas::pegaNomeLoja($loja);
-      $carrinho[$loja] = array(
-        'id' => $loja,
-        'nome_loja' => $nome_da_loja,
-        'produtos' => $this->getProdutos($pedido['produtos'])
-      );
-    }
-
-    $this->return->setObject($carrinho);
-  }
-
-  // Gera os produtos do carrinho
-  private function getProdutos($products){
-    $produtos = array();
-
-    foreach($products as $id => $product){
-      $produto = Produtos::pegarParaCarrinhoFoto($id);
-      unset($produto['estoque']);
-      $produtos[$id] = $produto;
-      $produtos[$id]['imagem'] = $produto['imagem'];
-      $produtos[$id]['quantidade'] = $product['quantidade'];
-    }
-
-    return $produtos;
+    $this->return->setObject(Cart::getCart());
   }
 
 }

@@ -12,6 +12,7 @@
 		vm.pegarProdutos = pegarProdutos;
 		vm.pegarQtdVendas = pegarQtdVendas;
 
+		vm.msg = "Consultando os produtos..."
 		vm.produtos_vendidos;
 
 		_init();
@@ -23,7 +24,7 @@
 	 }
 
 	 function pegarLoja(){
-		 $http.post('system/public/stores/get_store', $stateParams)
+		 $http.post('system/public/stores/getStore', $stateParams)
 		 .then(function(response){
 			 if(response.data.success){
 				 vm.loja = response.data.object;
@@ -38,18 +39,19 @@
 	 }
 
 	 function pegarProdutos(){
-		 $http.post('system/public/store/store_products', $stateParams)
+		 $http.post('system/public/store/storeProducts', $stateParams)
 		 .then(function(response){
 			 if(response.data.success){
 				 vm.produtos = response.data.object;
 			 }else{
+				 vm.msg = "Nenhum produto foi encontrado.";
 				 console.log(response.data.error);
 			 }
 		 });
 	 }
 
 	 function pegarQtdVendas(info){
-		 $http.post('system/public/store/produtos_vendidos', info)
+		 $http.post('system/public/store/soldProducts', info)
 		 .then(function(response){
 			 if(response.data.success){
 				 vm.produtos_vendidos = response.data.object;
