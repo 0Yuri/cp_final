@@ -13,7 +13,7 @@ use DB;
 class Activation extends Model
 {
     const TABLE_NAME = 'activation';
-    const URL = "http://localhost/ativarconta/";
+    const URL = "http://www.crescendoepassando.com.br/ativarconta/";
 
     public static function activate($token){
         $activation = Activation::getActivation($token);

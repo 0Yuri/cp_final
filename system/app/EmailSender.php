@@ -28,8 +28,7 @@ class EmailSender extends Model
         $added = Activation::saveActivation($data);
 
         if($added){
-            // Mail::to($email)->send(new AccountCreated($username, 'http://www.crescendoepassando.com.br/ativarconta/'.$string));
-            Mail::to($email)->send(new AccountCreated($username, 'http://localhost/ativarconta/'.$string));
+            Mail::to($email)->send(new AccountCreated($username, 'http://www.crescendoepassando.com.br/ativarconta/'.$string));
             return true;
         }
         else{
