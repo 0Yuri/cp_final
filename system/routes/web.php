@@ -20,7 +20,6 @@ Route::post('/admin/stores/toggleStatus', 'AdminController@toggleLoja');
 Route::get('/admin/stats', 'AdminController@estatisticas');
 
 Route::post('/webhooks', 'MoipController@getWebHooks');
-Route::any('/debug', 'QuestionController@removeQuestion');
 // ------------------------ENDING OF TESTING SECTION-------------------------- //
 
 // Checkout - OK
