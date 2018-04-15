@@ -16,11 +16,6 @@ class SoldProduct extends Mailable
     public $buyer_name;
     public $subject = "Você realizou uma venda.";
 
-    /**
-     * Create a new message instance.
-     *
-     * @return void
-     */
     public function __construct($produtos, $nome_vendedor, $nome_comprador)
     {
         $this->products = $produtos;

@@ -16,4 +16,9 @@ class Moip extends Model
      * ID da conta moip do dono da aplicação
      */
     const OWNER_ACCOUNT = "MPA-B4ABF9C3ED72";
+    /*
+     * Endereços de redirecionamento após pedidos.
+     */
+    const SUCCESS_LINK = "localhost/pedidofinalizado";
+    const FAILED_LINK = "localhost/erropedido";
 }

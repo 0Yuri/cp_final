@@ -31,12 +31,18 @@ class MoipController extends Controller
 {
   // protected $access_token = "a4face756e9e4e5c977b0b6449d4e168_v2";
   protected $access_token = MoipConstants::ACCESS_TOKEN;
+  protected $notification;
   protected $moip;
   const ACCOUNT_ID = MoipConstants::OWNER_ACCOUNT;
 
   public function __construct(){
     parent::__construct();
     $this->moip = new Moip(new OAuth($this->access_token), Moip::ENDPOINT_SANDBOX);
+
+    $this->notification = $this->moip->notifications()->addEvent('ORDER.*')
+    ->addEvent('PAYMENT.AUTHORIZED')
+    ->setTarget('http://localhost/system/public/webhooks')
+    ->create();
   }
 
   public function payWithBoleto(){
@@ -157,7 +163,6 @@ class MoipController extends Controller
     }
   }
 
-
   // Sacar dinheiro
   public function withdrawMoney(){
     $data = $this->get_post();
@@ -206,6 +211,19 @@ class MoipController extends Controller
         return;
     }
     $this->return->setObject($saldo);
+  }
+
+  // testando webhooks
+  public function getWebHooks(){
+    $json = file_get_contents('php://input');
+
+    $data = array(
+      'info' => $json
+    );
+
+    print_r($json);
+    
+    $inserir = DB::table("webhooks")->insert($data);
   }
 
 

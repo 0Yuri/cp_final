@@ -27,7 +27,10 @@
   </div>
   <div class="row">
     <div class="row">
-      <h4 class="capitalizar">olá, {{$seller_name}}</h4>
+      <h4 class="capitalizar">olá, {{$seller_name}}!</h4>
+    </div>
+    <div class="row">
+     <h4>O usuário {{$buyer_name}} realizou uma compra na sua loja dos seguintes produtos</h4>
     </div>
     <div class="row">
         <table>

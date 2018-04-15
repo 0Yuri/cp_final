@@ -13,7 +13,7 @@ class Product extends Model
 
   const TABLE_NAME = "products";
 
-  public static function pegarInfo($id, $quantidade){
+  public static function pegarInfo($id, $quantidade = 1){
     $produto = DB::table(Product::TABLE_NAME)
     ->select('id', 'name', 'description', 'price', 'price', 'discount')
     ->where('id', $id)
@@ -27,6 +27,20 @@ class Product extends Model
     else{
       return null;
     }
+  }
+
+  public static function getProduct($product_id){
+    $produto = DB::table(Product::TABLE_NAME)
+    ->select('*')
+    ->where('id', $product_id)
+    ->get();
+
+    if(count($produto) > 0){
+      return $produto[0]->unique_id;
+    }
+    else{
+      return null;
+    }    
   }
 
   public static function getProductInfoForCart($id, $quantidade = 0){
@@ -373,6 +387,24 @@ class Product extends Model
 
     return $products;
 
+  }
+
+  public static function isMyProduct($user_id, $product_id){
+    $produto = DB::table(Product::TABLE_NAME)
+    ->join(Store::TABLE_NAME, Store::TABLE_NAME . '.id', '=', Product::TABLE_NAME . '.store_id')
+    ->where(Product::TABLE_NAME . '.id', '=', $product_id)
+    ->where(Store::TABLE_NAME . '.owner_id', $user_id)
+    // ->select(Product::TABLE_NAME . '.*')
+    ->get();
+
+    return $produto;
+
+    if(count($produto) > 0){
+      return true;
+    }
+    else{
+      return false;
+    }
   }
 
   public static function saveImage($product_id, $nome, $type="extra"){

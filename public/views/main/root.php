@@ -163,6 +163,12 @@
 	</form>
 </modal>
 
+<modal class="text-center" modal-id="waitingModal" modal-type="sm" modal-title="Processando operação">
+  <div class="w3-row">
+      <h4>Por favor aguarde enquanto nós processamos o seu cadastro.</h4>
+  </div>
+</modal>
+
 <!-- TERMS AND CONDITIONS MODAL -->
 <modal class="text-center" modal-id="TermsAndConditionsModal" modal-type="md" modal-title="Termos e Condições de Uso">
 	<?php

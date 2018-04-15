@@ -203,20 +203,6 @@
       templateUrl: pathTo.panelFolder+'messages/panelMessagens.php',
       controller: 'PanelMessagesController as vm'
     })
-    // TODO: Reformular as mensagens
-    // .state({
-    //   name: 'root.panel.write',
-    //   url: '/escrever/:name_id',
-    //   templateUrl: pathTo.panelFolder+'messages/writemessage.php',
-    //   controller: 'PanelWriteMessageController as vm'
-    // })
-    // // Ver Mensagem - painel
-    // .state({
-    //   name: 'root.panel.view_message',
-    //   url: '/mensagens/:id',
-    //   templateUrl: pathTo.panelFolder+'messages/panelMessage.php',
-    //   controller: 'PanelMessageController as vm'
-    // })
     // Minhas Vendas - painel
    	.state({
       name: 'root.panel.sales',
@@ -255,7 +241,7 @@
     // Responder Perguntas - painel TODO: Estudar possibilidade de responder a mensagem na leitura
     .state({
       name: 'root.panel.answer',
-      url: '/responder/:id',
+      url: '/responder/:unique_id',
       templateUrl: pathTo.panelFolder + 'panelAnswer.php',
       controller: 'PanelAnswerController as vm'
     })

@@ -12,6 +12,7 @@ use App\Activation;
 use App\FileHandler;
 use App\Order;
 use App\Ban;
+use App\Cart;
 
 use App\Mail\AccountCreated;
 use App\Mail\OrderCreated;
@@ -55,6 +56,9 @@ class SessionController extends Controller
     else{
       if($session != null){
         $_SESSION['user_id'] = $session;
+        // Verifica loja
+        $store_id = Store::getStoreID($_SESSION['user_id']);
+        Cart::clearMyStore($store_id);
       }else{
         $this->return->setFailed("Login incorreto, tente novamente.");
       }
