@@ -106,6 +106,7 @@ class MoipController extends Controller
 
     if(isset($_SESSION['pagamento'])){
       $this->return->setObject($_SESSION['pagamento']['link']);
+      Session::cleanAll();
       return;
     }
     else{

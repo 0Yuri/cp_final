@@ -64,6 +64,10 @@ class CheckoutController extends Controller
     $data = $this->get_post();
     $data = json_decode(json_encode($data), true);
 
+    if(isset($_SESSION['pagamento'])){
+      unset($_SESSION['pagamento']);
+    }
+
     if(count($_SESSION['order']) > 0 && count($data) > 0){
       foreach($data as $key => $pedido){
         if(isset($_SESSION['order'][$key])){
