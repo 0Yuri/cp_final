@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 
+use App\CorreiosError;
+
 class Address extends Model
 {
   const TABLE_NAME = "address";
@@ -183,8 +185,8 @@ class Address extends Model
       $largura = 11;
     }
     // Comprimento
-    if($comprimento < 16){
-      $comprimento = 16;
+    if($comprimento < 18){
+      $comprimento = 18;
     }
     else if($comprimento > 105){
       $comprimento = 105;
@@ -211,7 +213,7 @@ class Address extends Model
       'nVlValorDeclarado' => '0',
       'sCdAvisoRecebimento' => 'n',
       'StrRetorno' => 'xml',
-      // SEDEX e PAC
+      // SEDEX=40010 e PAC=41106
       'nCdServico' => '40010,41106'
     );
     $data = http_build_query($data);
@@ -224,15 +226,23 @@ class Address extends Model
     $fretes = array();
 
     foreach($result as $servico){
+      $valor = (float)$servico->Valor;
+      $prazo = (int)$servico->PrazoEntrega;
+      $erro_code = (String)$servico->Erro;
+      $erro_msg = (String) $servico->MsgErro;
       if((String)$servico->Codigo == '40010'){
         $fretes['SEDEX'] = array(
-          'valor' => (float)$servico->Valor,
-          'prazo' => (int)$servico->PrazoEntrega
+          'valor' => $valor,
+          'prazo' => $prazo,
+          'erro_code' => $erro_code,
+          'error_msg' => CorreiosError::tratarErro($erro_code)
         );
       }else{
         $fretes['PAC'] = array(
-          'valor' => (float)$servico->Valor,
-          'prazo' => (int)$servico->PrazoEntrega
+          'valor' => $valor,
+          'prazo' => $prazo,
+          'erro_code' => $erro_code,
+          'error_msg' => CorreiosError::tratarErro($erro_code)
         );
       }
     }

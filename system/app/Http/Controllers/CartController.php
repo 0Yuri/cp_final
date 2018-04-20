@@ -12,6 +12,10 @@ use App\Cart;
 class CartController extends Controller
 {
 
+  const PRODUTO_N_ENCONTRADO = "Um ou mais produtos não foram encontrados.";
+  const PRODUTO_N_EXCLUIDO = "Não foi possível excluir o produto do carrinho.";
+  const CEP_N_DIGITADO = "Digite o CEP!";
+
   public function __construct(){
     parent::__construct();
     if(!isset($_SESSION['cart'])){
@@ -34,15 +38,17 @@ class CartController extends Controller
       return;
     }    
   }
+
   // Remove produto do carrinho
   public function removeProduct(){
     $data = $this->get_post();
     $status = Cart::remove($data['product']);
     if(!$status){
-      $this->return->setFailed("Não foi possível excluir o produto do carrinho.");
+      $this->return->setFailed($this->PRODUTO_N_EXCLUIDO);
       return;
     }
   }
+
   // Altera a quantidade
   public function changeQuantityOfProduct(){
     $data = $this->get_post();
@@ -70,16 +76,18 @@ class CartController extends Controller
       }
     }
     else{
-      $this->return->setFailed("Nenhum produto foi encontrado.");
+      $this->return->setFailed($this->PRODUTO_N_ENCONTRADO);
       return;
     }
 
 
   }
+
   // Número de produtos ativos
   public function number(){    
     $this->return->setObject(Cart::getAmountOfProducts());
   }
+
   // Limpa o carrinho
   public function clear(){
     // Pedido
@@ -96,6 +104,11 @@ class CartController extends Controller
   // Calcula o frete de cada pedido no carrinho
   public function GetDeliveryValues(){
     $data = $this->get_post();
+
+    if(!isset($data['cep'])){
+      $this->return->setFailed("Digite o cep!");
+      return;
+    }
 
     $cep_destino = str_ireplace("-", "", $data['cep']);
     $cep_origem = str_ireplace("-", "", Address::getCepByStore($data['id']));
@@ -118,7 +131,7 @@ class CartController extends Controller
         $peso += (($product['peso']/1000) * $produto->quantidade);
       }
       else{
-        $this->return->setFailed("Um produto do carrinho não foi encontrado.");
+        $this->return->setFailed($this->PRODUTO_N_ENCONTRADO);
       }
     }
 
@@ -127,6 +140,14 @@ class CartController extends Controller
     $peso = (String)$peso;
 
     $precos = Address::calculateValues($cep_origem, $cep_destino, $peso, $dimensoes, $preco);
+
+    $msg_erro = "";
+
+    // foreach($precos as $key => $frete){
+    //   $erro = $frete['erro_code'];
+    // }
+    
+    // $this->return->setMsgError($msg_erro);
 
     $this->return->setObject($precos);
 
