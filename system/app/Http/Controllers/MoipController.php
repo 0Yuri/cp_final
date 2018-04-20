@@ -8,6 +8,7 @@ use Moip\Auth\OAuth;
 use App\Resposta;
 use App\User;
 use App\CPF;
+use App\Session;
 use App\Order;
 use App\Client;
 use Moip\Exceptions;
@@ -49,6 +50,11 @@ class MoipController extends Controller
     $this->isLogged();
     $logged_id = $_SESSION['user_id'];
 
+    if(isset($_SESSION['pagamento']) && isset($_SESSION['pagamento']['link'])){
+      $this->return->setObject($_SESSION['pagamento']['link']);
+      return;
+    }
+
     // Cliente Section
     $cliente_id = MoipClient::getClientId($logged_id);
     if($cliente_id != null){
@@ -66,7 +72,8 @@ class MoipController extends Controller
         $pagamento = MoipPayment::pagarBoletoMulti($orders);
         if($pagamento != null){
           $pagamento = json_decode(json_encode($pagamento), true);
-          $this->return->setObject($pagamento['_links']['checkout']['payBoleto']['printHref']);
+          $boleto = $pagamento['_links']['checkout']['payBoleto']['printHref'];
+          $this->return->setObject($boleto);
         }
         else{
           $this->return->setFailed("Ocorreu um erro ao gerar o seu boleto.");
@@ -83,7 +90,8 @@ class MoipController extends Controller
       if($order != null){
         $pagamento = MoipPayment::pagarBoletoSimples($order);
         if($pagamento != null){
-          $this->return->setObject($pagamento->getHrefBoleto());
+          $boleto = $pagamento->getHrefBoleto();
+          $this->return->setObject($boleto);
         }
         else{
           $this->return->setFailed("Ocorreu um erro ao gerar o seu boleto.");
@@ -95,8 +103,19 @@ class MoipController extends Controller
         return;
       }
     }
-    // Limpa os pedidos
-    Session::cleanAll();
+
+    if(isset($_SESSION['pagamento'])){
+      $this->return->setObject($_SESSION['pagamento']['link']);
+      return;
+    }
+    else{
+      $_SESSION['pagamento'] = array(
+        'tipo' => "boleto",
+        'link' => $boleto
+      );
+      Session::cleanAll();
+    }
+    
   }
 
   public function payWithCreditCard(){
