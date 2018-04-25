@@ -142,4 +142,15 @@ class Cart extends Model
         }
         $_SESSION['cart'] = array();
     }
+
+    public static function clearMyStore($store_id){
+        if($store_id == null){
+            return;
+        }
+        else{
+            if(array_key_exists($store_id, $_SESSION['cart'])){
+                unset($_SESSION['cart'][$store_id]);
+            }
+        }
+    }
 }

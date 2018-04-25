@@ -16,10 +16,12 @@
 				user_info: vm.field,
 				address_info: vm.address
 			};
+			$('#waitingModal').modal('show');
       $http.post('system/public/user/signup', field)
       .then(function(response){
         if(response.data.success){
-          $window.alert("Cadastrado com sucesso.");
+					$('#waitingModal').modal('hide');
+					$window.alert("Cadastrado com sucesso.");					
 					$state.go('root.home');
         }else{
           vm.msg_error = response.data.error;

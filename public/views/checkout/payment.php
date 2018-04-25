@@ -36,7 +36,7 @@
             <input type="text" ng-required="vm.payment_form == 'credit_card'" class="w3-input w3-border w3-round" ng-model="vm.card.name" placeholder="JOSE F G SILVA">
           </div>
           <div class="w3-row">
-            <textarea id="public_key" class="w3-input">"-----BEGIN PUBLIC KEY-----
+            <textarea id="public_key" class="w3-input w3-hide" >"-----BEGIN PUBLIC KEY-----
               MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnn0BRekMnGuLyfLAFQxA
               t0qob4qSwuHHAY4LqhdW6V+VZAsqs66xWJmjsjjeXsp+F17HfgxpHbOUqfyTy1EF
               7d9MtXk8kpAAqMAJNXDFGdAvj6eHSvsNyvhhq5SsK5U+HS2WYbBIUs5vDrNhyCSM

@@ -8,6 +8,7 @@ use Moip\Auth\OAuth;
 use App\Resposta;
 use App\User;
 use App\CPF;
+use App\Session;
 use App\Order;
 use App\Client;
 use Moip\Exceptions;
@@ -31,17 +32,28 @@ class MoipController extends Controller
 {
   // protected $access_token = "a4face756e9e4e5c977b0b6449d4e168_v2";
   protected $access_token = MoipConstants::ACCESS_TOKEN;
+  protected $notification;
   protected $moip;
   const ACCOUNT_ID = MoipConstants::OWNER_ACCOUNT;
 
   public function __construct(){
     parent::__construct();
     $this->moip = new Moip(new OAuth($this->access_token), Moip::ENDPOINT_SANDBOX);
+
+    $this->notification = $this->moip->notifications()->addEvent('ORDER.*')
+    ->addEvent('PAYMENT.AUTHORIZED')
+    ->setTarget('http://localhost/system/public/webhooks')
+    ->create();
   }
 
   public function payWithBoleto(){
     $this->isLogged();
     $logged_id = $_SESSION['user_id'];
+
+    if(isset($_SESSION['pagamento']) && isset($_SESSION['pagamento']['link'])){
+      $this->return->setObject($_SESSION['pagamento']['link']);
+      return;
+    }
 
     // Cliente Section
     $cliente_id = MoipClient::getClientId($logged_id);
@@ -60,7 +72,8 @@ class MoipController extends Controller
         $pagamento = MoipPayment::pagarBoletoMulti($orders);
         if($pagamento != null){
           $pagamento = json_decode(json_encode($pagamento), true);
-          $this->return->setObject($pagamento['_links']['checkout']['payBoleto']['printHref']);
+          $boleto = $pagamento['_links']['checkout']['payBoleto']['printHref'];
+          $this->return->setObject($boleto);
         }
         else{
           $this->return->setFailed("Ocorreu um erro ao gerar o seu boleto.");
@@ -77,7 +90,8 @@ class MoipController extends Controller
       if($order != null){
         $pagamento = MoipPayment::pagarBoletoSimples($order);
         if($pagamento != null){
-          $this->return->setObject($pagamento->getHrefBoleto());
+          $boleto = $pagamento->getHrefBoleto();
+          $this->return->setObject($boleto);
         }
         else{
           $this->return->setFailed("Ocorreu um erro ao gerar o seu boleto.");
@@ -89,8 +103,20 @@ class MoipController extends Controller
         return;
       }
     }
-    // Limpa os pedidos
-    Session::cleanAll();
+
+    if(isset($_SESSION['pagamento'])){
+      $this->return->setObject($_SESSION['pagamento']['link']);
+      Session::cleanAll();
+      return;
+    }
+    else{
+      $_SESSION['pagamento'] = array(
+        'tipo' => "boleto",
+        'link' => $boleto
+      );
+      Session::cleanAll();
+    }
+    
   }
 
   public function payWithCreditCard(){
@@ -157,7 +183,6 @@ class MoipController extends Controller
     }
   }
 
-
   // Sacar dinheiro
   public function withdrawMoney(){
     $data = $this->get_post();
@@ -206,6 +231,19 @@ class MoipController extends Controller
         return;
     }
     $this->return->setObject($saldo);
+  }
+
+  // testando webhooks
+  public function getWebHooks(){
+    $json = file_get_contents('php://input');
+
+    $data = array(
+      'info' => $json
+    );
+
+    print_r($json);
+    
+    $inserir = DB::table("webhooks")->insert($data);
   }
 
 

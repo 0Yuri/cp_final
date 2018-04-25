@@ -27,7 +27,7 @@
         {{p.data}}
       </div>
       <div class="w3-quarter text-right" style="padding-right:20px">
-        <i class="fa fa-reply" ui-sref="root.panel.answer({id: p.id})" aria-hidden="true"></i>
+        <i class="fa fa-reply" ui-sref="root.panel.answer(p)" aria-hidden="true"></i>
         <i class="fa fa-times" aria-hidden="true"></i>
       </div>
     </div>

@@ -48,10 +48,23 @@ class QuestionController extends Controller
   public function answer(){
     $data = $this->get_post();
 
-    $responder = Question::answer($data['answer'], $data['id']);
+    $responder = Question::answer($data['answer'], $data['unique_id']);
 
     if(!$responder){
       $this->return->setFailed("Erro ao responder pergunta.");
+      return;
+    }
+  }
+
+  public function removeQuestion(){
+    $this->isLogged();
+    $data = $this->get_post();
+    $pergunta_id = $data['unique_id'];
+
+    $deletar = Question::deleteQuestion($pergunta_id, $_SESSION['user_id']);
+
+    if(!$deletar){
+      $this->return->setFailed("Não foi possível remover esta pergunta.");
       return;
     }
   }
@@ -87,7 +100,7 @@ class QuestionController extends Controller
       return;
     }
 
-    $pergunta = Question::getQuestion($data['id']);
+    $pergunta = Question::getQuestion($data['unique_id']);
 
     if($pergunta == null){
       $this->return->setObject("ERRO");

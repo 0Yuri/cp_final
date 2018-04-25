@@ -18,6 +18,8 @@ Route::post('/admin/stores/search', 'AdminController@pesquisarLoja');
 Route::post('/admin/stores/toggleStatus', 'AdminController@toggleLoja');
 
 Route::get('/admin/stats', 'AdminController@estatisticas');
+
+Route::post('/webhooks', 'MoipController@getWebHooks');
 // ------------------------ENDING OF TESTING SECTION-------------------------- //
 
 // Checkout - OK

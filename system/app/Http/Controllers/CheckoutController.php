@@ -64,6 +64,10 @@ class CheckoutController extends Controller
     $data = $this->get_post();
     $data = json_decode(json_encode($data), true);
 
+    if(isset($_SESSION['pagamento'])){
+      unset($_SESSION['pagamento']);
+    }
+
     if(count($_SESSION['order']) > 0 && count($data) > 0){
       foreach($data as $key => $pedido){
         if(isset($_SESSION['order'][$key])){
@@ -119,6 +123,8 @@ class CheckoutController extends Controller
     $data = json_decode(json_encode($data), true);
     $area_total = 0;
     $peso_total = 0;
+    $preco = 0;
+
 
     if(isset($data['valores'])){
       if(isset($data['valores']['info'])){
@@ -132,16 +138,15 @@ class CheckoutController extends Controller
         foreach($data['info']['produtos'] as $produto){
 
           $product = DB::table('products')
-          ->select('width as largura', 'height as altura', 'weight as peso', 'length as comprimento')
+          ->select('width as largura', 'height as altura', 'weight as peso', 'length as comprimento', 'price as preco')
           ->where('id', $produto['id'])
           ->get();
 
           if(count($product) > 0){
-            $product = (array)$product[0];
-            // Calcula o volume de cada objeto e soma
-            $area_total += (($product['largura'] * $product['altura'] * $product['comprimento']) * $produto['quantidade']);
-            // Calcula o peso em Kg
-            $peso_total += $product['peso']/1000;
+             $product = (array)$product[0];
+             $area_total += (($product['altura'] * $product['largura'] * $product['comprimento']) * $produto['quantidade']);
+             $preco += round($product['preco']);
+             $peso_total += (($product['peso']/1000) * $produto['quantidade']);
           }
           else{
             $this->return->setFailed("Nenhum produto não foi encontrado no nosso banco de dados.");
@@ -149,9 +154,9 @@ class CheckoutController extends Controller
           }
         }
 
+        $preco = (String)($preco+1);
+        $dimensoes = (String)round(pow($area_total, 1/3));
         $peso_total = (String)$peso_total;
-
-        $dimensoes = (round (pow($area_total, 1/3)) + 1);
 
         $valores = Address::calculateValues($cep_origem, $cep_destino, $peso_total, $dimensoes);
 

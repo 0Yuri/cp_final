@@ -49,6 +49,7 @@
 					$('#loginModal').modal('hide');
 					$state.go('root.panel.dashboard');
 					vm.session_status = true;
+					pegarQtdCarrinho();
 				}, function (error) {
 					alert(error);
 				});

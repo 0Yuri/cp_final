@@ -55,7 +55,7 @@
 				if(response.data.success){
 					$state.reload();
 				}else{
-					console.log(response.data.error);
+					alert(response.data.error);
 				}
 			});
 		}

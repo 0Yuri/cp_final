@@ -203,20 +203,6 @@
       templateUrl: pathTo.panelFolder+'messages/panelMessagens.php',
       controller: 'PanelMessagesController as vm'
     })
-    // TODO: Reformular as mensagens
-    // .state({
-    //   name: 'root.panel.write',
-    //   url: '/escrever/:name_id',
-    //   templateUrl: pathTo.panelFolder+'messages/writemessage.php',
-    //   controller: 'PanelWriteMessageController as vm'
-    // })
-    // // Ver Mensagem - painel
-    // .state({
-    //   name: 'root.panel.view_message',
-    //   url: '/mensagens/:id',
-    //   templateUrl: pathTo.panelFolder+'messages/panelMessage.php',
-    //   controller: 'PanelMessageController as vm'
-    // })
     // Minhas Vendas - painel
    	.state({
       name: 'root.panel.sales',
@@ -255,7 +241,7 @@
     // Responder Perguntas - painel TODO: Estudar possibilidade de responder a mensagem na leitura
     .state({
       name: 'root.panel.answer',
-      url: '/responder/:id',
+      url: '/responder/:unique_id',
       templateUrl: pathTo.panelFolder + 'panelAnswer.php',
       controller: 'PanelAnswerController as vm'
     })
@@ -329,14 +315,12 @@
       templateUrl: pathTo.checkoutFolder+'payment.php',
       controller: 'CheckoutPaymentController as vm'
     })
-    // Finalizar pedido OK
     .state({
-      name: 'root.checkout.end',
-      url: '/finalizarpedido',
-      templateUrl: pathTo.checkoutFolder+'pedido.php',
-      controller: 'CheckoutFinalController as vm'
+      name: 'root.checkout.success',
+      url: '/sucesso',
+      templateUrl: pathTo.checkoutFolder+'success.php',
+      controller: 'CheckoutSuccessController as vm'
     })
-
     // Painel Administrativo
     .state({
       name: 'root.admin',
