@@ -103,6 +103,9 @@ $load['js']['controllers'][] = 'checkout-review-controller';
 $load['js']['controllers'][] = 'checkout-payment-controller';
 $load['js']['controllers'][] = 'checkout-final-controller';
 
+$load['js']['controllers'][] = 'checkout-success-controller';
+// $load['js']['controllers'][] = 'checkout-failed-controller';
+
 /* --------------------------------------------------
  * assets/js/services/
  * --------------------------------------------------

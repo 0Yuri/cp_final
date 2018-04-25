@@ -3,11 +3,16 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use DB;
 use Moip\Moip;
+use Moip\Auth\OAuth;
+use App\Moip as MoipConstants;
+use App\MoipOrder;
+use Illuminate\Support\Collection;
+use DB;
 
 class Order extends Model
 {
+  const TABLE_NAME = "pedidos";
   // Pegar o pedido
   public static function pegarPedido($unique_id){
     $pedido = DB::table('orders')
@@ -64,5 +69,16 @@ class Order extends Model
     }
   }
 
+  public static function atualizarPedido($pedido, $isMulti = false){
+    $moip = new Moip(new OAuth(MoipConstants::ACCESS_TOKEN), Moip::ENDPOINT_SANDBOX);
+
+    if($isMulti){
+
+    }
+    else{
+      $order = MoipOrder::getSingleOrder($moip, $pedido->order_id);
+      print_r($order->getStatus());
+    }
+  }
 
 }

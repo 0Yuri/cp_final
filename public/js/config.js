@@ -315,14 +315,12 @@
       templateUrl: pathTo.checkoutFolder+'payment.php',
       controller: 'CheckoutPaymentController as vm'
     })
-    // Finalizar pedido OK
     .state({
-      name: 'root.checkout.end',
-      url: '/finalizarpedido',
-      templateUrl: pathTo.checkoutFolder+'pedido.php',
-      controller: 'CheckoutFinalController as vm'
+      name: 'root.checkout.success',
+      url: '/sucesso',
+      templateUrl: pathTo.checkoutFolder+'success.php',
+      controller: 'CheckoutSuccessController as vm'
     })
-
     // Painel Administrativo
     .state({
       name: 'root.admin',
