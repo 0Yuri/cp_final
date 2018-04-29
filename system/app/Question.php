@@ -17,32 +17,22 @@ class Question extends Model
   const TABLE_NAME = "questions";
 
   // Realizar uma pergunta
-  public static function ask($produto, $pergunta, $id){
+  public static function ask($usuario, $store_id, $produto, $pergunta){
 
-    $store_id = Product::pegarID($produto);
-    if($store_id == null){
-      return false;
-    }
-
-    $owner = Store::getOwnerOfStore($store_id);
-    if($owner == null){
-      return false;
-    }
-    
     $question = array(
       'unique_id' => uniqid("QUEST-"),
-      'product_id' => $produto,
-      'store_owner' => $owner['id'],
-      'ask_id' => $id,
+      'product_id' => $produto['id'],
+      'store_owner' => $store_id,
+      'ask_id' => $usuario,
       'question' => $pergunta
     );
 
     $inseriu = DB::table(Question::TABLE_NAME)->insert($question);
 
     if($inseriu){
-      return true;
+      return "";
     }else{
-      return false;
+      return "Ocorreu um erro ao realizar a pergunta.";
     }
   }
 

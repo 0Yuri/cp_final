@@ -4,43 +4,48 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Question;
+use App\Store;
 use App\Product;
 use DB;
 
 class QuestionController extends Controller
 {
 
+  const ERROR_MSG = "Ocorreu um erro ao realizar a sua pergunta.";
+  const CANNOT_ASK_MSH = "Você não pode perguntar neste produto.";
+
   public function ask(){
     $this->isLogged();
     $data = $this->get_post();
 
-    $produto = $data['produto'];
+    $pergunta = $data['pergunta']->content;
+    $produto_id = $data['produto']->unique_id;
 
-    $produto_id = DB::table('products')
-    ->select('id')
-    ->where('unique_id', $produto->unique_id)
-    ->get();
+    $produto = Product::getProductByUnique($produto_id);
 
-    if(count($produto_id) > 0){
-      $produto_id = $produto_id[0]->id;
-
-      if($this->isMyProduct($produto->unique_id, $_SESSION['user_id'])){
-        $this->return->setFailed("Você não pode perguntar neste produto.");
-        return;
-      }
-
-      $question = $data['pergunta']->content;
-
-      $inserir = Question::ask($produto_id, $question, $_SESSION['user_id']);
-
-      if(!$inserir){
-        $this->return->setFailed("Falha ao realizar pergunta.");
-        return;
-      }
-
+    if($produto == null){
+      $this->return->setFailed(QuestionController::ERROR_MSG);
+      return;
     }
-    else{
-      $this->return->setFailed("Nenhum produto foi encontrado com esse identificador.");
+
+    $dono_do_produto = Store::getOwnerOfStore($produto['store_id']);
+
+    $dono_do_produto = $dono_do_produto['id'];
+
+    if($dono_do_produto == null){
+      $this->return->setFailed(QuestionController::ERROR_MSG);
+      return;
+    }
+
+    if($this->isMyProduct($produto_id, $_SESSION['user_id'])){
+      $this->return->setFailed(QuestionController::CANNOT_ASK_MSH);
+      return;
+    }
+
+    $inserir = Question::ask($_SESSION['user_id'], $dono_do_produto, $produto, $pergunta);
+
+    if(strlen($inserir) > 0){
+      $this->return->setFailed($inserir);
       return;
     }
   }

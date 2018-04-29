@@ -148,8 +148,10 @@ class Cart extends Model
             return;
         }
         else{
-            if(array_key_exists($store_id, $_SESSION['cart'])){
-                unset($_SESSION['cart'][$store_id]);
+            if(isset($_SESSION['cart'])){
+                if(array_key_exists($store_id, $_SESSION['cart'])){
+                    unset($_SESSION['cart'][$store_id]);
+                }
             }
         }
     }

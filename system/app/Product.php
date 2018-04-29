@@ -43,6 +43,20 @@ class Product extends Model
     }    
   }
 
+  public static function getProductByUnique($unique_id){
+    $produto = DB::table(Product::TABLE_NAME)
+    ->select('*')
+    ->where('unique_id', $unique_id)
+    ->get();
+
+    if(count($produto) > 0){
+      return (array)$produto[0];
+    }
+    else{
+      return null;
+    }
+  }
+
   public static function getProductInfoForCart($id, $quantidade = 0){
     $produto = DB::table(Product::TABLE_NAME)
     ->join('stores', 'stores.id', '=', 'products.store_id')
@@ -142,18 +156,19 @@ class Product extends Model
   }
 
   // Pega id da loja do usuário
-  public static function pegarID($id){
-    $store = DB::table('users')
-    ->join('stores', 'users.id', '=', 'stores.owner_id')
-    ->select('stores.id')
-    ->where('users.id', $id)
+  public static function pegarStoreID($id){
+    $store = DB::table('products')
+    ->select('store_id')
+    ->where('unique_id', $id)
     ->get();
 
-    $store = (array)$store[0];
-    $loja_id = $store['id'];
-
-    return $loja_id;
-
+    if(count($store) > 0){
+      $store = (array)$store[0];
+      return $store['id'];
+    }
+    else{
+      return null;
+    }
   }
 
   // Pega o id do produto pelo nome
