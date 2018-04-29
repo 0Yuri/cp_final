@@ -214,6 +214,10 @@ class Store extends Model
 
   // Pega o dono da loja
   public static function getOwnerOfStore($store_id){
+    if($store_id == null){
+      return null;
+    }
+    
     $user = DB::table(Store::TABLE_NAME)
     ->join(User::TABLE_NAME, User::TABLE_NAME . '.id', '=', Store::TABLE_NAME . '.owner_id')
     ->select(User::TABLE_NAME . '.*')
