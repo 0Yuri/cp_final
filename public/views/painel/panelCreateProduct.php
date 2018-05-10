@@ -49,7 +49,7 @@
       </div>
     </div>
     <div class="w3-row">
-      <div class="col-sm-4">
+      <div class="col-sm-3">
         <label>Qualidade do produto:</label>
         <select class="w3-select w3-round w3-border" required ng-model="vm.field.quality">
           <option value="" disabled selected>Selecione a qualidade</option>
@@ -58,11 +58,15 @@
           <option value="Com marcas de uso">Com marcas de uso</option>
         </select>
       </div>
-      <div class="col-sm-4">
+      <div class="col-sm-3">
+        <label>Tem Desconto?</label>
+        <input type="number" class="w3-input w3-border w3-round" ng-model="vm.field.discount">
+      </div>
+      <div class="col-sm-3">
         <label>Preço do produto:</label>
         <input type="text" class="w3-input w3-border w3-round" required ng-model="vm.field.price" placeholder="Este valor será o anunciado no produto.">
       </div>
-      <div class="col-sm-4">
+      <div class="col-sm-3">
         <label>Preço original:</label>
         <input type="text" class="w3-input w3-border w3-round" required ng-model="vm.field.original_price" placeholder="O valor pago por você na compra do produto.">
       </div>
