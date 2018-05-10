@@ -12,75 +12,68 @@ use Validator;
 
 class ProductController extends Controller
 {
+
+  private const NO_IMAGE = "Nenhuma imagem válida foi recebida.";
   // Criar produto
   public function newProduct(){
     $this->isLogged();
-
-    if(!$this->checkStore()){
-      $this->return->setFailed("Nenhuma loja criada pelo usuário.");
-      return;
-    }
-
-    $data = $_POST;
-
-    if($data['shipping'] == true){
-      $data['shipping'] = 1;
-    }
-
-    if($data['local'] == true){
-      $data['local'] = 1;
-    }
-
-    $data['price'] = $this->transformPrice($data['price']);
-
-    $data['original_price'] = $this->transformPrice($data['original_price']);
-
-    $loja_id = Store::getStoreID($_SESSION['user_id']);
-
-    $data['store_id'] = $loja_id;
     
-    $nome_produto = str_ireplace(" ", "", $data['name']);
+    if(Input::hasFile('imagem')){
+      $image = Input::file('imagem');
 
-    $data['unique_id'] = uniqid('PROD-'.$nome_produto);
-    
-    $inseriu = Product::saveProduct($data);
+      if($image == null || !$image->isValid()){
+        $this->return->setFailed(self::NO_IMAGE);
+        return;
+      }
 
-    if(!$inseriu){
-      $this->return->setFailed("Erro ao criar o produto.");
-      return;
+      $data = $_POST;
+
+      if($data['shipping'] == true){
+        $data['shipping'] = 1;
+      }
+  
+      if($data['local'] == true){
+        $data['local'] = 1;
+      }
+  
+      $data['price'] = $this->transformPrice($data['price']);  
+      $data['original_price'] = $this->transformPrice($data['original_price']);
+  
+      $loja_id = Store::getStoreID($_SESSION['user_id']);  
+      $data['store_id'] = $loja_id;      
+      $nome_produto = str_ireplace(" ", "", $data['name']);  
+      $data['unique_id'] = uniqid('PROD-'.$nome_produto);
+      
+      $inseriu = Product::saveProduct($data);
+
+      if(!$inseriu){
+        $this->return->setFailed("Erro ao criar o produto.");
+        return;
+      }
+      else{
+
+        $diretorio = realpath(storage_path() . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "..") . DIRECTORY_SEPARATOR . "public" . DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR;
+        $destino = $diretorio . "site" . DIRECTORY_SEPARATOR . "products" . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR;
+        
+        $nomeHash =  md5($image->getClientOriginalName()) . '.' . $image->getClientOriginalExtension();
+      
+        if(!$image->move($destino, $nomeHash)){
+          $this->return->setFailed("Ocorreu um erro ao fazer o upload da sua foto.");
+          return;
+        }
+        else{
+          $inserir = Image::salvarImagemProduto($nomeHash, $inseriu, 'profile');
+          if(!$inserir){
+            $this->return->setFailed("Ocorreu um erro ao armazenar sua imagem.");
+            return;
+          }
+        }
+      }
+
     }
     else{
-      if(Input::hasFile('imagem')){
-        $image = Input::file('imagem');
-        if(!Input::file('imagem')->isValid()){
-          $this->return->setFailed("Imagem Inválida.");
-          return;
-        }
-      }
-      else{
-        $this->return->setFailed("Nenhuma imagem foi recebida.");
-        return;
-      }
-
-      $diretorio = realpath(storage_path() . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "..") . DIRECTORY_SEPARATOR . "public" . DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR;
-      $destino = $diretorio . "site" . DIRECTORY_SEPARATOR . "products" . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR;
-
-      $nomeHash =  md5($image->getClientOriginalName()) . '.' . $image->getClientOriginalExtension();
-
-      if(!$image->move($destino, $nomeHash)){
-        $this->return->setFailed("Ocorreu um erro ao fazer o upload da sua foto.");
-        return;
-      }
-      else{
-
-        $inserir = Image::salvarImagemProduto($nomeHash, $inseriu, 'profile');
-
-        if(!$inserir){
-          $this->return->setFailed("Ocorreu um erro ao armazenar sua imagem.");
-          return;
-        }
-      }
-
+      $this->return->setFailed(self::NO_IMAGE);
+      return;
     }
   }
 
