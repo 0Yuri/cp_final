@@ -25,7 +25,7 @@ class CreateProductsTable extends Migration
             $table->enum('status', ['ativado', 'desativado'])->default('ativado');
             $table->enum('gender', ['meninos', 'meninas', 'papai', 'mamae']);
             $table->enum('quality', ['Novo', 'Bom estado', 'Com marcas de uso']);
-            $table->decimal('discount', 3,2)->unsigned()->default(0.00);
+            $table->string('discount', 3)->default("0");
             $table->integer('stock')->default(1);
             $table->integer('solds')->default(0);
             // Preço
