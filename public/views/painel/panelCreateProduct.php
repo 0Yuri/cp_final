@@ -60,7 +60,18 @@
       </div>
       <div class="col-sm-3">
         <label>Tem Desconto?</label>
-        <input type="number" class="w3-input w3-border w3-round" ng-model="vm.field.discount">
+        <select class="w3-select w3-round w3-border" required ng-model="vm.produto.discount">
+            <option value="" selected disabled>Selecione um desconto</option>
+            <option value="5">5% de desconto</option>
+            <option value="10">10% de desconto</option>
+            <option value="15">15% de desconto</option>
+            <option value="20">20% de desconto</option>
+            <option value="25">25% de desconto</option>
+            <option value="30">30% de desconto</option>
+            <option value="50">50% de desconto</option>
+            <option value="60">60% de desconto</option>
+            <option value="80">80% de desconto</option>
+          </select>
       </div>
       <div class="col-sm-3">
         <label>Preço do produto:</label>

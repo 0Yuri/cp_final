@@ -64,7 +64,7 @@
         <textarea required ng-model="vm.produto.description" rows="8" cols="80" class="w3-input w3-round w3-border"></textarea>
       </div>
       <div class="w3-row">
-        <div class="w3-quarter">
+        <div class="w3-col l2">
           <label>Gênero:</label>
           <select class="w3-select w3-round w3-border" required ng-model="vm.produto.gender">
             <option value="" disabled selected>Selecione o gênero</option>
@@ -74,7 +74,7 @@
             <option value="mamae">Para mamães</option>
           </select>
         </div>
-        <div class="w3-quarter" style="padding-left: 2%">
+        <div class="w3-col l3" style="padding-left: 2%">
           <label>Qualidade:</label>
           <select class="w3-select w3-round w3-border" required ng-model="vm.produto.quality">
             <option value="" disabled selected>Selecione a qualidade</option>
@@ -83,11 +83,26 @@
             <option value="Com marcas de uso">Com marcas de uso</option>
           </select>
         </div>
-        <div class="w3-quarter" style="padding-left: 2%">
+        <div class="w3-col l2" style="padding-left:2%">
+          <label>Tem desconto?</label>
+          <select class="w3-select w3-round w3-border" required ng-model="vm.produto.discount">
+            <option value="" selected disabled>Selecione um desconto</option>
+            <option value="5">5% de desconto</option>
+            <option value="10">10% de desconto</option>
+            <option value="15">15% de desconto</option>
+            <option value="20">20% de desconto</option>
+            <option value="25">25% de desconto</option>
+            <option value="30">30% de desconto</option>
+            <option value="50">50% de desconto</option>
+            <option value="60">60% de desconto</option>
+            <option value="80">80% de desconto</option>
+          </select>
+        </div>
+        <div class="w3-col l2" style="padding-left: 2%">
           <label>Preço de venda:</label>
           <input type="text" required ng-model="vm.produto.price" class="w3-input w3-round w3-border">
         </div>
-        <div class="w3-quarter" style="padding-left: 2%">
+        <div class="w3-col l2" style="padding-left: 2%">
           <label>Preço Original:</label>
           <input type="text" required ng-model="vm.produto.original_price" class="w3-input w3-round w3-border">
         </div>

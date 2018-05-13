@@ -64,7 +64,7 @@
 			fd.append('length', vm.field.length);
 			fd.append('weight', vm.field.weight);
 			fd.append('stock', vm.field.stock);
-
+			fd.append('discount', vm.field.discount);
 
 			$http.post('system/public/product/add', fd, {
 				transformRequest: angular.identity,
