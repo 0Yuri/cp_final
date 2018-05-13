@@ -60,7 +60,7 @@
       </div>
       <div class="col-sm-3">
         <label>Tem Desconto?</label>
-        <input type="number" class="w3-input w3-border w3-round" ng-model="vm.field.discount">
+        <input type="number" class="w3-input w3-border w3-round" required ng-model="vm.field.discount" value="0">
       </div>
       <div class="col-sm-3">
         <label>Preço do produto:</label>

@@ -118,7 +118,12 @@
 			<div class="w3-row w3-padding">
 				<div ng-repeat="produto in vm.lista_produtos">
 					<div class="w3-quarter w3-border" ui-sref="root.product(produto)">
-						<img src="{{imgFolder}}site/discount/nuncausado.png" style="z-index=5;position:absolute;margin-top:-10px;margin-left:5px;width:50px;height:50px">
+					<!-- Selos -->
+					<img ng-show="produto.quality == 'Novo'" src="{{imgFolder}}site/discount/nuncausado.png" style="z-index=5;position:absolute;margin-top:-10px;margin-left:5px;width:50px;height:50px">
+					<img ng-show="produto.discount == '80'" src="{{imgFolder}}site/discount/off80-2.png" style="position:absolute;margin-top:-15px;margin-left:220px;width:50px;height:60px;">
+					<img ng-show="produto.discount == '70'" src="{{imgFolder}}site/discount/off70-2.png" style="position:absolute;margin-top:-15px;margin-left:220px;width:50px;height:60px;">
+					<img ng-show="produto.discount == '60'" src="{{imgFolder}}site/discount/off60-2.png" style="position:absolute;margin-top:-15px;margin-left:220px;width:50px;height:60px;">
+
 						<img class="" src="{{imgFolder}}site/products/{{produto.imagem}}" width="250px" height="250px">
 						<div class="w3-container w3-center">
 							<div class="w3-row w3-padding ">
