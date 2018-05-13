@@ -60,7 +60,7 @@
       </div>
       <div class="col-sm-3">
         <label>Tem Desconto?</label>
-        <select class="w3-select w3-round w3-border" required ng-model="vm.produto.discount">
+        <select class="w3-select w3-round w3-border" ng-model="vm.produto.discount">
             <option value="" selected disabled>Selecione um desconto</option>
             <option value="5">5% de desconto</option>
             <option value="10">10% de desconto</option>
