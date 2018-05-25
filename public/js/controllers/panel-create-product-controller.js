@@ -47,7 +47,6 @@
 
 		function criarProduto(){
 			var fd = new FormData();
-			console.info($scope.myFile);
 			fd.append('imagem', $scope.myFile);
 			fd.append('name', vm.field.name);
 			fd.append('category_id', vm.field.category_id);
