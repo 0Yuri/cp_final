@@ -101,7 +101,7 @@ class UserController extends Controller
     $token = $data['token'];
 
     if(strlen($token) <= 0){
-      $this->return->setFailed("Ocorreu um erro no envio do token de ativação, tente novamente!");
+      $this->return->setFailed("Token inválido, ocorreu um erro no envio do token de ativação, tente novamente!");
       return;
     }
 

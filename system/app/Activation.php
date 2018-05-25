@@ -17,7 +17,7 @@ class Activation extends Model
 
     public static function activate($token){
         $activation = Activation::getActivation($token);
-        
+
         // se não existe nenhum token igual
         if($activation == null){
             return false;
@@ -44,6 +44,8 @@ class Activation extends Model
         $string = str_ireplace("$", "", $string);
         $string = str_ireplace("/", "", $string);
         $string = str_ireplace("\\", "", $string);
+        $string = str_ireplace(".", "", $string);
+        $string = str_ireplace(",", "", $string);
 
         $data = array(
             'user_id' => $user_id,
