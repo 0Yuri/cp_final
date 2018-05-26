@@ -30,7 +30,7 @@ class MoipOrder extends Model
         // Conversão do valor para integer
         $valor = MoipOrder::getPrice($produto['preco']);
         // Adição de desconto se existir
-        $discount += MoipOrder::getDiscount($produto['preco'], $produto['desconto']);
+        $discount += MoipOrder::getDiscount($produto['preco'] * $produto['quantidade'], $produto['desconto']);
         // Adição do produto ao pedido
         $order->addItem($produto['nome'], $produto['quantidade'], "Descricao teste", $valor);
         // Logistica do estoque e número de vendas
