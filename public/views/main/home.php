@@ -1,5 +1,4 @@
 <div id="HomePage">
-
 	<!-- Parte de boas vindas - Banner e texto explicativo -->
 	<div class="w3-row w3-padding-large">
 		<div class="w3-content">
@@ -18,14 +17,18 @@
 		</div>
 
 		<div class="w3-row w3-padding">
-			<div ng-repeat="produto in vm.featuredProducts">
+			<div class="w3-quarter" ng-repeat="produto in vm.featuredProducts">
 				<a ui-sref="root.product(produto)">
-					<div class="col-md-2 w3-card padding-20" ng-class="(j==1)?'col-md-offset-2':'hidden-sm hidden-xs'">
-						<img class="img-responsive no-margin" src="{{imgFolder}}site/products/{{produto.filename}}" width="200px" height="200px">
-						<span>{{produto.name}}</span> <br>
-						Marca: {{produto.brand}}<br>
-						<span style="color:#87CEEB">R$ {{produto.price | number: 2}}</span> <br>
-						<span style="color:#fec860">12x R$ {{produto.price / 12 | number: 2}}</span> <br>
+					<div class="w3-card w3-padding">
+						<div class="w3-row rowDestaque">
+							<img src="{{imgFolder}}site/products/{{produto.filename}}"><br>
+						</div>
+						<div class="w3-row">
+							<span>{{produto.name}}</span><br>
+							<span>Marca: {{produto.brand}}</span><br>
+							<span class="precoProduto">R$ {{produto.price | number: 2}}</span> <br>
+							<span class="precoParcelado">12x R$ {{produto.price / 12 | number: 2}}</span> <br>
+						</div>
 					</div>
 				</a>
 			</div>
@@ -40,19 +43,23 @@
 		</div>
 
 		<div class="w3-row w3-padding">
-			<div ng-repeat="store in vm.featuredStores">
+			<div class="w3-quarter" ng-repeat="store in vm.featuredStores">
 				<a ui-sref="root.store(store)">
-					<div class="col-md-2 w3-card padding-20" ng-class="(j==1)?'col-md-offset-2':'hidden-sm hidden-xs'">
-						<img class="img-responsive no-margin" src="{{imgFolder}}stores/logo/{{store.profile_image}}" width="200px" height="200px">
-						{{store.name}} <br>
-						<i class="fa fa-tags" aria-hidden="true"></i> {{store.n_produtos}} publicados<br>
-						<i class="fa fa-gift" aria-hidden="true"></i> {{store.sales}} vendidos<br>
+					<div class="w3-card w3-padding">
+						<div class="w3-row rowDestaque">
+							<img src="{{imgFolder}}stores/logo/{{store.profile_image}}">
+						</div>
+						<div class="w3-row">
+							{{store.name}}<br>
+							<i class="fa fa-tags" aria-hidden="true"></i> {{store.n_produtos}} publicados<br>
+							<i class="fa fa-gift" aria-hidden="true"></i> {{store.sales}} vendidos<br>
+						</div>
 					</div>
 				</a>
 			</div>
 		</div>
 	</div>
-	</div>
+</div>
 
 <!-- Crie sua lojinha modal -->
 <modal class="text-center" modal-id="CriarSuaLojinha" modal-type="md" modal-title="Criar sua lojinha ficou fácil">

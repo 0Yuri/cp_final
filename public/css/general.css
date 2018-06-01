@@ -178,6 +178,24 @@ input:checked+img{
 	border:none;color:#000;
 }
 
+.rowDestaque{
+	overflow:-moz-hidden-unscrollable;
+}
+
+.rowDestaque img{
+	object-fit:cover;
+	height:200px;
+	width:200px;
+}
+
+.precoProduto{
+	color:#87CEEB;
+}
+
+.precoParcelado{
+	color:#fec860
+}
+
 
 
 /***************************************************/
