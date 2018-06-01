@@ -12,13 +12,13 @@ use App\Category;
 class Featured extends Model
 {
 
-  public static function featuredProducts(){
+  public static function featuredProducts($take=4){
     $products = DB::table(Product::TABLE_NAME)
     ->join('product_images', 'product_images.product_id', '=', Product::TABLE_NAME . '.id')
     ->join(Category::TABLE_NAME, Category::TABLE_NAME . '.id', '=', Product::TABLE_NAME . '.category_id')
     ->join(Brand::TABLE_NAME, Brand::TABLE_NAME . '.id', '=', Product::TABLE_NAME . '.brand_id')
     ->select(Product::TABLE_NAME . '.unique_id', Product::TABLE_NAME . '.name', Product::TABLE_NAME . '.price', Product::TABLE_NAME . '.solds as vendidos','product_images.filename', Category::TABLE_NAME . '.name as category', Brand::TABLE_NAME . '.name as brand')
-    ->take(8)
+    ->take($take)
     ->orderBy('solds', 'asc')
     ->where('product_images.type', 'profile')
     ->get();
@@ -33,10 +33,10 @@ class Featured extends Model
     return $produtos[0];
   }
 
-  public static function featuredStores(){
+  public static function featuredStores($take=4){
     $stores = DB::table(Store::TABLE_NAME)
     ->select('*')
-    ->take(8)
+    ->take($take)
     ->get();
 
     if(count($stores) > 0){
