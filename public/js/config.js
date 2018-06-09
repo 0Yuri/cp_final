@@ -106,6 +106,16 @@
       templateUrl: pathTo.mainFolder+'search.php',
       controller: 'SearchController as vm'
     })
+    .state({
+      name: 'root.sell',
+      url: '/querovender',
+      templateUrl: pathTo.mainFolder+'wantsell.php'
+    })
+    .state({
+      name: 'root.buy',
+      url: '/querocomprar',
+      templateUrl: pathTo.mainFolder+'wantbuy.php'
+    })
     // Ver produto X
     .state({
       name: 'root.product',
