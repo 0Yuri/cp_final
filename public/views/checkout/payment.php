@@ -68,7 +68,7 @@
             <label>Parcelas:</label>
             <select class="w3-select w3-border w3-round" required ng-model="vm.card.parcelas">
               <option value="" disabled selected>Selecione a quantidade de parcelas</option>
-              <option value="{{n}}" ng-repeat="n in [1,2,3,4,5,6,7,8,9,10,11,12]">{{n}} vezes</option>
+              <option value="{{n}}" ng-repeat="n in vm.parcelas">Em {{n}} vezes</option>
             </select>
           </div>
           <div class="w3-row w3-padding-16">

@@ -124,7 +124,9 @@
 					<img ng-show="produto.discount == '70'" src="{{imgFolder}}site/discount/off70-2.png" style="position:absolute;margin-top:-15px;margin-left:220px;width:50px;height:60px;">
 					<img ng-show="produto.discount == '60'" src="{{imgFolder}}site/discount/off60-2.png" style="position:absolute;margin-top:-15px;margin-left:220px;width:50px;height:60px;">
 
-						<img class="" src="{{imgFolder}}site/products/{{produto.imagem}}" width="250px" height="250px">
+						<div class="w3-row rowDestaque">
+							<img class="" src="{{imgFolder}}site/products/{{produto.imagem}}" width="250px" height="250px">
+						</div>
 						<div class="w3-container w3-center">
 							<div class="w3-row w3-padding ">
 								<b>{{produto.name}}</b> <br>
@@ -135,30 +137,6 @@
 							</div>
 						</div>
 					</div>
-					<!-- <div class="w3-col l3 m4 s6 w3-padding w3-left-align">
-						<a ui-sref="root.product(produto)">
-							<div class="w3-card-4 product-box">
-								<div>
-									<img ng-show="produto.quality == 'Novo'" src="{{imgFolder}}site/discount/nuncausado.png" style="z-index=5;position:absolute;margin-top:-10px;margin-left:5px;width:50px;height:50px">
-									<img ng-show="produto.discount == 80" src="{{imgFolder}}site/discount/off80-2.png" style="position:absolute;margin-top:-15px;margin-left:220px;width:50px;height:60px;">
-									<img ng-show="produto.discount == 70" src="{{imgFolder}}site/discount/off70-2.png" style="position:absolute;margin-top:-15px;margin-left:220px;width:50px;height:60px;">
-									<img ng-show="produto.discount == 60" src="{{imgFolder}}site/discount/off60-2.png" style="position:absolute;margin-top:-15px;margin-left:220px;width:50px;height:60px;">
-								</div>
-								<div class="product-img-box">
-									<img class="img-responsive no-margin" src="{{imgFolder}}site/products/{{produto.imagem}}" width="200px" height="200px">
-								</div>
-								<div class="w3-row-padding product-info-box">
-										<b>{{produto.name}}</b> <br>
-										Marca: {{produto.brand}} <br>
-										Para {{produto.gender}}
-								</div>
-								<div class="w3-row-padding product-price-box">
-									<span class="bold" style="color:#87CEEB">R$ {{produto.price}}</span> <br>
-									<span class="bold" style="color:#fec860">Em até 12x R$ {{produto.price / 12 | number: 2}}</span>
-								</div>
-							</div>
-						</a>
-					</div> -->
 				</div>
 			</div>
 			<div class="w3-row" ng-show="vm.lista_produtos.length <= 0">

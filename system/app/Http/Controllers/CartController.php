@@ -23,6 +23,18 @@ class CartController extends Controller
     }
   }
 
+  public function getParcelas(){
+    if(isset($_SESSION['order'])){      
+      $parcelas = Cart::avaliarCarrinhoParcelas($_SESSION['order']);
+      $this->return->setObject($parcelas);
+    }
+    else{
+      $this->return->setFailed("O pedido está vazio.");
+      $this->return->setObject(array(1));
+      return;
+    }
+  }
+
   // Adicionar produto ao carrinho
   public function addProduct(){
     $data = $this->get_post();

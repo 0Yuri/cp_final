@@ -104,6 +104,14 @@ class Cart extends Model
         }
     }
 
+    public static function getAmountCart($orders){
+        $total = 0.0;
+        foreach($orders as $pedido){
+            print_r($pedido);
+        }
+        return $total;
+    }
+
     public static function getCart(){
         $carrinho = array();
         if(isset($_SESSION['cart'])){
@@ -154,5 +162,52 @@ class Cart extends Model
                 }
             }
         }
+    }
+
+    public static function avaliarCarrinhoParcelas($order){
+        $total = 0;
+        // Pega o valor total dos pedidos
+        foreach($order as $pedido_loja){
+            foreach($pedido_loja['produtos'] as $produto){
+                // Converte o preço em float
+                $preco_produto = ((float)$produto['preco']);
+                // Desconto do produto
+                $desconto = 1.0 - ((float)$produto['desconto'] / 100);
+                $total += (($preco_produto * $desconto) * $produto['quantidade']);
+            }
+        }
+        
+        $parcelas = array();
+        $parcelas[] = 1;
+      
+        for($i = 2;$i <= 12; $i++){
+            if(($total/$i) >= (float)5){
+                $parcelas[] = $i;
+            }
+            else{
+                break;
+            }
+        }
+
+        $_SESSION['parcelas'] = $parcelas;
+        return $parcelas;
+    }
+
+    public static function ValidarParcelas($valor){
+        $valor_total = (float) $valor / 100;
+        $parcelas = array();
+
+        for($i = 2; $i <= 12; $i++){
+            if(($valor_total/$i) >= 5){
+                $parcelas[] = $i;
+            }
+            else{
+                break;
+            }
+        }
+
+        $_SESSION['parcelas'] = $parcelas;        
+        return $parcelas;
+        
     }
 }
