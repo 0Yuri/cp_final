@@ -71,8 +71,15 @@ class CheckoutController extends Controller
     if(count($_SESSION['order']) > 0 && count($data) > 0){
       foreach($data as $key => $pedido){
         if(isset($_SESSION['order'][$key])){
-          $_SESSION['order'][$key]['entrega']['forma'] = $data[$key]['entrega']['forma'];
-          $_SESSION['order'][$key]['entrega']['valores'] = $data[$key]['entrega']['valores'];
+          if(isset($data[$key]['entrega']['forma'])){
+            $_SESSION['order'][$key]['entrega']['forma'] = $data[$key]['entrega']['forma'];
+            $_SESSION['order'][$key]['entrega']['valores'] = $data[$key]['entrega']['valores'];
+            return;
+          }
+          else{            
+            $this->return->setFailed("Nenhuma forma de envio foi definida.");
+          }
+          
         }
       }
     }
@@ -84,6 +91,7 @@ class CheckoutController extends Controller
 
   // OK
   public function setDeliveries(){
+    $this->isLogged();
     $data = $this->get_post();
     $data = json_decode(json_encode($data), true);
 

@@ -61,7 +61,7 @@
             </div>
             <div class="w3-third">
               <label>CVC:</label>
-              <input type="text" id="cc_cvc" ng-required="vm.payment_form == 'credit_card'"  class="w3-input w3-border w3-round" required ng-model="vm.card.cvc" placeholder="999" mask="999">
+              <input type="text" id="cc_cvc" ng-required="vm.payment_form == 'credit_card'"  class="w3-input w3-border w3-round" required ng-model="vm.card.cvc" placeholder="9999" mask="9999" maxlength=4>
             </div>
           </div>
           <div class="w3-row">

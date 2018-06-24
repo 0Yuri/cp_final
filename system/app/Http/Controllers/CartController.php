@@ -24,7 +24,7 @@ class CartController extends Controller
   }
 
   public function getParcelas(){
-    if(isset($_SESSION['order'])){      
+    if(isset($_SESSION['order']) && !is_null($_SESSION['order'])){      
       $parcelas = Cart::avaliarCarrinhoParcelas($_SESSION['order']);
       $this->return->setObject($parcelas);
     }

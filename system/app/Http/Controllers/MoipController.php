@@ -124,6 +124,11 @@ class MoipController extends Controller
     $data = $this->get_post();
     $logged_id = $_SESSION['user_id'];
 
+    if(isset($data['parcelas']) && !$this->validarParcelas($data['parcelas'])){
+      $this->return->setFailed("O número de parcelas é inválido para esta compra.");
+      return;
+    }
+
     $usuario = User::createHolder($logged_id);
     if($usuario == null){
       $this->return->setFailed("Ocorreu um erro ao gerar informações essenciais para o pagamento do pedido.");
@@ -246,5 +251,20 @@ class MoipController extends Controller
     $inserir = DB::table("webhooks")->insert($data);
   }
 
+  public function validarParcelas($parcela = 1){
+    if(isset($_SESSION['order']) && !is_null($_SESSION['order'])){
+      $parcelas = Cart::avaliarCarrinhoParcelas($_SESSION['order']);
+      $tamanho = sizeof($parcelas);
+      if($parcelas[($tamanho - 1)] < $parcela){
+        return false;
+      }
+      else{
+        return true;
+      }
+    }
+    else{
+      return false;
+    }
+  }
 
 }
