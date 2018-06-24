@@ -33,7 +33,7 @@ class Controller extends BaseController
       if(isset($_SESSION['user_id'])){
         return true;
       }else{
-        $this->return->setFailed("Sessão expirada ou inexistente.");
+        $this->return->setFailed("Sessão expirada ou inexistente, realize o login para continuar.");
         exit();
       }
     }

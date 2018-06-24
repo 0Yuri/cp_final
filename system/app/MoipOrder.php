@@ -150,9 +150,12 @@ class MoipOrder extends Model
 
         $multiorder->addOrder($order);
       }
+      
+      if(!Cart::ValidarPedido($multiorder->getAmountTotal())){
+        return null;
+      }
 
       $multiorder = $multiorder->create();
-
       $multiorder_id = $multiorder->getId();
 
       // Armazenamento de pedidos

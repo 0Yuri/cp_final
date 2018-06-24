@@ -6,9 +6,9 @@
 */
 
 
-Route::any('/debugging', function(){
-    return view('ordershipped', ['buyer_name'=> "Comprador X", 'order_id' => 2131231, 'tracking_code' => '4343242342']);
-});
+// Route::any('/debugging', function(){
+//     return view('ordershipped', ['buyer_name'=> "Comprador X", 'order_id' => 2131231, 'tracking_code' => '4343242342']);
+// });
 // Admin
 Route::post('/admin/users/search', 'AdminController@pesquisarUsuario');
 Route::post('/admin/users/ban', 'AdminController@banirUsuario');
@@ -41,6 +41,8 @@ Route::post('/cart/remove', 'CartController@removeProduct'); // Remove o produto
 Route::get('/cart/clear', 'CartController@clear'); // Limpa o carrinho
 Route::post('/cart/quantity', 'CartController@changeQuantityOfProduct'); // Muda a qtd de unidades de um produto no carrinho
 Route::post('/cart/frete', 'CartController@GetDeliveryValues'); // Simula o frete do pedido no carrinho
+Route::get('/cart/parcelas', 'CartController@getParcelas');
+
 // Entrega
 Route::get('/delivery/address', 'DeliveryController@userAddress'); // Pega o endereço do usuário
 
@@ -61,7 +63,7 @@ Route::post('/orders/id', 'OrderController@getOrderID'); // Pega o id do pedido
 Route::post('/orders/loja', 'StoreController@getStoreID'); // Pega o id da loja
 
 // Avaliações - OK
-// TODO: REWORK das funções
+// TODO: reavaliar funcionalidades.
 Route::post('/order/evaluateSeller', 'EvaluationController@evaluateSeller');
 Route::post('/order/evaluateBuyer', 'EvaluationController@evaluateBuyer');
 Route::post('/order/getBuyerStatus', 'EvaluationController@isBuyerEvaluated');

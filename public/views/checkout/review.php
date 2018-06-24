@@ -40,8 +40,8 @@
       </div>
       <div class="w3-half w3-padding-16">
         <div class="w3-row" ng-init="vm.calcularEntrega(pedido, pedido.entrega)">
-          <input type="radio" ng-model="pedido.entrega.forma" class="w3-radio" ng-value="'sedex'"> SEDEX <p ng-show="pedido.entrega.valores.SEDEX"> R$ {{pedido.entrega.valores.SEDEX.valor | number: 2}} e prazo de entrega de {{pedido.entrega.valores.SEDEX.prazo}} dia(s).</p>
-          <input type="radio" ng-model="pedido.entrega.forma" class="w3-radio" ng-value="'pac'"> PAC <p ng-show="pedido.entrega.valores.PAC"> R$ {{pedido.entrega.valores.PAC.valor | number: 2}} e prazo de entrega de {{pedido.entrega.valores.PAC.prazo}} dia(s).</p>
+          <input type="radio" required ng-model="pedido.entrega.forma" class="w3-radio" ng-value="'sedex'"> SEDEX <p ng-show="pedido.entrega.valores.SEDEX"> R$ {{pedido.entrega.valores.SEDEX.valor | number: 2}} e prazo de entrega de {{pedido.entrega.valores.SEDEX.prazo}} dia(s).</p>
+          <input type="radio" required ng-model="pedido.entrega.forma" class="w3-radio" ng-value="'pac'"> PAC <p ng-show="pedido.entrega.valores.PAC"> R$ {{pedido.entrega.valores.PAC.valor | number: 2}} e prazo de entrega de {{pedido.entrega.valores.PAC.prazo}} dia(s).</p>
         </div>
       </div>
     </div>

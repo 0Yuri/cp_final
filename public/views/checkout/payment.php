@@ -61,14 +61,14 @@
             </div>
             <div class="w3-third">
               <label>CVC:</label>
-              <input type="text" id="cc_cvc" ng-required="vm.payment_form == 'credit_card'"  class="w3-input w3-border w3-round" required ng-model="vm.card.cvc" placeholder="999" mask="999">
+              <input type="text" id="cc_cvc" ng-required="vm.payment_form == 'credit_card'"  class="w3-input w3-border w3-round" required ng-model="vm.card.cvc" placeholder="9999" mask="9999" maxlength=4>
             </div>
           </div>
           <div class="w3-row">
             <label>Parcelas:</label>
             <select class="w3-select w3-border w3-round" required ng-model="vm.card.parcelas">
               <option value="" disabled selected>Selecione a quantidade de parcelas</option>
-              <option value="{{n}}" ng-repeat="n in [1,2,3,4,5,6,7,8,9,10,11,12]">{{n}} vezes</option>
+              <option value="{{n}}" ng-repeat="n in vm.parcelas">Em {{n}} vezes</option>
             </select>
           </div>
           <div class="w3-row w3-padding-16">
