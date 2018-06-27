@@ -20,7 +20,8 @@ class MoipPayment extends Model
       ->setBirthDate($data['aniversario'])
       ->setTaxDocument($data['cpf'], 'CPF')
       ->setPhone($data['ddd'], $data['telefone'], 55)
-      ->setAddress('BILLING', $data['street'], $data['number'], $data['neighborhood'], $data['city'], $data['UF'], $data['cep'], $data['complement']);
+      ->setAddress('BILLING', $data['street'], $data['number'], $data['neighborhood'], $data['city'], $data['UF'], $data['cep'], $data['complement'])
+      ->setAddress('SHIPPING', $data['street'], $data['number'], $data['neighborhood'], $data['city'], $data['UF'], $data['cep'], $data['complement']);
       return $holder;
     }
     catch (\Moip\Exceptions\UnautorizedException $e) {
