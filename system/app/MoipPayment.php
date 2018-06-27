@@ -44,7 +44,6 @@ class MoipPayment extends Model
       $expiration_date = new DateTime();
       // Adiciona 3 dias
       $expiration_date->add(new DateInterval('P03D'));
-      $instruction_lines = ["Atenção,", "fique atento à data de vencimento do boleto.", "Pague em qualquer casa lotérica."];
 
       $payment = $multiorder->multipayments()
       ->setBoleto($expiration_date, MoipPayment::logo_uri, MoipPayment::instruction_lines)
@@ -94,7 +93,6 @@ class MoipPayment extends Model
       $expiration_date = new DateTime();
       // Adiciona 3 dias
       $expiration_date->add(new DateInterval('P03D'));
-      $instruction_lines = ["Atenção,", "fique atento à data de vencimento do boleto.", "Pague em qualquer casa lotérica."];
 
       $payment = $order->payments()
           ->setBoleto($expiration_date, MoipPayment::logo_uri, MoipPayment::instruction_lines)
