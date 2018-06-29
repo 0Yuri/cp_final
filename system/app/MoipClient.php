@@ -32,6 +32,10 @@ class MoipClient extends Model
       $data['rua'], $data['numero'],
       $data['bairro'], $data['cidade'], $data['estado'],
       $data['cep'], $data['complemento'])
+      ->addAddress('SHIPPING',
+      $data['rua'], $data['numero'],
+      $data['bairro'], $data['cidade'], $data['estado'],
+      $data['cep'], $data['complemento'])
       ->create();
       $user_id = $data['id'];
       $client_id = $customer->getId();
