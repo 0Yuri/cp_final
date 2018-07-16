@@ -129,13 +129,35 @@ class MoipController extends Controller
       return;
     }
 
-    $usuario = User::createHolder($logged_id);
-    if($usuario == null){
-      $this->return->setFailed("Ocorreu um erro ao gerar informações essenciais para o pagamento do pedido.");
+    $dia = substr($data['birthdate'], 0, 2);
+    $mes = substr($data['birthdate'], 3, 2);
+    $ano = substr($data['birthdate'], 6, 4);
+
+    if(!checkdate($mes, $dia, $ano)){
+      $this->return->setFailed("Data inválida.");
       return;
     }
+    
+    // Inverte a data pro formato do moip
+    $data['birthdate'] = $ano . "-" . $mes . "-" . $dia;
 
-    $holder = MoipPayment::gerarHolder($this->moip, $usuario);
+    $dataHolder = array(
+      'fullname' => $data['name'],
+      'birthdate' => $data['birthdate'],
+      'ddd' => $data['ddd'],
+      'phone' => $data['phone'],
+      'cpf' => $data['cpf'],
+      'street' => $data['street'],
+      'complement' => $data['complement'],
+      'number' => $data['address_number'],
+      'neighborhood' => $data['neighborhood'],
+      'city' => $data['city'],
+      'UF' => $data['UF'],
+      'cep' => $data['cep'],
+    );
+
+    $holder = MoipPayment::gerarHolder($this->moip, $dataHolder);
+
     if($holder == null){
       $this->return->setFailed("Ocorreu um erro ao gerenciar seu pagamento.");
       return;
@@ -174,6 +196,7 @@ class MoipController extends Controller
       if($order != null){
         $pagamento = MoipPayment::pagarCartaoSimples($order, $holder, $data['number'], $data['cvc'], $data['expYear'], $data['expMonth'], $data['parcelas']);
         if($pagamento != null){
+          $this->return->setObject($pagamento);
           return;
         }
         else{
