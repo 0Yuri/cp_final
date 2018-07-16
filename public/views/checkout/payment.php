@@ -28,42 +28,53 @@
     <!-- Formas de pagamentos -->
     <div class="w3-row">
       <!-- Credit card -->
-      <div class="w3-content w3-center" ng-show="true" style="padding: 0 10%">
-      <!-- <div class="w3-content w3-center" ng-show="vm.payment_form =='credit_card'" style="padding: 0 10%"> -->
+      <div class="w3-content w3-center" ng-show="vm.payment_form =='credit_card'" style="padding: 0 10%">
         <form ng-submit="vm.pagarComCartao(vm.card)">
           <h3>Informações de cobrança</h3>
           <div class="w3-row">
-            <div class="w3-third" style="margin-right:2%">
+            <div class="w3-quarter" style="margin-right:2%">
               <label>CEP:</label>
-              <input type="text" ng-required="vm.payment_form == 'credit_card'" class="w3-input w3-border w3-round" ng-model="vm.card.cep">
+              <input type="text" ng-required="vm.payment_form == 'credit_card'" class="w3-input w3-border w3-round" ng-model="vm.card.cep" maxlength="8">
             </div>
             <div class="w3-rest">
               <label>Rua:</label>
-              <input type="text" ng-required="vm.payment_form == 'credit_card'" class="w3-input w3-border w3-round" ng-model="vm.card.street">
+              <input type="text" ng-required="vm.payment_form == 'credit_card'" maxlength="70" class="w3-input w3-border w3-round" ng-model="vm.card.street">
             </div>
           </div>          
           <div class="w3-row">
-            <div class="w3-third" style="margin-right:2%">
+            <div class="w3-quarter" style="margin-right:2%">
               <label>Número:</label>
-              <input type="text" ng-required="vm.payment_form == 'credit_card'" class="w3-input w3-border w3-round" ng-model="vm.card.number">
+              <input type="text" ng-required="vm.payment_form == 'credit_card'" class="w3-input w3-border w3-round" ng-model="vm.card.address_number">
             </div>          
+            <div class="w3-third" style="margin-right:2%">
+              <label>Bairro:</label>
+              <input type="text" ng-required="vm.payment_form == 'credit_card'" class="w3-input w3-border w3-round" ng-model="vm.card.neighborhood">
+            </div>
             <div class="w3-quarter" style="margin-right:2%">
               <label>Cidade:</label>
               <input type="text" ng-required="vm.payment_form == 'credit_card'" class="w3-input w3-border w3-round" ng-model="vm.card.city">
             </div>
             <div class="w3-rest">
               <label>Estado:</label>
-              <input type="text" ng-required="vm.payment_form == 'credit_card'" class="w3-input w3-border w3-round" ng-model="vm.card.UF">
+              <input type="text" ng-required="vm.payment_form == 'credit_card'" maxlength="3" class="w3-input w3-border w3-round" ng-model="vm.card.UF">
             </div>
           </div>
           <div class="w3-row">
-            <div class="w3-half" style="margin-right:2%">
-              <label>Bairro:</label>
-              <input type="text" ng-required="vm.payment_form == 'credit_card'" class="w3-input w3-border w3-round" ng-model="vm.card.neighborhood">
+            <label>Complemento:</label>
+            <input type="text" ng-required="vm.payment_form == 'credit_card'" class="w3-input w3-border w3-round" ng-model="vm.card.complement">
+          </div>
+          <div class="w3-row">
+            <div class="w3-quarter" style="margin-right:2%">
+              <label>DDD:</label>
+              <input type="text" class="w3-input w3-border w3-round" maxlength="2" ng-required="vm.payment_form == 'credit_card'" ng-model="vm.card.ddd">
+            </div>
+            <div class="w3-third" style="margin-right:2%">
+              <label>Telefone do titular:</label>
+              <input type="text" class="w3-input w3-border w3-round"  maxlength="9" ng-required="vm.payment_form == 'credit_card'" ng-model="vm.card.phone">
             </div>
             <div class="w3-rest">
-              <label>Complemento:</label>
-              <input type="text" ng-required="vm.payment_form == 'credit_card'" class="w3-input w3-border w3-round" ng-model="vm.card.complement">
+              <label>Data de nascimento do titular:</label>
+              <input type="text" class="w3-input w3-border w3-round" maxlength="10" ng-required="vm.payment_form == 'credit_card'" ng-model="vm.card.birthdate" placeholder="xx-xx-xxxx" mask="99-99-9999">
             </div>
           </div>
           <div class="w3-row">
@@ -81,6 +92,10 @@
           <div class="w3-row">
             <label>Nome do titular:</label>
             <input type="text" ng-required="vm.payment_form == 'credit_card'" class="w3-input w3-border w3-round" ng-model="vm.card.name" placeholder="JOSE F G SILVA">
+          </div>
+          <div class="w3-row">
+            <label>CPF do titular:</label>
+            <input type="text" ng-required="vm.payment_form == 'credit_card'" maxlength="12" class="w3-input w3-border w3-round" ng-model="vm.card.cpf" placeholder="XXXXXXXXXXXX">
           </div>
           <div class="w3-row">
             <label>Número do cartão:</label>
