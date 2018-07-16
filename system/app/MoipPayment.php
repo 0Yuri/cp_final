@@ -16,10 +16,10 @@ class MoipPayment extends Model
   // Gerar holder do cartão de crédito
   public static function gerarHolder(Moip $moip, $data){
     try{
-      $holder = $moip->holders()->setFullname($data['name'] . " " .  $data['last_name'])
-      ->setBirthDate($data['aniversario'])
+      $holder = $moip->holders()->setFullname($data['fullname'])
+      ->setBirthDate($data['birthdate'])
       ->setTaxDocument($data['cpf'], 'CPF')
-      ->setPhone($data['ddd'], $data['telefone'], 55)
+      ->setPhone($data['ddd'], $data['phone'], 55)
       ->setAddress('BILLING', $data['street'], $data['number'], $data['neighborhood'], $data['city'], $data['UF'], $data['cep'], $data['complement'])
       ->setAddress('SHIPPING', $data['street'], $data['number'], $data['neighborhood'], $data['city'], $data['UF'], $data['cep'], $data['complement']);
       return $holder;
