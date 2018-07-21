@@ -19,6 +19,10 @@ Route::post('/admin/stores/toggleStatus', 'AdminController@toggleLoja');
 
 Route::get('/admin/stats', 'AdminController@estatisticas');
 
+Route::get('/moip/connect', 'MoipController@link');
+// http://localhost/system/public/moip/receive?code=98dd718b7c5b51b641603583b107859948d9d869
+Route::get('/moip/receive', 'MoipController@teste');
+
 Route::post('/webhooks', 'MoipController@getWebHooks');
 // ------------------------ENDING OF TESTING SECTION-------------------------- //
 

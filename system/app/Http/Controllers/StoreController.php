@@ -41,16 +41,16 @@ class StoreController extends Controller
 		}
 
 		if(Input::hasFile('image')){
-      $image = Input::file('image');
+			$image = Input::file('image');
 			if(!Input::file('image')->isValid()){
-	      $this->return->setFailed("Inválida.");
-	      return;
-	    }
-    }
-    else{
-      $this->return->setFailed("Nenhuma imagem foi enviada.");
-      return;
-    }
+				$this->return->setFailed("Inválida.");
+				return;
+			}
+		}
+		else{
+			$this->return->setFailed("Nenhuma imagem foi enviada.");
+			return;
+		}
 
 		$diretorio = realpath(storage_path() . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "..") . DIRECTORY_SEPARATOR . "public" . DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR;
     $destino = $diretorio . "stores" . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR;

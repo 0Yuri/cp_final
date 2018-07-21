@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Moip\Moip;
+use Moip\Auth\Connect;
 use Moip\Auth\OAuth;
 
 use App\Resposta;
@@ -13,8 +14,8 @@ use App\Order;
 use App\Client;
 use Moip\Exceptions;
 /*
- * Já existe um objeto com nome Moip, por isso MoipConstants
- * para não gerar conflitos.
+* Já existe um objeto com nome Moip, por isso MoipConstants
+* para não gerar conflitos.
 */
 use App\Moip as MoipConstants;
 use App\MoipAccount;
@@ -27,23 +28,38 @@ use App\Wallet;
 
 use DB;
 use DateTime;
+use Illuminate\Http\Request;
 
 class MoipController extends Controller
 {
-  // protected $access_token = "a4face756e9e4e5c977b0b6449d4e168_v2";
-  protected $access_token = MoipConstants::ACCESS_TOKEN;
   protected $notification;
   protected $moip;
+  protected $connect;
   const ACCOUNT_ID = MoipConstants::OWNER_ACCOUNT;
 
   public function __construct(){
     parent::__construct();
-    $this->moip = new Moip(new OAuth($this->access_token), Moip::ENDPOINT_SANDBOX);
+    $this->moip = new Moip(new OAuth(MoipConstants::ACCESS_TOKEN), Moip::ENDPOINT_SANDBOX);
+    // Permissões para contas externas
+    $this->connect = new Connect(MoipConstants::REDIRECT_URL, MoipConstants::APP_ID, true, Connect::ENDPOINT_SANDBOX);
+    $this->connect->setScope(Connect::RECEIVE_FUNDS)
+    ->setScope(Connect::REFUND)
+    ->setScope(Connect::MANAGE_ACCOUNT_INFO)
+    ->setScope(Connect::RETRIEVE_FINANCIAL_INFO);
+  }
 
-    $this->notification = $this->moip->notifications()->addEvent('ORDER.*')
-    ->addEvent('PAYMENT.AUTHORIZED')
-    ->setTarget('http://localhost/system/public/webhooks')
-    ->create();
+  public function teste(){
+    $this->connect->setClientSecret('78608a48596f4753900bec7c647e1bb3');
+    // Set the code responsed by permissions
+    $this->connect->setCode($_GET['code']);
+    // Call the function authorize(), to generate the OAuth token
+    $authorize = $this->connect->authorize();
+
+    print_r($authorize);
+  }
+
+  public function link(){    
+    $this->return->setObject($this->connect->getAuthUrl());
   }
 
   public function payWithBoleto(){
@@ -263,15 +279,15 @@ class MoipController extends Controller
 
   // testando webhooks
   public function getWebHooks(){
-    $json = file_get_contents('php://input');
+    // $json = file_get_contents('php://input');
 
-    $data = array(
-      'info' => $json
-    );
+    // $data = array(
+    //   'info' => $json
+    // );
 
-    print_r($json);
+    // print_r($json);
     
-    $inserir = DB::table("webhooks")->insert($data);
+    // $inserir = DB::table("webhooks")->insert($data);
   }
 
   public function validarParcelas($parcela = 1){

@@ -16,4 +16,13 @@
       https://sandbox.moip.com.br/simulador/authorize?payment_id={{vm.payment.id}}&amount={{vm.payment.amount}}
     </div>
   </div>
+  <div class="w3-row">
+    <div class="w3-row">
+      <label>Conecte-se com sua conta Moip</label>
+    </div>
+    <div>
+      <a href="{{vm.link}}" target="_blank">Conectar Moip</a>
+    </div>    
+    <span>{{vm.link}}</span>
+  </div>
 </div>
