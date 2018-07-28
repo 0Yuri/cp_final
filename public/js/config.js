@@ -30,6 +30,11 @@
         parent:"viewsFolder"
       })
       .addPath({
+        name:"signupFolder",
+        folder:"signup",
+        parent:"viewsFolder"
+      })
+      .addPath({
         name:"checkoutFolder",
         folder:"checkout",
         parent:"viewsFolder"
@@ -83,9 +88,21 @@
    	.state({
    		name: 'root.signup',
    		url: '/cadastro',
-   		templateUrl: pathTo.mainFolder+'signup.php',
-   		controller: 'SignUpController as vm'
-   	})
+   		templateUrl: pathTo.signupFolder+'signup_choose.php',
+   		controller: 'SignupController as vm'
+     })
+     .state({
+       name: 'root.moipaccount',
+       url: '/cadastro/moip',
+       templateUrl: pathTo.signupFolder+'signup_moip.php',
+       controller: 'SignupController as vm'
+     })
+     .state({
+      name: 'root.noaccount',
+      url: '/cadastro/padrao',
+      templateUrl: pathTo.signupFolder+'signup.php',
+      controller: 'SignupController as vm'
+    })
     // FAQs
     .state({
       name: 'root.faq',
@@ -170,6 +187,12 @@
       url: '/painel',
       templateUrl: pathTo.panelFolder+'panelDashboard.php',
       controller: 'PanelDashboardController as vm'
+    })
+    .state({
+      name: 'root.moip',
+      url: '/vincularconta/:code',
+      templateUrl: pathTo.panelFolder+'panelVincular.php',
+      controller: 'TerceirosController as vm'
     })
     // Dashboard - favoritos
    	.state({

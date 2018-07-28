@@ -16,12 +16,6 @@
 			linkar();
 		}
 
-		vm.teste = {
-			nome: "Yves",
-			description: "Testes",
-			idade: 44
-		};
-
 		function upload (file) {
 			var fd = new FormData();
 			fd.append('file',$scope.myFile);

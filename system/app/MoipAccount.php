@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Moip\Moip;
+use Moip\Auth\Connect;
 use App\Account;
 use App\Conta;
 use DB;
@@ -55,6 +56,26 @@ class MoipAccount extends Model
     }
     return false;
 
+  }
+
+  // Recuperar conta moip através do código
+  public function recuperarConta(Connect $connect, $id, $code){
+    $data = Account::objetoConta($id);
+
+    if ($data == null){
+      exit();
+    }
+
+    // Secret serial
+    $connect->setClientSecret(MoipConstants::SECRET_SERIAL);
+    // Setar o código
+    $connect->setCode($code);
+    // Receber a conta
+    $authorize = $connect->authorize();
+    // Salvar a conta
+    print_r($authorize);
+    $status = Account::add($connect->moipAccount->id, $data['id'], $connect->accessToken);
+    return $status;
   }
 
   // Pega o ID da conta moip através do id da loja

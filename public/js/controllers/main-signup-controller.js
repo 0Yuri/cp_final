@@ -3,13 +3,22 @@
 
 	angular.module ('app')
 
-	.controller ('SignUpController', SignUpController);
+	.controller ('SignupController', SignupController);
 
-	function SignUpController ($state, $http, $window){
+	function SignupController ($state, $http, $window){
 		var vm = this;
+
+		vm.link = "about:blank";
+
 		vm.cadastrarUsuario = cadastrarUsuario;
 		vm.cepAddress = cepAddress;
 		vm.textChanged = textChanged
+
+		_init();
+
+		function _init(){
+			gerarLinkMoip();
+		}
 
 		function cadastrarUsuario(){
 			var field = {
@@ -27,7 +36,23 @@
           vm.msg_error = response.data.error;
         }
       });
-    }
+		}
+		
+		function gerarLinkMoip(){
+			$http.get('system/public/moip/connect')
+			.then(function(response){
+				if(response.data.success){
+					vm.link = response.data.object;
+				}
+				else{
+					alert("Erro ao gerar link de autorização.");
+				}
+			});
+		}
+
+		function prosseguir(){
+
+		}
 
 		function textChanged(input){
 			if(input.cep.length >= 9){
@@ -42,7 +67,7 @@
 					vm.address = response.data.object;
 				}
 				else{
-					console.log("Cep inválido, digite o endereço manualmente.");
+					alert("Não foi possível encontrar informações referentes à este CEP, digite o endereço manualmente.");
 				}
 			});
 		}

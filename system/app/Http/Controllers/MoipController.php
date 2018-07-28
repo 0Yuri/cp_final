@@ -39,27 +39,36 @@ class MoipController extends Controller
 
   public function __construct(){
     parent::__construct();
-    $this->moip = new Moip(new OAuth(MoipConstants::ACCESS_TOKEN), Moip::ENDPOINT_SANDBOX);
-    // Permissões para contas externas
-    $this->connect = new Connect(MoipConstants::REDIRECT_URL, MoipConstants::APP_ID, true, Connect::ENDPOINT_SANDBOX);
-    $this->connect->setScope(Connect::RECEIVE_FUNDS)
+    $this->moip = new Moip(new OAuth(MoipConstants::ACCESS_TOKEN), Moip::ENDPOINT_SANDBOX);    
+  }
+
+  public function autorizarAppMoip(){
+    $connect = new Connect(MoipConstants::REDIRECT_URL, MoipConstants::APP_ID, true, Connect::ENDPOINT_SANDBOX);
+    $connect->setClientSecret(MoipConstants::SECRET_SERIAL);
+    // Set the code responsed by permissions
+    $code = $_GET['code'];
+    // Verificações básicas
+    if($code != null){
+      $connect->setCode($code);
+      try{
+        $autorizacao = $connect->authorize();
+      }
+      catch(\Moip\Exceptions\ValidationException $e){
+        $this->return->setFailed($e->getMessage());
+      }
+    }
+    else{
+      $this->return->setFailed("Ocorreu um erro ao receber o código de autorização.");
+    }
+  }
+
+  public function link(){
+    $connect = new Connect(MoipConstants::REDIRECT_URL, MoipConstants::APP_ID, true, Connect::ENDPOINT_SANDBOX);
+    $connect->setScope(Connect::RECEIVE_FUNDS)
     ->setScope(Connect::REFUND)
     ->setScope(Connect::MANAGE_ACCOUNT_INFO)
-    ->setScope(Connect::RETRIEVE_FINANCIAL_INFO);
-  }
-
-  public function teste(){
-    $this->connect->setClientSecret('78608a48596f4753900bec7c647e1bb3');
-    // Set the code responsed by permissions
-    $this->connect->setCode($_GET['code']);
-    // Call the function authorize(), to generate the OAuth token
-    $authorize = $this->connect->authorize();
-
-    print_r($authorize);
-  }
-
-  public function link(){    
-    $this->return->setObject($this->connect->getAuthUrl());
+    ->setScope(Connect::RETRIEVE_FINANCIAL_INFO);    
+    $this->return->setObject($connect->getAuthUrl());
   }
 
   public function payWithBoleto(){

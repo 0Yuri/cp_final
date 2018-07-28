@@ -1,14 +1,5 @@
 <?php
 
-/* ------------------------------------------------
- * Rotas em teste devem ser testadas nesta parte
- * ------------------------------------------------
-*/
-
-
-// Route::any('/debugging', function(){
-//     return view('ordershipped', ['buyer_name'=> "Comprador X", 'order_id' => 2131231, 'tracking_code' => '4343242342']);
-// });
 // Admin
 Route::post('/admin/users/search', 'AdminController@pesquisarUsuario');
 Route::post('/admin/users/ban', 'AdminController@banirUsuario');
@@ -20,8 +11,7 @@ Route::post('/admin/stores/toggleStatus', 'AdminController@toggleLoja');
 Route::get('/admin/stats', 'AdminController@estatisticas');
 
 Route::get('/moip/connect', 'MoipController@link');
-// http://localhost/system/public/moip/receive?code=98dd718b7c5b51b641603583b107859948d9d869
-Route::get('/moip/receive', 'MoipController@teste');
+Route::any('/moip/receive', 'MoipController@autorizarAppMoip');
 
 Route::post('/webhooks', 'MoipController@getWebHooks');
 // ------------------------ENDING OF TESTING SECTION-------------------------- //
