@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use Moip\Moip;
 use Moip\Auth\Connect;
 use App\Account;
-use App\Conta;
 use DB;
 
 class MoipAccount extends Model
@@ -154,5 +153,4 @@ class MoipAccount extends Model
       return null;
     }
   }
-
 }

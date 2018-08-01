@@ -44,6 +44,11 @@
         folder:"painel",
         parent:"viewsFolder"
       })
+      .addPath({
+        name:"experimentalFolder",
+        folder:"experimental",
+        parent:"viewsFolder"
+      })
    		.addPath({
    			name:"imgFolder",
    			folder:"img"
@@ -70,6 +75,32 @@
       templateUrl: pathTo.mainFolder+'home.php',
       controller: 'HomeController as vm'
     })
+    .state({
+      name: 'root.email',
+      url: '/cadastrar/primeiropasso',
+      templateUrl: pathTo.experimentalFolder+'signup1_email.php',
+      controller: 'ExperimentalController as vm'
+    })
+    .state({
+      name: 'root.informacoes',
+      url: '/cadastrar/informacoes',
+      templateUrl: pathTo.experimentalFolder+'signup2_personal.php',
+      controller: 'ExperimentalController as vm'
+    })
+    .state({
+      name: 'root.enderecos',
+      url: '/cadastrar/enderecos',
+      templateUrl: pathTo.experimentalFolder+'signup3_address.php',
+      controller: 'ExperimentalController as vm'
+    })
+    .state({
+      name: 'root.pagamentos',
+      url: '/cadastrar/pagamentos',
+      templateUrl: pathTo.experimentalFolder+'signup4_moip.php',
+      controller: 'ExperimentalController as vm'
+    })
+
+
     // Debug section TODO: REMOVER
     .state({
       name: 'root.debug',

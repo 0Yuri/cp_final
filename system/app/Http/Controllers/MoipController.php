@@ -43,18 +43,29 @@ class MoipController extends Controller
   }
 
   public function autorizarAppMoip(){
+    // Limpa cache da sessão
+    if(isset($_SESSION['moipAccountRef'])){
+      unset($_SESSION['moipAccountRef']);
+    }
+
     $connect = new Connect(MoipConstants::REDIRECT_URL, MoipConstants::APP_ID, true, Connect::ENDPOINT_SANDBOX);
     $connect->setClientSecret(MoipConstants::SECRET_SERIAL);
     // Set the code responsed by permissions
     $code = $_GET['code'];
     // Verificações básicas
     if($code != null){
-      $connect->setCode($code);
       try{
-        $autorizacao = $connect->authorize();
+        $connect->setCode($code);
+        $auth = $connect->authorize();
+        $token = $auth->accessToken;
+        $moipAccount = $auth->moipAccount;
+
+        if(is_null($token) || is_null($moipAccount)){
+          $this->return->setFailed("Dados inválidos.");
+        }
       }
       catch(\Moip\Exceptions\ValidationException $e){
-        $this->return->setFailed($e->getMessage());
+        $this->return->setFailed("Ocorreu um erro de validação na sua operação.");
       }
     }
     else{

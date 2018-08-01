@@ -7,6 +7,8 @@ use DB;
 
 class Account extends Model
 {
+  const TABLE_NAME = "moip_accounts";
+
   // Salva a conta no banco de dados
   public static function add($account_id, $user_id, $token){
     if($account_id == null | $user_id == null | $token == null){
@@ -19,7 +21,7 @@ class Account extends Model
         'accessToken' => $token
       );
 
-      $inseriu = DB::table('moip_accounts')
+      $inseriu = DB::table(self::TABLE_NAME)
       ->insert($objeto);
 
       if($inseriu){

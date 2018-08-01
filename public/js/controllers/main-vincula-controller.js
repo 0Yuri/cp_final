@@ -6,13 +6,7 @@
 	.controller ('TerceirosController', TerceirosController);
 
 	function TerceirosController ($state, $http, $scope, $stateParams){
-        var vm = this;   
-
+        var vm = this;
         _init();
-
-        function _init(){
-            console.log($stateParams.code);
-        }
-
     }
 })();
