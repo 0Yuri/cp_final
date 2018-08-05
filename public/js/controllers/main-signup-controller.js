@@ -12,35 +12,50 @@
 		vm.msg_error = "";
 
 		vm.verificaEmail = verificaEmail;
-		vm.cadastrarUsuario = cadastrarUsuario;
+		vm.cadastrarPessoal = cadastrarPessoal;
+		vm.cadastrarEnderecos = cadastrarEnderecos
 		vm.cepAddress = cepAddress;
 		vm.textChanged = textChanged
 
 		_init();
 
 		function _init(){
+
 		}
 
-		function cadastrarUsuario(){
-			// $('#waitingModal').modal('show');
-			$http.post('system/public/user/signup', field)
+		function cadastrarEnderecos(field){
+			$('#waitingModal').modal('show');
+			$http.post('system/public/signup/address', field)
 			.then(function(response){
-				if(response.data.success){
-					$('#waitingModal').modal('hide');
-					$window.alert("Cadastrado com sucesso.");					
-					$state.go('root.home');
+				$('#waitingModal').modal('hide');
+				if(response.data.success){					
+					alert("Tudo ok");
 				}
 				else{
-					vm.msg_error = response.data.error;
+					$state.go('root.signup');
+				}
+			});
+		}
+
+		function cadastrarPessoal(field){
+			$('#waitingModal').modal('show');
+			$http.post('system/public/signup/personal', field)
+			.then(function(response){
+				$('#waitingModal').modal('hide');
+				if(response.data.success){
+					$state.go('root.enderecos');
+				}
+				else{
+					$state.go('root.signup');
 				}
 			});
 		}
 
 		function verificaEmail(info){
-			$http.post('system/public/user/checkemail', info)
+			$http.post('system/public/signup/email', info)
 			.then(function(response){
 				if(response.data.success){
-					$window.alert("Sucesso.");
+					$state.go('root.informacoes');
 				}
 				else{
 					vm.msg_error = response.data.error;
@@ -58,10 +73,6 @@
 					alert("Erro ao gerar link de autorização.");
 				}
 			});
-		}
-
-		function prosseguir(){
-
 		}
 
 		function textChanged(input){

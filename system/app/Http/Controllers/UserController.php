@@ -49,11 +49,25 @@ class UserController extends Controller
   // Segundo passo do cadastro - Informações Pessoais
   public function signupPersonalInfo(){
     $data = $this->get_post();
+
+    if($data == null || !isset($_SESSION['new_user']['email']) || $_SESSION['new_user']['email'] == null ){
+      $this->return->setFailed("Erro no processo de cadastro.");
+      return;
+    }
+
+    $_SESSION['new_user']['personal_info'] = $data;
   }
 
   // Terceiro passo do cadastro - Informações de Endereços
   public function signupAddressInfo(){
     $data = $this->get_post();
+
+    if($data == null || !isset($_SESSION['new_user']['personal_info']) || $_SESSION['new_user']['personal_info'] == null){
+      $this->return->setFailed("Erro no processo de cadastro.");
+      return;
+    }
+
+    $_SESSION['new_user']['address_info'] = $data;
   }
 
   // Quarto passo do cadastro - Informações do Moip

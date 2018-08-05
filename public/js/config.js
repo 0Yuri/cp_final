@@ -82,24 +82,24 @@
       templateUrl: pathTo.experimentalFolder + 'signup1_email.php',
       controller: 'SignupController as vm'
     })
-    // .state({
-    //   name: 'root.informacoes',
-    //   url: '/cadastrar/informacoes',
-    //   templateUrl: pathTo.experimentalFolder+'signup2_personal.php',
-    //   controller: 'ExperimentalController as vm'
-    // })
-    // .state({
-    //   name: 'root.enderecos',
-    //   url: '/cadastrar/enderecos',
-    //   templateUrl: pathTo.experimentalFolder+'signup3_address.php',
-    //   controller: 'ExperimentalController as vm'
-    // })
-    // .state({
-    //   name: 'root.pagamentos',
-    //   url: '/cadastrar/pagamentos',
-    //   templateUrl: pathTo.experimentalFolder+'signup4_moip.php',
-    //   controller: 'ExperimentalController as vm'
-    // })
+    .state({
+      name: 'root.informacoes',
+      url: '/cadastrar/informacoes',
+      templateUrl: pathTo.experimentalFolder+'signup2_personal.php',
+      controller: 'SignupController as vm'
+    })
+    .state({
+      name: 'root.enderecos',
+      url: '/cadastrar/enderecos',
+      templateUrl: pathTo.experimentalFolder+'signup3_address.php',
+      controller: 'SignupController as vm'
+    })
+    .state({
+      name: 'root.pagamentos',
+      url: '/cadastrar/pagamentos',
+      templateUrl: pathTo.experimentalFolder+'signup4_moip.php',
+      controller: 'SignupController as vm'
+    })
     // Debug section TODO: REMOVER
     .state({
       name: 'root.debug',
