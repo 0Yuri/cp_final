@@ -75,32 +75,31 @@
       templateUrl: pathTo.mainFolder+'home.php',
       controller: 'HomeController as vm'
     })
+    // Cadastro
     .state({
-      name: 'root.email',
-      url: '/cadastrar/primeiropasso',
-      templateUrl: pathTo.experimentalFolder+'signup1_email.php',
-      controller: 'ExperimentalController as vm'
+      name: 'root.signup',
+      url: '/cadastrar',
+      templateUrl: pathTo.experimentalFolder + 'signup1_email.php',
+      controller: 'SignupController as vm'
     })
-    .state({
-      name: 'root.informacoes',
-      url: '/cadastrar/informacoes',
-      templateUrl: pathTo.experimentalFolder+'signup2_personal.php',
-      controller: 'ExperimentalController as vm'
-    })
-    .state({
-      name: 'root.enderecos',
-      url: '/cadastrar/enderecos',
-      templateUrl: pathTo.experimentalFolder+'signup3_address.php',
-      controller: 'ExperimentalController as vm'
-    })
-    .state({
-      name: 'root.pagamentos',
-      url: '/cadastrar/pagamentos',
-      templateUrl: pathTo.experimentalFolder+'signup4_moip.php',
-      controller: 'ExperimentalController as vm'
-    })
-
-
+    // .state({
+    //   name: 'root.informacoes',
+    //   url: '/cadastrar/informacoes',
+    //   templateUrl: pathTo.experimentalFolder+'signup2_personal.php',
+    //   controller: 'ExperimentalController as vm'
+    // })
+    // .state({
+    //   name: 'root.enderecos',
+    //   url: '/cadastrar/enderecos',
+    //   templateUrl: pathTo.experimentalFolder+'signup3_address.php',
+    //   controller: 'ExperimentalController as vm'
+    // })
+    // .state({
+    //   name: 'root.pagamentos',
+    //   url: '/cadastrar/pagamentos',
+    //   templateUrl: pathTo.experimentalFolder+'signup4_moip.php',
+    //   controller: 'ExperimentalController as vm'
+    // })
     // Debug section TODO: REMOVER
     .state({
       name: 'root.debug',
@@ -114,25 +113,6 @@
       url: '/ativarconta/:token',
       templateUrl: pathTo.mainFolder+'activate.php',
       controller: 'ActivateController as vm'
-    })
-    // Cadastro
-   	.state({
-   		name: 'root.signup',
-   		url: '/cadastro',
-   		templateUrl: pathTo.signupFolder+'signup_choose.php',
-   		controller: 'SignupController as vm'
-     })
-     .state({
-       name: 'root.moipaccount',
-       url: '/cadastro/moip',
-       templateUrl: pathTo.signupFolder+'signup_moip.php',
-       controller: 'SignupController as vm'
-     })
-     .state({
-      name: 'root.noaccount',
-      url: '/cadastro/padrao',
-      templateUrl: pathTo.signupFolder+'signup.php',
-      controller: 'SignupController as vm'
     })
     // FAQs
     .state({
@@ -218,12 +198,6 @@
       url: '/painel',
       templateUrl: pathTo.panelFolder+'panelDashboard.php',
       controller: 'PanelDashboardController as vm'
-    })
-    .state({
-      name: 'root.moip',
-      url: '/vincularconta/:code',
-      templateUrl: pathTo.panelFolder+'panelVincular.php',
-      controller: 'TerceirosController as vm'
     })
     // Dashboard - favoritos
    	.state({

@@ -26,6 +26,41 @@ class UserController extends Controller
     $this->moip = new Moip(new OAuth($this->access_token), Moip::ENDPOINT_SANDBOX);
   }
 
+  // Primeiro passo do cadastro - Verificação de email
+  public function signupEmailInfo(){
+    $data = $this->get_post();    
+
+    if(isset($_SESSION['new_user'])){
+      $_SESSION['new_user'] = array();
+    }
+
+    $status_email = User::doesEmailExists($data['email']);
+
+    if($status_email){
+      $this->return->setFailed("Email inválido ou já está em uso.");
+      return;
+    }
+    else{
+      $_SESSION['new_user'] = array();
+      $_SESSION['new_user']['email'] = $data['email'];
+    }
+  }
+
+  // Segundo passo do cadastro - Informações Pessoais
+  public function signupPersonalInfo(){
+    $data = $this->get_post();
+  }
+
+  // Terceiro passo do cadastro - Informações de Endereços
+  public function signupAddressInfo(){
+    $data = $this->get_post();
+  }
+
+  // Quarto passo do cadastro - Informações do Moip
+  public function signupMoipInfo(){
+    $data = $this->get_post();
+  }
+
   // Cadastro de novo usuario
   public function signup(){
     $data = $this->get_post();   

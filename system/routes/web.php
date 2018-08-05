@@ -63,6 +63,14 @@ Route::post('/order/evaluateBuyer', 'EvaluationController@evaluateBuyer');
 Route::post('/order/getBuyerStatus', 'EvaluationController@isBuyerEvaluated');
 Route::post('/order/getSellerStatus', 'EvaluationController@isSellerEvaluated');
 
+// Cadastro de usuários TODO: Implementar os métodos
+Route::post('/signup/email', 'UserController@signupEmailInfo');
+Route::post('/signup/personal', 'UserController@signupPersonalInfo');
+Route::post('/signup/address', 'UserController@signupAddressInfo');
+
+// Estudar possível caso de realocação no controlador Moip
+Route::post('/signup/moip', 'UserController@signupMoipInfo');
+
 // Usuários - OK
 Route::post('/user/signup', 'UserController@signup');
 Route::post('/user/update', 'UserController@update');

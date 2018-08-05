@@ -9,7 +9,9 @@
 		var vm = this;
 
 		vm.link = "about:blank";
+		vm.msg_error = "";
 
+		vm.verificaEmail = verificaEmail;
 		vm.cadastrarUsuario = cadastrarUsuario;
 		vm.cepAddress = cepAddress;
 		vm.textChanged = textChanged
@@ -17,25 +19,33 @@
 		_init();
 
 		function _init(){
-			gerarLinkMoip();
 		}
 
 		function cadastrarUsuario(){
-			var field = {
-				user_info: vm.field,
-				address_info: vm.address
-			};
-			$('#waitingModal').modal('show');
-      $http.post('system/public/user/signup', field)
-      .then(function(response){
-        if(response.data.success){
+			// $('#waitingModal').modal('show');
+			$http.post('system/public/user/signup', field)
+			.then(function(response){
+				if(response.data.success){
 					$('#waitingModal').modal('hide');
 					$window.alert("Cadastrado com sucesso.");					
 					$state.go('root.home');
-        }else{
-          vm.msg_error = response.data.error;
-        }
-      });
+				}
+				else{
+					vm.msg_error = response.data.error;
+				}
+			});
+		}
+
+		function verificaEmail(info){
+			$http.post('system/public/user/checkemail', info)
+			.then(function(response){
+				if(response.data.success){
+					$window.alert("Sucesso.");
+				}
+				else{
+					vm.msg_error = response.data.error;
+				}
+			})
 		}
 		
 		function gerarLinkMoip(){
