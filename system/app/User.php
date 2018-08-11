@@ -14,6 +14,7 @@ class User extends Model
   public static function add($data){
     $usuario = (array)$data['user_info'];
     $endereco = (array)$data['address_info'];
+    $contatos = (array)$data['contact_info'];
 
     if(!isset($data)){
       return false;
@@ -22,25 +23,49 @@ class User extends Model
       // Insere o usuario e retorna o id para referenciar no endereco
       $usuario['password'] = password_hash($usuario['password'], PASSWORD_DEFAULT);
 
-      $inseriu = DB::table(User::TABLE_NAME)
-      ->insertGetId($usuario);
+      // Adicionar name id para os endereços e telefones, para apenas adicionar o usuario se ele adicionar um endereco e contato válidos
 
-      if($inseriu){
-        // Atribui ao campo user_id o id do usuario adicionad
-        $endereco['user_id'] = $inseriu;
-        $endereco = Address::add($endereco);
-        if($endereco){
-          return $inseriu;
-        }else{
-          return false;
-        }
+      $endereço['user_id'] = $usuario['name_id'];
+      $contatos['user_id'] = $usuario['name_id'];
+
+      // Adiciona os contatos
+      if(Contact::add($contatos)){
+
       }else{
         return false;
       }
+
+      if(Address::add($endereco)){
+
+      }
+      else{
+        // Remove o contato previamente adicionado
+        Contact::deleteEntry($endereco['user_id']);
+        return false;
+      }
+      
+      // $inseriu = DB::table(User::TABLE_NAME)
+      // ->insertGetId($usuario);
+
+      // if($inseriu){
+      //   // Atribui ao campo user_id o id do usuario adicionad
+      //   $endereco['user_id'] = $inseriu;
+      //   $endereco = Address::add($endereco);
+      //   $contatos['user_id'] = $inseriu;
+      //   $contatos = Contact::add($contatos);
+
+      //   if($endereco && $contatos){
+      //     return $inseriu;
+      //   }else{
+      //     return false;
+      //   }
+      // }else{
+      //   return false;
+      // }
     }
   }
 
-  // Altera um usuário
+  // Altera um usuário TODO: Refazer
   public static function updateUser($data){
     $usuario = DB::table(User::TABLE_NAME)
     ->where("name_id", $data['name_id'])

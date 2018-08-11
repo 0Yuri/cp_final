@@ -30,19 +30,19 @@
     <div class="row">
       <div class="col-sm-2">
         <label>DDD:</label>
-        <input type="text" name="ddd_1" class="w3-input w3-border w3-round" required ng-model="vm.field.ddd_1" mask="99" placeholder="99">
+        <input type="text" name="ddd_1" class="w3-input w3-border w3-round" required ng-model="vm.contact.ddd_1" mask="99" placeholder="99">
       </div>
       <div class="col-sm-2">
         <label>Telefone Principal:</label>
-        <input type="text" name="tel_1" class="w3-input w3-border w3-round" required ng-model="vm.field.tel_1" mask="999999999" placeholder="999999999">
+        <input type="text" name="tel_1" class="w3-input w3-border w3-round" required ng-model="vm.contact.tel_1" mask="999999999" placeholder="999999999">
       </div>
       <div class="col-sm-2">
         <label>DDD:</label>
-        <input type="text" name="ddd_2" class="w3-input w3-border w3-round" required ng-model="vm.field.ddd_2" mask="99" placeholder="99">
+        <input type="text" name="ddd_2" class="w3-input w3-border w3-round" required ng-model="vm.contact.ddd_2" mask="99" placeholder="99">
       </div>
       <div class="col-sm-2">
         <label>Telefone Secundário:</label>
-        <input type="text" name="tel_2" class="w3-input w3-border w3-round" required ng-model="vm.field.tel_2" mask="999999999" placeholder="999999999">
+        <input type="text" name="tel_2" class="w3-input w3-border w3-round" required ng-model="vm.contact.tel_2" mask="999999999" placeholder="999999999">
       </div>
       <div class="col-sm-4">
         <label>Email:</label>
@@ -100,11 +100,11 @@
       </div>
       <div class="col-sm-4">
         <label>Complemento:</label>
-        <input type="text" name="complement" class="w3-input w3-border w3-round" required ng-model="vm.address.complement" placeholder="Apartamento 223">
+        <input type="text" name="complement" class="w3-input w3-border w3-round" ng-model="vm.address.complement" placeholder="Apartamento 223">
       </div>
       <div class="col-sm-4">
         <label>Referência:</label>
-        <input type="text" name="reference" class="w3-input w3-border w3-round" required ng-model="vm.address.reference" placeholder="Perto do supermercado X">
+        <input type="text" name="reference" class="w3-input w3-border w3-round" ng-model="vm.address.reference" placeholder="Perto do supermercado X">
       </div>
       <div class="col-sm-1">
         <label>Estado:</label>

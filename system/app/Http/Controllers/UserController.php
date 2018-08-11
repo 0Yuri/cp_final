@@ -26,55 +26,6 @@ class UserController extends Controller
     $this->moip = new Moip(new OAuth($this->access_token), Moip::ENDPOINT_SANDBOX);
   }
 
-  // Primeiro passo do cadastro - Verificação de email
-  public function signupEmailInfo(){
-    $data = $this->get_post();    
-
-    if(isset($_SESSION['new_user'])){
-      $_SESSION['new_user'] = array();
-    }
-
-    $status_email = User::doesEmailExists($data['email']);
-
-    if($status_email){
-      $this->return->setFailed("Email inválido ou já está em uso.");
-      return;
-    }
-    else{
-      $_SESSION['new_user'] = array();
-      $_SESSION['new_user']['email'] = $data['email'];
-    }
-  }
-
-  // Segundo passo do cadastro - Informações Pessoais
-  public function signupPersonalInfo(){
-    $data = $this->get_post();
-
-    if($data == null || !isset($_SESSION['new_user']['email']) || $_SESSION['new_user']['email'] == null ){
-      $this->return->setFailed("Erro no processo de cadastro.");
-      return;
-    }
-
-    $_SESSION['new_user']['personal_info'] = $data;
-  }
-
-  // Terceiro passo do cadastro - Informações de Endereços
-  public function signupAddressInfo(){
-    $data = $this->get_post();
-
-    if($data == null || !isset($_SESSION['new_user']['personal_info']) || $_SESSION['new_user']['personal_info'] == null){
-      $this->return->setFailed("Erro no processo de cadastro.");
-      return;
-    }
-
-    $_SESSION['new_user']['address_info'] = $data;
-  }
-
-  // Quarto passo do cadastro - Informações do Moip
-  public function signupMoipInfo(){
-    $data = $this->get_post();
-  }
-
   // Cadastro de novo usuario
   public function signup(){
     $data = $this->get_post();   
@@ -110,7 +61,7 @@ class UserController extends Controller
     // Verifica se o CPF é válido
     $isCpfValid = CPF::validate($data['user_info']->cpf);    
     if(!$isCpfValid){
-      $this->return->setFailed("CPF inválido.");
+      $this->return->setFailed("O CPF inserido é inválido.");
       return; 
     }
 
@@ -122,78 +73,18 @@ class UserController extends Controller
       $this->return->setFailed("Ocorreu um erro ao tentar cadastrar.");
       return;
     }
-    else{
-      $moip_account = new MoipAccount();
-      $moip_client = new MoipClient();
-      // Ambas recebem o objeto Moip e o ID do usuário adicionado para referenciar no banco de dados      
-      $status_account = $moip_account->criarConta($this->moip, $inseriu);      
-      $status_client = $moip_client->criarCliente($this->moip, $inseriu);
-    }
+    // else{
+    //   $moip_account = new MoipAccount();
+    //   $moip_client = new MoipClient();
+    //   // Ambas recebem o objeto Moip e o ID do usuário adicionado para referenciar no banco de dados      
+    //   $status_account = $moip_account->criarConta($this->moip, $inseriu);      
+    //   $status_client = $moip_client->criarCliente($this->moip, $inseriu);
+    // }
 
-    if(!Activation::generateActivationToken($inseriu, $data['user_info']->email, $data['user_info']->name)){
-      $this->return->setFailed("Ocorreu um erro ao gerar seu link de  ativação.");
-      return;
-    }
-  }
-
-  public function signupWithMoip(){
-    $data = $this->get_post();
-
-    // Validar confirmar senha e depois removê-lo
-    if(!User::validate_password($data['user_info']->password, $data['user_info']->confirmpassword)){
-      $this->return->setFailed("Senhas não são iguais.");
-      return;
-    }
-    else{
-      unset($data['user_info']->confirmpassword);
-    }
-
-    // Verificar se o email já é cadastrado.
-    if(User::doesEmailExists($data['user_info']->email)){
-      $this->return->setFailed("Ocorreu um erro ao realizar o cadastro, esse email já foi cadastrado.");
-      return;
-    }
-
-    do{
-      $name_id = uniqid($data['user_info']->name);
-      $name_id = str_ireplace(" ", "", $name_id);
-    }
-    while(User::isNameIdInUse($name_id));
-
-    $data['user_info']->name_id = $name_id;
-
-    // Inverter as datas para o formato correto de DD-MM-YYYY para YYYY-MM-DD
-    $data['user_info']->birthdate = $this->transformDate($data['user_info']->birthdate);
-    $data['user_info']->issue_date = $this->transformDate($data['user_info']->issue_date);
-
-    // Verifica se o CPF é válido
-    $isCpfValid = CPF::validate($data['user_info']->cpf);    
-    if(!$isCpfValid){
-      $this->return->setFailed("CPF inválido.");
-      return; 
-    }
-
-    // Adiciona o usuário no banco de dados
-    $inseriu = User::add($data);
-
-    // Se não inseriu, retornar error
-    if($inseriu < 0){
-      $this->return->setFailed("Ocorreu um erro ao tentar cadastrar.");
-      return;
-    }
-    else{
-      $moip_account = new MoipAccount();
-      $moip_client = new MoipClient();
-      // Ambas recebem o objeto Moip e o ID do usuário adicionado para referenciar no banco de dados      
-      $connect = new Connect(MoipConstants::REDIRECT_URL, MoipConstants::APP_ID, true, Connect::ENDPOINT_SANDBOX);
-      $status_account = $moip_account->recuperarConta($connect, $inseriu, $data['code']);      
-      $status_client = $moip_client->criarCliente($this->moip, $inseriu);
-    }
-
-    if(!Activation::generateActivationToken($inseriu, $data['user_info']->email, $data['user_info']->name)){
-      $this->return->setFailed("Ocorreu um erro ao gerar seu link de  ativação.");
-      return;
-    }
+    // if(!Activation::generateActivationToken($inseriu, $data['user_info']->email, $data['user_info']->name)){
+    //   $this->return->setFailed("Ocorreu um erro ao gerar seu link de  ativação.");
+    //   return;
+    // }
   }
 
   // Atualizar cadastro

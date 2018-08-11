@@ -68,6 +68,9 @@ Route::post('/signup/email', 'UserController@signupEmailInfo');
 Route::post('/signup/personal', 'UserController@signupPersonalInfo');
 Route::post('/signup/address', 'UserController@signupAddressInfo');
 
+Route::any('/signup/testvalues', 'UserController@debugSignup');
+
+
 // Estudar possível caso de realocação no controlador Moip
 Route::post('/signup/moip', 'UserController@signupMoipInfo');
 
