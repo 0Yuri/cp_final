@@ -6,6 +6,7 @@ use Moip\Moip;
 use Moip\Auth\OAuth;
 
 use App\User;
+use App\Client;
 use App\CPF;
 use App\Activation;
 use App\Validation;
@@ -28,42 +29,42 @@ class UserController extends Controller
 
   // Cadastro de novo usuario
   public function signup(){
-    $data = $this->get_post();   
+    $data = $this->get_post();
+    $data = (array) $data;   
 
     // Validar confirmar senha e depois removê-lo
-    if(!User::validate_password($data['user_info']->password, $data['user_info']->confirmpassword)){
+    if(!User::validate_password($data['password'], $data['confirmpassword'])){
       $this->return->setFailed("Senhas não são iguais.");
       return;
     }
     else{
-      unset($data['user_info']->confirmpassword);
+      unset($data['confirmpassword']);
     }
 
     // Verificar se o email já é cadastrado.
-    if(User::doesEmailExists($data['user_info']->email)){
+    if(User::doesEmailExists($data['email'])){
       $this->return->setFailed("Ocorreu um erro ao realizar o cadastro, esse email já foi cadastrado.");
       return;
     }
-
-    // Cria o name_id e fica gerando caso já exista
-    do{
-      $name_id = uniqid($data['user_info']->name);
-      $name_id = str_ireplace(" ", "", $name_id);
-    }
-    while(User::isNameIdInUse($name_id));
-
-    $data['user_info']->name_id = $name_id;
-
-    // Inverter as datas para o formato correto de DD-MM-YYYY para YYYY-MM-DD
-    $data['user_info']->birthdate = $this->transformDate($data['user_info']->birthdate);
-    $data['user_info']->issue_date = $this->transformDate($data['user_info']->issue_date);
-
     // Verifica se o CPF é válido
-    $isCpfValid = CPF::validate($data['user_info']->cpf);    
+    $isCpfValid = CPF::validate($data['cpf']);    
     if(!$isCpfValid){
       $this->return->setFailed("O CPF inserido é inválido.");
       return; 
     }
+
+    // Cria o name_id e fica gerando caso já exista
+    do{
+      $name_id = uniqid($data['name']);
+      $name_id = str_ireplace(" ", "", $name_id);
+    }
+    while(User::isNameIdInUse($name_id));
+    // Define o name_id único e o torna lowercase
+    $data['name_id'] = strtolower($name_id);
+
+    // Inverter as datas para o formato correto de DD-MM-YYYY para YYYY-MM-DD
+    $data['birthdate'] = $this->transformDate($data['birthdate']);
+    $data['issue_date'] = $this->transformDate($data['issue_date']);    
 
     // Adiciona o usuário no banco de dados
     $inseriu = User::add($data);
@@ -73,18 +74,22 @@ class UserController extends Controller
       $this->return->setFailed("Ocorreu um erro ao tentar cadastrar.");
       return;
     }
-    // else{
-    //   $moip_account = new MoipAccount();
-    //   $moip_client = new MoipClient();
-    //   // Ambas recebem o objeto Moip e o ID do usuário adicionado para referenciar no banco de dados      
-    //   $status_account = $moip_account->criarConta($this->moip, $inseriu);      
-    //   $status_client = $moip_client->criarCliente($this->moip, $inseriu);
-    // }
+    // Moip Related
+    else{
+      // Criar o cliente
+      $status = MoipClient::criarCliente($this->moip, $inseriu);
 
-    // if(!Activation::generateActivationToken($inseriu, $data['user_info']->email, $data['user_info']->name)){
-    //   $this->return->setFailed("Ocorreu um erro ao gerar seu link de  ativação.");
-    //   return;
-    // }
+      if(!$status){
+        $this->return->setFailed("Ocorreu um erro ao gerar sua conta cliente.");
+        return;
+      }
+    }
+
+    // Geração de token para ativação
+    if(!Activation::generateActivationToken($inseriu, $data['email'], $data['name'])){
+      $this->return->setFailed("Ocorreu um erro ao gerar seu link de  ativação.");
+      return;
+    }
   }
 
   // Atualizar cadastro
@@ -110,8 +115,8 @@ class UserController extends Controller
 
     $ativado = Activation::activate($token);
 
-    if(!$ativado){
-      $this->return->setFailed("Ocorreu um erro no envio do token de ativação, tente novamente!");
+    if($ativado > 0){
+      $this->return->setFailed($ativado + "Ocorreu um erro no envio do token de ativação, tente novamente!");
       return;
     }
   }
@@ -150,6 +155,4 @@ class UserController extends Controller
       return;
     }
   }
-
-
 }

@@ -26,11 +26,13 @@ class Activation extends Model
         // Pega o usuario em questão
         $usuario = User::grabUserById($activation->user_id);
 
-        if($usuario == null){
+        if($usuario != null){
+            $usuario['activated'] = "yes";
+        }
+        else{
             return false;
         }
 
-        $usuario['activated'] = "yes";
 
         if(!User::updateUser($usuario)){
             return false;
@@ -67,7 +69,7 @@ class Activation extends Model
         $added = DB::table(Activation::TABLE_NAME)
         ->insert($data);
 
-        return  $added;
+        return $added;
     }
 
     private static function getActivation($token){

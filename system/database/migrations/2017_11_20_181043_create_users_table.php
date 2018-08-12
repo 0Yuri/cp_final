@@ -26,6 +26,20 @@ class CreateUsersTable extends Migration
             $table->string('issuer', 25);
             $table->date('issue_date');
             $table->date('birthdate');
+            // Address
+            $table->string('cep', 10);
+            $table->string('street', 50);
+            $table->string('city', 20);
+            $table->string('UF', 2);
+            $table->string('number', 10);
+            $table->string('neighborhood', 25);
+            $table->string('complement', 50)->nullable();
+            $table->string('reference', 50)->nullable();
+            // Contact
+            $table->string('ddd_1', 4);
+            $table->string('tel_1', 10);
+            $table->string('ddd_2', 4)->nullable();
+            $table->string('tel_2', 10)->nullable();
             // Dates
             $table->timestamp('created_at')->useCurrent();
         });

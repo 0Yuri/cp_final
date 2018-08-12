@@ -10,10 +10,10 @@ use DB;
 class MoipClient extends Model
 {
 
-  const TABLE_NAME = "moip_accounts";
+  const TABLE_NAME = "moip_clients";
 
   // Cria um novo cliente através do id do usuário
-  public function criarCliente(Moip $moip, $id){
+  public static function criarCliente(Moip $moip, $id){
     // Retorna um objeto no formato do cliente
     $data = Client::objetoCliente($id);
     
@@ -78,14 +78,14 @@ class MoipClient extends Model
 
   // Consulta um cliente pelo seu ID
   public static function consultarCliente(Moip $moip, $customer_id){
-
-    if($customer_id == null){
-      return null;
-    }
-
     try{
-      $customer = $moip->customers()->get($customer_id);
-      return $customer;
+      if($customer_id == null){
+        return null;
+      }
+      else{
+        $customer = $moip->customers()->get($customer_id);
+        return $customer;
+      }      
     }
     catch(Exception $e){
       printf($e->__toString());

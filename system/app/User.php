@@ -11,57 +11,24 @@ class User extends Model
   const TABLE_NAME = 'users';
 
   // Salva um usuário novo no banco de dados
-  public static function add($data){
-    $usuario = (array)$data['user_info'];
-    $endereco = (array)$data['address_info'];
-    $contatos = (array)$data['contact_info'];
-
-    if(!isset($data)){
+  public static function add($usuario){
+    if(!isset($usuario)){
       return false;
     }
     else{
-      // Insere o usuario e retorna o id para referenciar no endereco
-      $usuario['password'] = password_hash($usuario['password'], PASSWORD_DEFAULT);
+      // Encripta a senha do usuário em hash
+      $usuario['password'] = password_hash($usuario['password'], PASSWORD_DEFAULT);      
 
-      // Adicionar name id para os endereços e telefones, para apenas adicionar o usuario se ele adicionar um endereco e contato válidos
+      // Adiciona na base     
+      $inseriu = DB::table(User::TABLE_NAME)
+      ->insertGetId($usuario);
 
-      $endereço['user_id'] = $usuario['name_id'];
-      $contatos['user_id'] = $usuario['name_id'];
-
-      // Adiciona os contatos
-      if(Contact::add($contatos)){
-
-      }else{
-        return false;
-      }
-
-      if(Address::add($endereco)){
-
+      if($inseriu){
+        return $inseriu;
       }
       else{
-        // Remove o contato previamente adicionado
-        Contact::deleteEntry($endereco['user_id']);
         return false;
       }
-      
-      // $inseriu = DB::table(User::TABLE_NAME)
-      // ->insertGetId($usuario);
-
-      // if($inseriu){
-      //   // Atribui ao campo user_id o id do usuario adicionad
-      //   $endereco['user_id'] = $inseriu;
-      //   $endereco = Address::add($endereco);
-      //   $contatos['user_id'] = $inseriu;
-      //   $contatos = Contact::add($contatos);
-
-      //   if($endereco && $contatos){
-      //     return $inseriu;
-      //   }else{
-      //     return false;
-      //   }
-      // }else{
-      //   return false;
-      // }
     }
   }
 
@@ -71,30 +38,6 @@ class User extends Model
     ->where("name_id", $data['name_id'])
     ->where("cpf", $data['cpf'])
     ->get();
-
-    if(count($usuario) <= 0){
-      return false;
-    }
-
-    if(isset($data['cpf'])){
-      unset($data['cpf']);
-    }
-    if(isset($data['rg'])){
-      unset($data['rg']);
-    }
-    if(isset($data['email'])){
-      unset($data['email']);
-    }
-
-    $alterou = DB::table(User::TABLE_NAME)
-    ->where('name_id', $data['name_id'])
-    ->update($data);
-
-    if($alterou){
-      return true;
-    }else{
-      return false;
-    }
   }
 
   // Verifica se já existe um usuário com o email cadastrado
@@ -148,7 +91,7 @@ class User extends Model
  
     $usuario = DB::table(User::TABLE_NAME)
     ->select('*')
-    ->where('name_id', '=', $id)
+    ->where('id', '=', $id)
     ->get();
 
     if(count($usuario) > 0){
