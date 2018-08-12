@@ -5,11 +5,12 @@
 
 	.controller ('SignupController', SignupController);
 
-	function SignupController ($state, $http, $window){
+	function SignupController ($state, $http){
 		var vm = this;
 
 		vm.link = "about:blank";
 		vm.msg_error = "";
+		vm.msg_process_modal = "Tudo certo.";
 
 		vm.field = {
 			name: "Yves",
@@ -45,7 +46,8 @@
 			.then(function(response){
 				$('#waitingModal').modal('hide');
 				if(response.data.success){
-					alert("Sucesso!");
+					$('#signupModal').modal('show');
+					$state.go('root.home');
 				}
 				else{
 					vm.msg_error = response.data.error;

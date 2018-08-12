@@ -34,10 +34,25 @@ class User extends Model
 
   // Altera um usuário TODO: Refazer
   public static function updateUser($data){
-    $usuario = DB::table(User::TABLE_NAME)
-    ->where("name_id", $data['name_id'])
-    ->where("cpf", $data['cpf'])
-    ->get();
+    $fields = array(
+      'cpf', 'rg', 'birthdate', 'name_id', 'id', 'email'
+    );
+    foreach($fields as $key){
+      if(isset($data[$key])){
+        unset($data[$key]);
+      }
+    }
+        
+    $updated = DB::TABLE(User::TABLE_NAME)
+    ->where("id", $_SESSION['user_id'])
+    ->update($data);
+
+    if($updated){
+      return true;
+    }
+    else{
+      return false;
+    }
   }
 
   // Verifica se já existe um usuário com o email cadastrado

@@ -53,18 +53,25 @@ class UserController extends Controller
       return; 
     }
 
-    // Cria o name_id e fica gerando caso já exista
+    // Inverter as datas para o formato correto de DD-MM-YYYY para YYYY-MM-DD
+    $data['birthdate'] = $this->transformDate($data['birthdate']);
+    $data['issue_date'] = $this->transformDate($data['issue_date']); 
+
+    // Cria o cliente Moip
+    $clienteMoip = MoipClient::criarCliente($this->moip, $data);
+    if($clienteMoip == null){
+      $this->return->setFailed("Dados inconsistentes para criação de perfil cliente.");
+      return;
+    }
+
+    // Cria o usuário na base caso esteja tudo okay.
     do{
       $name_id = uniqid($data['name']);
       $name_id = str_ireplace(" ", "", $name_id);
     }
     while(User::isNameIdInUse($name_id));
     // Define o name_id único e o torna lowercase
-    $data['name_id'] = strtolower($name_id);
-
-    // Inverter as datas para o formato correto de DD-MM-YYYY para YYYY-MM-DD
-    $data['birthdate'] = $this->transformDate($data['birthdate']);
-    $data['issue_date'] = $this->transformDate($data['issue_date']);    
+    $data['name_id'] = strtolower($name_id);      
 
     // Adiciona o usuário no banco de dados
     $inseriu = User::add($data);
@@ -77,10 +84,10 @@ class UserController extends Controller
     // Moip Related
     else{
       // Criar o cliente
-      $status = MoipClient::criarCliente($this->moip, $inseriu);
+      $status = Client::add($inseriu, $clienteMoip->getId());
 
       if(!$status){
-        $this->return->setFailed("Ocorreu um erro ao gerar sua conta cliente.");
+        $this->return->setFailed("Ocorreu um erro ao cadastrar sua conta.");
         return;
       }
     }
@@ -116,7 +123,7 @@ class UserController extends Controller
     $ativado = Activation::activate($token);
 
     if($ativado > 0){
-      $this->return->setFailed($ativado + "Ocorreu um erro no envio do token de ativação, tente novamente!");
+      $this->return->setFailed("Usuario de id: " . $ativado . "Ocorreu um erro no envio do token de ativação, tente novamente!");
       return;
     }
   }
@@ -136,6 +143,7 @@ class UserController extends Controller
   }
 
   // Converte a data introduzida para o formato do banco de dados
+  // Formato YYYY-mm-dd
   private function transformDate($string){
     $data = explode("-", $string);
     $d = mktime(0,0,0, $data[1], $data[0], $data[2]);

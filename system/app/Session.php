@@ -5,12 +5,14 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 
+use App\User;
+
 class Session extends Model
 {
     
   // Verifica se existe uma sessão
   public static function checkSession(){
-    return isset($_SESSION['user_id']);
+    return isset($_SESSION['user_id']) && (User::getLoggedUser($_SESSION['user_id']) != null);
   }
 
   // Realiza um login, se o login e senha estiverem certos
@@ -35,9 +37,6 @@ class Session extends Model
 
   // Acaba com a sessão de forma geral
   public static function logout(){
-    // if(isset($_SESSION['user_id'])){
-    //   unset($_SESSION['user_id']);
-    // }
     session_unset();    
   }
 

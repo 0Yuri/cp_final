@@ -7,8 +7,10 @@
 
 	function RootController ($state, $http, $pathTo, $rootScope, userService) {
 		var vm = this;
+		vm.session_status = false;
+		vm.msg_modal = "Estamos processando sua operação, por favor aguarde.";
+		
 		$rootScope.imgFolder = $pathTo.imgFolder;
-
 		vm.pegarCategorias = pegarCategorias;
 		vm.pegarQtdCarrinho = pegarQtdCarrinho;
 
@@ -16,7 +18,6 @@
 		vm.logout = logout;
 		vm.verificarSessao = verificarSessao;
 
-		vm.session_status = false;
 
 		_init();
 
