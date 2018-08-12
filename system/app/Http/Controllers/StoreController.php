@@ -23,16 +23,12 @@ class StoreController extends Controller
 	public function newStore(){
 		$this->isLogged();
 		$data = $_POST;
-
 		$data['owner_id'] = $_SESSION['user_id'];
-
 		$nome_loja = str_ireplace(" ", "", $data['name']);
-
 		$data['unique_id'] = uniqid('STORE-'.$nome_loja);
 
 		// Validações
 		$validar = new Validation();
-
 		$status = $validar->validateAll($data);
 
 		if(strlen($status) > 0){
@@ -40,30 +36,23 @@ class StoreController extends Controller
 			return;
 		}
 
+		// TODO usar alguma API que veja se a foto é NSFW
 		if(Input::hasFile('image')){
 			$image = Input::file('image');
 			if(!Input::file('image')->isValid()){
-				$this->return->setFailed("Inválida.");
+				$this->return->setFailed("Imagem inválida.");
 				return;
 			}
+			else{
+				$diretorio = realpath(storage_path() . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "..") . DIRECTORY_SEPARATOR . "public" . DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR;
+				$destino = $diretorio . "stores" . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR;
+				
+				$nomeHash =  md5($image->getClientOriginalName()) . '.' . $image->getClientOriginalExtension();
+				$data['profile_image'] = 'users' . DIRECTORY_SEPARATOR . $nomeHash;
+			}
 		}
-		else{
-			$this->return->setFailed("Nenhuma imagem foi enviada.");
-			return;
-		}
-
-		$diretorio = realpath(storage_path() . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "..") . DIRECTORY_SEPARATOR . "public" . DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR;
-    $destino = $diretorio . "stores" . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR;
-
-    $nomeHash =  md5($image->getClientOriginalName()) . '.' . $image->getClientOriginalExtension();
-
-		if(!$image->move($destino, $nomeHash)){
-			$this->return->setFailed("Ocorreu um erro ao realizar o upload da imagem.");
-			return;
-		}
-
-		$data['profile_image'] = 'users' . DIRECTORY_SEPARATOR . $nomeHash;
-
+		
+		unset($data['image']);
 		$inseriu = Store::add($data);
 
 		if(!$inseriu){

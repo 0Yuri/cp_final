@@ -12,48 +12,44 @@ class MoipAccount extends Model
 {
 
   // Cria uma conta moip, depois salva no banco de dados
-  public function criarConta(Moip $moip, $id){
-    // Retorna um objeto através do ID do usuário no formato esperado para cadastrar a conta.
-    $data = Account::objetoConta($id);
-
-    if ($data == null){
-      exit();
-    }
-
+  public function criarConta(Moip $moip, $data=null){
     try{
-      $account = $moip->accounts()
-      ->setName($data['nome'])
-      ->setLastName($data['sobrenome'])
-      ->setEmail($data['email'])
-      ->setIdentityDocument($data['rg'], $data['emissor'], $data['data_emissao'])
-      ->setBirthDate($data['aniversario'])
-      ->setTaxDocument($data['cpf'])
-      ->setType('MERCHANT')
-      ->setPhone($data['ddd'], $data['telefone'], 55)
-      ->addAddress($data['rua'], $data['numero'], $data['bairro'],
-       $data['cidade'], $data['estado'], $data['cep'], $data['complemento'], 'BRA')
-      ->setTransparentAccount(true)
-      ->create();
-      $account_id = $account->getId();
-      $user_id = $data['id'];
-      $access_token = $account->getAccessToken();
-      // Salva a conta no banco de dados
-      $status = Account::add($account_id, $user_id, $access_token);
-      return $status;
+      if($data != null){
+        $account = $moip->accounts()
+        ->setName($data['name'])
+        ->setLastName($data['last_name'])
+        ->setEmail($data['email'])
+        ->setIdentityDocument($data['rg'], $data['issuer'], $data['issue_date'])
+        ->setBirthDate($data['birthdate'])
+        ->setTaxDocument($data['cpf'])
+        ->setType('MERCHANT')
+        ->setPhone($data['ddd_1'], $data['tel_1'], 55)
+        ->addAddress($data['street'], $data['number'], $data['neighborhood'],
+        $data['city'], $data['UF'], $data['cep'], $data['complement'], 'BRA')
+        ->setTransparentAccount(true)
+        ->create();
+      
+        $account_id = $account->getId();
+        $user_id = $data['id'];
+        $access_token = $account->getAccessToken();
+        // Salva a conta no banco de dados
+        $status = Account::add($account_id, $user_id, $access_token);
+        return $status;
+      }
     }
     catch (\Moip\Exceptions\UnautorizedException $e) {
       //StatusCode 401
-      echo $e->getMessage();
+      // echo $e->getMessage();
     }
     catch (\Moip\Exceptions\ValidationException $e) {
       //StatusCode entre 400 e 499 (exceto 401)
-      printf($e->__toString());
+      // printf($e->__toString());
     }
     catch (\Moip\Exceptions\UnexpectedException $e) {
       //StatusCode >= 500
-      echo $e->getMessage();
+      // echo $e->getMessage();
     }
-    return false;
+    return null;
 
   }
 
