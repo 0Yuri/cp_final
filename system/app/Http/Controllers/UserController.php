@@ -122,8 +122,8 @@ class UserController extends Controller
 
     $ativado = Activation::activate($token);
 
-    if($ativado > 0){
-      $this->return->setFailed("Usuario de id: " . $ativado . "Ocorreu um erro no envio do token de ativação, tente novamente!");
+    if(!$ativado){
+      $this->return->setFailed("Ocorreu um erro ao ativar sua conta, tente novamente!");
       return;
     }
   }

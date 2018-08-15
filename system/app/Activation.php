@@ -23,8 +23,10 @@ class Activation extends Model
             return false;
         }
 
+        // var_dump($activation);
+
         // Pega o usuario em questão
-        $usuario = User::grabUserById($activation->user_id);
+        $usuario = User::grabUserById($activation['user_id']);
 
         if($usuario != null){
             $usuario['activated'] = "yes";
@@ -34,11 +36,11 @@ class Activation extends Model
         }
 
 
-        if(!User::updateUser($usuario)){
+        if(!User::updateUser($usuario, $activation['user_id'])){
             return false;
         }
 
-        return Activation::deleteActivation($activation->id);
+        return Activation::deleteActivation($activation['id']);
     }
 
     public static function generateActivationToken($user_id, $email, $username){
@@ -79,7 +81,7 @@ class Activation extends Model
         ->get();
 
         if(count($activation) > 0){
-            return $activation[0];
+            return (array)$activation[0];
         }
         else{
             return null;

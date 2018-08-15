@@ -33,7 +33,7 @@ class User extends Model
   }
 
   // Altera um usuário TODO: Refazer
-  public static function updateUser($data){
+  public static function updateUser($data, $user_id = null){
     $fields = array(
       'cpf', 'rg', 'birthdate', 'name_id', 'id', 'email'
     );
@@ -42,9 +42,18 @@ class User extends Model
         unset($data[$key]);
       }
     }
+
+    if($user_id == null){
+      if(isset($_SESSION['user_id'])){
+        $user_id = $_SESSION['user_id'];
+      }
+      else{
+        return false;
+      }
+    }
         
     $updated = DB::TABLE(User::TABLE_NAME)
-    ->where("id", $_SESSION['user_id'])
+    ->where("id", $user_id)
     ->update($data);
 
     if($updated){
