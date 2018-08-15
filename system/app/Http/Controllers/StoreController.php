@@ -11,6 +11,12 @@ use App\Product;
 use App\Resposta;
 use App\Store;
 use App\Validation;
+use App\Moip as MoipConstants;
+use App\MoipAccount;
+use App\User;
+
+use Moip\Moip;
+use Moip\Auth\OAuth;
 
 use DB;
 
@@ -27,7 +33,7 @@ class StoreController extends Controller
 		$nome_loja = str_ireplace(" ", "", $data['name']);
 		$data['unique_id'] = uniqid('STORE-'.$nome_loja);
 
-		// Validações
+		// Validações <Desativar para testes>
 		$validar = new Validation();
 		$status = $validar->validateAll($data);
 
@@ -36,23 +42,34 @@ class StoreController extends Controller
 			return;
 		}
 
-		// TODO usar alguma API que veja se a foto é NSFW
-		if(Input::hasFile('image')){
-			$image = Input::file('image');
-			if(!Input::file('image')->isValid()){
-				$this->return->setFailed("Imagem inválida.");
-				return;
-			}
-			else{
-				$diretorio = realpath(storage_path() . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "..") . DIRECTORY_SEPARATOR . "public" . DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR;
-				$destino = $diretorio . "stores" . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR;
+		// TODO usar alguma API que veja se a foto é NSFW 
+		// <Desativar para testes>
+		// if(Input::hasFile('image')){
+		// 	$image = Input::file('image');
+		// 	if(!Input::file('image')->isValid()){
+		// 		$this->return->setFailed("Imagem inválida.");
+		// 		return;
+		// 	}
+		// 	else{
+		// 		$diretorio = realpath(storage_path() . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "..") . DIRECTORY_SEPARATOR . "public" . DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR;
+		// 		$destino = $diretorio . "stores" . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR;
 				
-				$nomeHash =  md5($image->getClientOriginalName()) . '.' . $image->getClientOriginalExtension();
-				$data['profile_image'] = 'users' . DIRECTORY_SEPARATOR . $nomeHash;
-			}
-		}
+		// 		$nomeHash =  md5($image->getClientOriginalName()) . '.' . $image->getClientOriginalExtension();
+		// 		$data['profile_image'] = 'users' . DIRECTORY_SEPARATOR . $nomeHash;
+		// 	}
+		// }
 		
 		unset($data['image']);
+
+		// Criar conta Moip
+		$moip = new Moip(new OAuth(MoipConstants::ACCESS_TOKEN), Moip::ENDPOINT_SANDBOX);
+		$status = MoipAccount::criarConta($moip, User::grabUserById($_SESSION['user_id']));
+
+		if(!$status){
+			$this->return->setFailed("Ocorreu um erro ao criar sua conta de vendedor.");
+			return;
+		}
+
 		$inseriu = Store::add($data);
 
 		if(!$inseriu){

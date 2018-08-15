@@ -12,7 +12,7 @@ class MoipAccount extends Model
 {
 
   // Cria uma conta moip, depois salva no banco de dados
-  public function criarConta(Moip $moip, $data=null){
+  public static function criarConta(Moip $moip, $data=null){
     try{
       if($data != null){
         $account = $moip->accounts()
