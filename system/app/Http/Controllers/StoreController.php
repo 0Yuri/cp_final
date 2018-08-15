@@ -58,8 +58,6 @@ class StoreController extends Controller
 		// 		$data['profile_image'] = 'users' . DIRECTORY_SEPARATOR . $nomeHash;
 		// 	}
 		// }
-		
-		unset($data['image']);
 
 		// Criar conta Moip
 		$moip = new Moip(new OAuth(MoipConstants::ACCESS_TOKEN), Moip::ENDPOINT_SANDBOX);
@@ -69,7 +67,7 @@ class StoreController extends Controller
 			$this->return->setFailed("Ocorreu um erro ao criar sua conta de vendedor.");
 			return;
 		}
-
+		
 		$inseriu = Store::add($data);
 
 		if(!$inseriu){
