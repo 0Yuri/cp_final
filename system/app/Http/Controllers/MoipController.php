@@ -114,6 +114,24 @@ class MoipController extends Controller
     }
   }
 
+  public function criarConta(){
+    $this->isLogged();
+
+    $user = User::grabUserById($_SESSION['user_id']);
+
+    if($user != null){
+      $status = MoipAccount::criarConta($this->moip, $user);
+      if(!$status){
+        $this->return->setFailed("Ocorreu um erro ao criar sua conta.");
+        return;
+      }
+    }
+    else{
+      $this->return->setFailed("Ocorreu um erro ao recuperar informações importantes para operação.");
+      return;
+    }
+  }
+
   public function link(){
     $connect = new Connect(MoipConstants::REDIRECT_URL, MoipConstants::APP_ID, true, Connect::ENDPOINT_SANDBOX);
     $connect->setScope(Connect::RECEIVE_FUNDS)

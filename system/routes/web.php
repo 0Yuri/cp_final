@@ -13,6 +13,7 @@ Route::get('/admin/stats', 'AdminController@estatisticas');
 Route::get('/moip/connect', 'MoipController@link');
 Route::any('/moip/receive', 'MoipController@autorizarAppMoip');
 Route::any('/moip/vincula', 'MoipController@linkMoipAccount');
+Route::get('/moip/novaconta', 'MoipController@criarConta');
 
 Route::post('/webhooks', 'MoipController@getWebHooks');
 // ------------------------ENDING OF TESTING SECTION-------------------------- //
