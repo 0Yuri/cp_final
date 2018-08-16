@@ -14,6 +14,7 @@ class Activation extends Model
 {
     const TABLE_NAME = 'activation';
     const URL = "http://www.crescendoepassando.com.br/ativarconta/";
+    const URL_SANDBOX = "http://localhost/ativarconta/";
 
     public static function activate($token){
         $activation = Activation::getActivation($token);
@@ -59,7 +60,7 @@ class Activation extends Model
         $added = Activation::saveActivation($data);
 
         if($added){
-            Mail::to($email)->send(new AccountCreated($username, Activation::URL . $string));
+            Mail::to($email)->send(new AccountCreated($username, self::URL_SANDBOX . $string));
             return true;
         }
         else{

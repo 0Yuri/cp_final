@@ -19,6 +19,7 @@ use Moip\Exceptions;
 */
 use App\Moip as MoipConstants;
 use App\MoipAccount;
+use App\Account;
 use App\MoipClient;
 use App\MoipOrder;
 use App\MoipPayment;
@@ -43,11 +44,6 @@ class MoipController extends Controller
   }
 
   public function autorizarAppMoip(){
-    // Limpa cache da sessão
-    if(isset($_SESSION['moipAccountRef'])){
-      unset($_SESSION['moipAccountRef']);
-    }
-
     $connect = new Connect(MoipConstants::REDIRECT_URL, MoipConstants::APP_ID, true, Connect::ENDPOINT_SANDBOX);
     $connect->setClientSecret(MoipConstants::SECRET_SERIAL);
     // Set the code responsed by permissions
@@ -70,6 +66,51 @@ class MoipController extends Controller
     }
     else{
       $this->return->setFailed("Ocorreu um erro ao receber o código de autorização.");
+    }
+  }
+
+  public function linkMoipAccount(){
+    $this->isLogged();
+    $data = $this->get_post();
+
+    if(isset($data['code'])){
+      try{
+        $connect = new Connect(MoipConstants::REDIRECT_URL, MoipConstants::APP_ID, true, Connect::ENDPOINT_SANDBOX);
+        $connect->setClientSecret(MoipConstants::SECRET_SERIAL);
+        $connect->setCode($data['code']);
+        $authorize = $connect->authorize();
+
+        $autorizacao = json_decode(json_encode($authorize), true);
+        $status = Account::add($autorizacao['moipAccount']['id'], $_SESSION['user_id'], $autorizacao['accessToken']);
+
+        if($status){
+
+        }
+        else{
+          $this->return->setFailed("Falha ao vincular sua conta.");
+          return;
+        }
+        
+      }
+      catch (\Moip\Exceptions\UnautorizedException $e) {
+        //StatusCode 401
+        $this->return->setFailed($e->getMessage());
+      } catch (\Moip\Exceptions\ValidationException $e) {
+        //StatusCode entre 400 e 499 (exceto 401)
+        $this->return->setFailed($e->getMessage());
+      } catch (\Moip\Exceptions\UnexpectedException $e) {
+        //StatusCode >= 500
+        $this->return->setFailed($e->getMessage());
+      }
+
+      // $accessToken = (string)$authorize->accessToken;
+      // $moipAccount = (string)$authorize->moipAccount;
+
+      // $status = Account::add($moipAccount, $_SESSION['user_id'], $accessToken);
+    }
+    else{
+      $this->return->setFailed("Falha ao receber o token.");
+      return;
     }
   }
 
@@ -299,15 +340,6 @@ class MoipController extends Controller
 
   // testando webhooks
   public function getWebHooks(){
-    // $json = file_get_contents('php://input');
-
-    // $data = array(
-    //   'info' => $json
-    // );
-
-    // print_r($json);
-    
-    // $inserir = DB::table("webhooks")->insert($data);
   }
 
   public function validarParcelas($parcela = 1){

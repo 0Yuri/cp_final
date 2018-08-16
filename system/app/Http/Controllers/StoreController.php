@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
 use Illuminate\Support\Facades\Input;
 use Validator;
 use Request;
@@ -25,6 +24,19 @@ class StoreController extends Controller
 	// Campos que eu quero receber do banco de dados
 	protected $campos = ['id', 'name', 'description'];
 
+	public function verificaContaMoip(){
+		$this->isLogged();
+		$token = MoipAccount::getAccessToken($_SESSION['user_id']);
+
+		if($token != null){
+			return;
+		}
+		else{
+			$this->return->setFailed("Você não possui uma conta moip cadastrada para realizar operações.");
+			return;
+		}
+	}
+
 	// Criar Loja - OK
 	public function newStore(){
 		$this->isLogged();
@@ -44,29 +56,23 @@ class StoreController extends Controller
 
 		// TODO usar alguma API que veja se a foto é NSFW 
 		// <Desativar para testes>
-		// if(Input::hasFile('image')){
-		// 	$image = Input::file('image');
-		// 	if(!Input::file('image')->isValid()){
-		// 		$this->return->setFailed("Imagem inválida.");
-		// 		return;
-		// 	}
-		// 	else{
-		// 		$diretorio = realpath(storage_path() . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "..") . DIRECTORY_SEPARATOR . "public" . DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR;
-		// 		$destino = $diretorio . "stores" . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR;
+		if(Input::hasFile('image')){
+			$image = Input::file('image');
+			if(!Input::file('image')->isValid()){
+				$this->return->setFailed("Imagem inválida.");
+				return;
+			}
+			else{
+				$diretorio = realpath(storage_path() . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "..") . DIRECTORY_SEPARATOR . "public" . DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR;
+				$destino = $diretorio . "stores" . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR;
 				
-		// 		$nomeHash =  md5($image->getClientOriginalName()) . '.' . $image->getClientOriginalExtension();
-		// 		$data['profile_image'] = 'users' . DIRECTORY_SEPARATOR . $nomeHash;
-		// 	}
-		// }
+				$nomeHash =  md5($image->getClientOriginalName()) . '.' . $image->getClientOriginalExtension();
+				$data['profile_image'] = 'users' . DIRECTORY_SEPARATOR . $nomeHash;
+			}
+		}
 
 		// Criar conta Moip
-		$moip = new Moip(new OAuth(MoipConstants::ACCESS_TOKEN), Moip::ENDPOINT_SANDBOX);
-		$status = MoipAccount::criarConta($moip, User::grabUserById($_SESSION['user_id']));
-
-		if(!$status){
-			$this->return->setFailed("Ocorreu um erro ao criar sua conta de vendedor.");
-			return;
-		}
+		
 		
 		$inseriu = Store::add($data);
 

@@ -96,6 +96,13 @@
       templateUrl: pathTo.mainFolder+'activate.php',
       controller: 'ActivateController as vm'
     })
+    // Moip Externo
+    .state({
+      name: 'root.linkMoip',
+      url: '/getmoip/?:code',
+      templateUrl: pathTo.mainFolder+'moip.php',
+      controller: 'TerceirosController as vm'
+    })
     // FAQs
     .state({
       name: 'root.faq',

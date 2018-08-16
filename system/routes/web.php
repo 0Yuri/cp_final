@@ -12,6 +12,7 @@ Route::get('/admin/stats', 'AdminController@estatisticas');
 
 Route::get('/moip/connect', 'MoipController@link');
 Route::any('/moip/receive', 'MoipController@autorizarAppMoip');
+Route::any('/moip/vincula', 'MoipController@linkMoipAccount');
 
 Route::post('/webhooks', 'MoipController@getWebHooks');
 // ------------------------ENDING OF TESTING SECTION-------------------------- //
@@ -94,6 +95,8 @@ Route::post('/store/storeProducts', 'StoreController@getStoreProducts');
 Route::any('/store/soldProducts', 'StoreController@numberOfSales');
 Route::post('/stores/getStore', 'StoreController@getStore');
 Route::get('/stores/getStores', 'StoreController@getAllStores');
+
+Route::get('/stores/verificaMoip', 'StoreController@verificaContaMoip');
 
 // Destaques - OK
 Route::get('/store/featured', 'FeaturedController@featuredStores');
