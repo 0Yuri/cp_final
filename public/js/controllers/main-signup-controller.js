@@ -8,33 +8,10 @@
 	function SignupController ($state, $http){
 		var vm = this;
 
+		vm.field;
 		vm.link = "about:blank";
 		vm.msg_error = "";
 		vm.msg_process_modal = "Tudo certo.";
-
-		vm.field = {
-			name: "Yves",
-			last_name: "Gregorio",
-			gender: "male",
-			birthdate: "12-04-1994",
-			email: "yveshenr@gmail.com",
-			cpf: "50342052039",
-			rg: "9999999",
-			issuer: "sds",
-			issue_date: "23-10-2010",
-			password: "123",
-			confirmpassword: "123",
-			ddd_1: "81",
-			tel_1: "99999999",
-			ddd_2: "81",
-			tel_2: "99999999",
-			cep: "",
-			neighborhood: "",
-			complement: "",
-			number: "",
-			reference: "",
-			UF: ""
-		};
 
 		vm.cadastrarUsuario = cadastrarUsuario;
 		vm.cepAddress = cepAddress;
