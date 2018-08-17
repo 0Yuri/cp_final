@@ -194,6 +194,7 @@ class MoipController extends Controller
         }
       }
       else{
+        $this->return->setObject($order);
         $this->return->setFailed("Ocorreu um erro ao gerar o seu pedido.");
         return;
       }

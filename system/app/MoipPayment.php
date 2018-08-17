@@ -25,13 +25,13 @@ class MoipPayment extends Model
       return $holder;
     }
     catch (\Moip\Exceptions\UnautorizedException $e) {
-      print_r($e->getMessage());
+      
     }
     catch (\Moip\Exceptions\ValidationException $e) {
-      printf($e->__toString());
+      
     }
     catch (\Moip\Exceptions\UnexpectedException $e) {
-      print_r($e->getMessage());
+      
     }
     return null;
   }
@@ -51,13 +51,10 @@ class MoipPayment extends Model
       return $payment;
     }
     catch (\Moip\Exceptions\UnautorizedException $e) {
-      print_r($e->getMessage());
     }
     catch (\Moip\Exceptions\ValidationException $e) {
-      printf($e->__toString());
     }
     catch (\Moip\Exceptions\UnexpectedException $e) {
-      print_r($e->getMessage());
     }
     return null;
   }
@@ -74,13 +71,13 @@ class MoipPayment extends Model
       return $payment;
     }
     catch (\Moip\Exceptions\UnautorizedException $e) {
-      print_r($e->getMessage());
+      
     }
     catch (\Moip\Exceptions\ValidationException $e) {
-      printf($e->__toString());
+      
     }
     catch (\Moip\Exceptions\UnexpectedException $e) {
-      print_r($e->getMessage());
+      
     }
     return null;
   }
@@ -102,16 +99,15 @@ class MoipPayment extends Model
       return $payment;
     }
     catch (Exception $e){
-      print_r($e->__toString());
     }
     catch (\Moip\Exceptions\UnautorizedException $e) {
-      print_r($e->getMessage());
+      
     }
     catch (\Moip\Exceptions\ValidationException $e) {
-      printf($e->__toString());
+      
     }
     catch (\Moip\Exceptions\UnexpectedException $e) {
-      print_r($e->getMessage());
+      
     }
     return null;
   }
@@ -127,13 +123,13 @@ class MoipPayment extends Model
       return $payment;
     }
     catch (\Moip\Exceptions\UnautorizedException $e) {
-      print_r($e->getMessage());
+      
     }
     catch (\Moip\Exceptions\ValidationException $e) {
-      printf($e->__toString());
+      
     }
     catch (\Moip\Exceptions\UnexpectedException $e) {
-      print_r($e->getMessage());
+      
     }
     return null;
   }
@@ -151,13 +147,13 @@ class MoipPayment extends Model
       return $payment;
     }
     catch (\Moip\Exceptions\UnautorizedException $e) {
-      print_r($e->getMessage());
+      
     }
     catch (\Moip\Exceptions\ValidationException $e) {
-      printf($e->__toString());
+      
     }
     catch (\Moip\Exceptions\UnexpectedException $e) {
-      print_r($e->getMessage());
+      
     }
     return null;
   }
@@ -173,13 +169,13 @@ class MoipPayment extends Model
       return $payment;
     }
     catch (\Moip\Exceptions\UnautorizedException $e) {
-      print_r($e->getMessage());
+      
     }
     catch (\Moip\Exceptions\ValidationException $e) {
-      printf($e->__toString());
+      
     }
     catch (\Moip\Exceptions\UnexpectedException $e) {
-      print_r($e->getMessage());
+      
     }
     return null;
   }

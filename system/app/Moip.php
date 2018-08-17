@@ -17,8 +17,12 @@ class Moip
     const SUCCESS_LINK = "http://localhost/pedidofinalizado";
     const FAILED_LINK = "http://localhost/erropedido";
 
-
+    // Negocial
+    const SELLER_AMOUNT = 80;
+    const CP_AMOUNT = 20;
     const OWNER_ACCOUNT = "MPA-B4ABF9C3ED72"; //ID da conta moip do dono da aplicação
+
+
     const TOKEN_MOIP = "16NT59QVI4RBR59RPSQ9790K3MXKYWMN";
     const KEY_MOIP = "0DPJFLVWNMJD0O5YTMXVIBDCJDK6XKEKER2YVDTX";
     const PUBLIC_KEY_MOIP = "-----BEGIN PUBLIC KEY-----
