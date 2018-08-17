@@ -59,9 +59,11 @@ $load['js']['controllers'][] = 'main-product-controller'; // Página de um Produ
 $load['js']['controllers'][] = 'main-products-controller'; // Produtos
 $load['js']['controllers'][] = 'main-store-controller'; // Página de uma loja
 $load['js']['controllers'][] = 'main-stores-controller'; // Lojas
-$load['js']['controllers'][] = 'main-activate-controller';
+$load['js']['controllers'][] = 'main-activate-controller'; // Ativar conta
+$load['js']['controllers'][] = 'main-vincula-controller'; // vincular conta moip externas
 
 $load['js']['controllers'][] = 'main-debug-controller';
+$load['js']['controllers'][] = 'exp-signup-controller';
 // Controladores das páginas do painel
 $load['js']['controllers'][] = 'panel-controller'; // Padrao
 $load['js']['controllers'][] = 'panel-admin-controller'; // Painel administrativo

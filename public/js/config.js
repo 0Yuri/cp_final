@@ -30,6 +30,11 @@
         parent:"viewsFolder"
       })
       .addPath({
+        name:"signupFolder",
+        folder:"signup",
+        parent:"viewsFolder"
+      })
+      .addPath({
         name:"checkoutFolder",
         folder:"checkout",
         parent:"viewsFolder"
@@ -37,6 +42,11 @@
       .addPath({
         name:"panelFolder",
         folder:"painel",
+        parent:"viewsFolder"
+      })
+      .addPath({
+        name:"experimentalFolder",
+        folder:"experimental",
         parent:"viewsFolder"
       })
    		.addPath({
@@ -65,6 +75,13 @@
       templateUrl: pathTo.mainFolder+'home.php',
       controller: 'HomeController as vm'
     })
+    // Cadastro
+    .state({
+      name: 'root.signup',
+      url: '/cadastrar',
+      templateUrl: pathTo.signupFolder+'signup.php',
+      controller: 'SignupController as vm'
+    })
     // Debug section TODO: REMOVER
     .state({
       name: 'root.debug',
@@ -79,13 +96,13 @@
       templateUrl: pathTo.mainFolder+'activate.php',
       controller: 'ActivateController as vm'
     })
-    // Cadastro
-   	.state({
-   		name: 'root.signup',
-   		url: '/cadastro',
-   		templateUrl: pathTo.mainFolder+'signup.php',
-   		controller: 'SignUpController as vm'
-   	})
+    // Moip Externo
+    .state({
+      name: 'root.linkMoip',
+      url: '/getmoip/?:code',
+      templateUrl: pathTo.mainFolder+'moip.php',
+      controller: 'TerceirosController as vm'
+    })
     // FAQs
     .state({
       name: 'root.faq',

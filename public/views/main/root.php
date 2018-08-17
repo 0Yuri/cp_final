@@ -163,9 +163,17 @@
 	</form>
 </modal>
 
+<!-- WAITING OPERATION TO RUN -->
 <modal class="text-center" modal-id="waitingModal" modal-type="sm" modal-title="Processando operação">
   <div class="w3-row">
-      <h4>Por favor aguarde enquanto nós processamos o seu cadastro.</h4>
+      <h4>{{vm.msg_modal}}</h4>
+  </div>
+</modal>
+
+<!-- Success Or Fail -->
+<modal class="text-center" modal-id="signupModal" modal-type="sm" modal-title="Processo Concluído">
+  <div class="w3-row">
+      <h4>Operação concluída com sucesso.</h4>
   </div>
 </modal>
 

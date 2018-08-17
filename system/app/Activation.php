@@ -14,6 +14,7 @@ class Activation extends Model
 {
     const TABLE_NAME = 'activation';
     const URL = "http://www.crescendoepassando.com.br/ativarconta/";
+    const URL_SANDBOX = "http://localhost/ativarconta/";
 
     public static function activate($token){
         $activation = Activation::getActivation($token);
@@ -23,20 +24,24 @@ class Activation extends Model
             return false;
         }
 
+        // var_dump($activation);
+
         // Pega o usuario em questão
-        $usuario = User::grabUserById($activation->user_id);
+        $usuario = User::grabUserById($activation['user_id']);
 
-        if($usuario == null){
+        if($usuario != null){
+            $usuario['activated'] = "yes";
+        }
+        else{
             return false;
         }
 
-        $usuario['activated'] = "yes";
 
-        if(!User::updateUser($usuario)){
+        if(!User::updateUser($usuario, $activation['user_id'])){
             return false;
         }
 
-        return Activation::deleteActivation($activation->id);
+        return Activation::deleteActivation($activation['id']);
     }
 
     public static function generateActivationToken($user_id, $email, $username){
@@ -55,7 +60,7 @@ class Activation extends Model
         $added = Activation::saveActivation($data);
 
         if($added){
-            Mail::to($email)->send(new AccountCreated($username, Activation::URL . $string));
+            Mail::to($email)->send(new AccountCreated($username, self::URL_SANDBOX . $string));
             return true;
         }
         else{
@@ -67,7 +72,7 @@ class Activation extends Model
         $added = DB::table(Activation::TABLE_NAME)
         ->insert($data);
 
-        return  $added;
+        return $added;
     }
 
     private static function getActivation($token){
@@ -77,7 +82,7 @@ class Activation extends Model
         ->get();
 
         if(count($activation) > 0){
-            return $activation[0];
+            return (array)$activation[0];
         }
         else{
             return null;

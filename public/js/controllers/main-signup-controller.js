@@ -3,31 +3,57 @@
 
 	angular.module ('app')
 
-	.controller ('SignUpController', SignUpController);
+	.controller ('SignupController', SignupController);
 
-	function SignUpController ($state, $http, $window){
+	function SignupController ($state, $http){
 		var vm = this;
+
+		vm.link = "about:blank";
+		vm.msg_error = "";
+		vm.msg_process_modal = "Tudo certo.";
+
+		vm.field = {
+			name: "Yves",
+			last_name: "Gregorio",
+			gender: "male",
+			birthdate: "12-04-1994",
+			email: "yveshenr@gmail.com",
+			cpf: "50342052039",
+			rg: "9999999",
+			issuer: "sds",
+			issue_date: "23-10-2010",
+			password: "123",
+			confirmpassword: "123",
+			ddd_1: "81",
+			tel_1: "99999999",
+			ddd_2: "81",
+			tel_2: "99999999",
+			cep: "",
+			neighborhood: "",
+			complement: "",
+			number: "",
+			reference: "",
+			UF: ""
+		};
+
 		vm.cadastrarUsuario = cadastrarUsuario;
 		vm.cepAddress = cepAddress;
 		vm.textChanged = textChanged
 
-		function cadastrarUsuario(){
-			var field = {
-				user_info: vm.field,
-				address_info: vm.address
-			};
+		function cadastrarUsuario(field){
 			$('#waitingModal').modal('show');
-      $http.post('system/public/user/signup', field)
-      .then(function(response){
-        if(response.data.success){
-					$('#waitingModal').modal('hide');
-					$window.alert("Cadastrado com sucesso.");					
+			$http.post('system/public/user/signup', field)
+			.then(function(response){
+				$('#waitingModal').modal('hide');
+				if(response.data.success){
+					$('#signupModal').modal('show');
 					$state.go('root.home');
-        }else{
-          vm.msg_error = response.data.error;
-        }
-      });
-    }
+				}
+				else{
+					vm.msg_error = response.data.error;
+				}
+			});
+		}
 
 		function textChanged(input){
 			if(input.cep.length >= 9){
@@ -39,10 +65,13 @@
 			$http.post('system/public/address/getForSignup', cep)
 			.then(function(response){
 				if(response.data.success){
-					vm.address = response.data.object;
+					vm.field.street = response.data.object.street;
+					vm.field.neighborhood = response.data.object.neighborhood;
+					vm.field.UF = response.data.object.UF;
+					vm.field.city = response.data.object.city;
 				}
 				else{
-					console.log("Cep inválido, digite o endereço manualmente.");
+					alert("Não foi possível encontrar informações referentes à este CEP, digite o endereço manualmente.");
 				}
 			});
 		}

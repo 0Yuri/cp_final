@@ -11,6 +11,9 @@ class Store extends Model
 
   // Salva uma nova loja
   public static function add($data){
+    if(isset($data['image'])){
+      unset($data['image']);
+    }
     $added = DB::table(Store::TABLE_NAME)
     ->insert($data);
 

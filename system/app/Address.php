@@ -35,9 +35,9 @@ class Address extends Model
   }
 
   public static function getUserAddress($user_id){
-    $endereco = DB::table(Address::TABLE_NAME)
+    $endereco = DB::table(User::TABLE_NAME)
     ->select('number as numero', 'city as localidade', 'cep', 'UF as uf', 'complement as complemento', 'neighborhood as bairro', 'street as logradouro', 'reference as referencia')
-    ->where('user_id', $user_id)
+    ->where('id', $user_id)
     ->get();
 
     if(count($endereco) > 0){
@@ -63,11 +63,9 @@ class Address extends Model
 
   // Pega o CEP da loja de acordo com seu ID
   public static function getCepByStore($store_id){
-    $cep = DB::table('stores')
-    ->select('address.cep')
-    ->where('stores.id', '=', $store_id)
-    ->join('users', 'users.id', '=', 'stores.owner_id')
-    ->join(Address::TABLE_NAME, 'address.user_id', '=', 'users.id')
+    $cep = DB::table(Store::TABLE_NAME)->select('users.*')
+    ->where(Store::TABLE_NAME . '.id', $store_id)
+    ->join(User::TABLE_NAME, Store::TABLE_NAME . ".owner_id", '=', User::TABLE_NAME . '.id')
     ->get();
 
     if(count($cep) > 0){
@@ -76,6 +74,8 @@ class Address extends Model
     else{
       return null;
     }
+
+    print_r($cep);
   }
 
   public static function pegarCEP($store_name){

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Moip\Moip;
+use Moip\Auth\Connect;
 use Moip\Auth\OAuth;
 
 use App\Resposta;
@@ -13,11 +14,12 @@ use App\Order;
 use App\Client;
 use Moip\Exceptions;
 /*
- * Já existe um objeto com nome Moip, por isso MoipConstants
- * para não gerar conflitos.
+* Já existe um objeto com nome Moip, por isso MoipConstants
+* para não gerar conflitos.
 */
 use App\Moip as MoipConstants;
 use App\MoipAccount;
+use App\Account;
 use App\MoipClient;
 use App\MoipOrder;
 use App\MoipPayment;
@@ -27,23 +29,116 @@ use App\Wallet;
 
 use DB;
 use DateTime;
+use Illuminate\Http\Request;
 
 class MoipController extends Controller
 {
-  // protected $access_token = "a4face756e9e4e5c977b0b6449d4e168_v2";
-  protected $access_token = MoipConstants::ACCESS_TOKEN;
   protected $notification;
   protected $moip;
+  protected $connect;
   const ACCOUNT_ID = MoipConstants::OWNER_ACCOUNT;
 
   public function __construct(){
     parent::__construct();
-    $this->moip = new Moip(new OAuth($this->access_token), Moip::ENDPOINT_SANDBOX);
+    $this->moip = new Moip(new OAuth(MoipConstants::ACCESS_TOKEN), Moip::ENDPOINT_SANDBOX);    
+  }
 
-    $this->notification = $this->moip->notifications()->addEvent('ORDER.*')
-    ->addEvent('PAYMENT.AUTHORIZED')
-    ->setTarget('http://localhost/system/public/webhooks')
-    ->create();
+  public function autorizarAppMoip(){
+    $connect = new Connect(MoipConstants::REDIRECT_URL, MoipConstants::APP_ID, true, Connect::ENDPOINT_SANDBOX);
+    $connect->setClientSecret(MoipConstants::SECRET_SERIAL);
+    // Set the code responsed by permissions
+    $code = $_GET['code'];
+    // Verificações básicas
+    if($code != null){
+      try{
+        $connect->setCode($code);
+        $auth = $connect->authorize();
+        $token = $auth->accessToken;
+        $moipAccount = $auth->moipAccount;
+
+        if(is_null($token) || is_null($moipAccount)){
+          $this->return->setFailed("Dados inválidos.");
+        }
+      }
+      catch(\Moip\Exceptions\ValidationException $e){
+        $this->return->setFailed("Ocorreu um erro de validação na sua operação.");
+      }
+    }
+    else{
+      $this->return->setFailed("Ocorreu um erro ao receber o código de autorização.");
+    }
+  }
+
+  public function linkMoipAccount(){
+    $this->isLogged();
+    $data = $this->get_post();
+
+    if(isset($data['code'])){
+      try{
+        $connect = new Connect(MoipConstants::REDIRECT_URL, MoipConstants::APP_ID, true, Connect::ENDPOINT_SANDBOX);
+        $connect->setClientSecret(MoipConstants::SECRET_SERIAL);
+        $connect->setCode($data['code']);
+        $authorize = $connect->authorize();
+
+        $autorizacao = json_decode(json_encode($authorize), true);
+        $status = Account::add($autorizacao['moipAccount']['id'], $_SESSION['user_id'], $autorizacao['accessToken']);
+
+        if($status){
+
+        }
+        else{
+          $this->return->setFailed("Falha ao vincular sua conta.");
+          return;
+        }
+        
+      }
+      catch (\Moip\Exceptions\UnautorizedException $e) {
+        //StatusCode 401
+        $this->return->setFailed($e->getMessage());
+      } catch (\Moip\Exceptions\ValidationException $e) {
+        //StatusCode entre 400 e 499 (exceto 401)
+        $this->return->setFailed($e->getMessage());
+      } catch (\Moip\Exceptions\UnexpectedException $e) {
+        //StatusCode >= 500
+        $this->return->setFailed($e->getMessage());
+      }
+
+      // $accessToken = (string)$authorize->accessToken;
+      // $moipAccount = (string)$authorize->moipAccount;
+
+      // $status = Account::add($moipAccount, $_SESSION['user_id'], $accessToken);
+    }
+    else{
+      $this->return->setFailed("Falha ao receber o token.");
+      return;
+    }
+  }
+
+  public function criarConta(){
+    $this->isLogged();
+
+    $user = User::grabUserById($_SESSION['user_id']);
+
+    if($user != null){
+      $status = MoipAccount::criarConta($this->moip, $user);
+      if(!$status){
+        $this->return->setFailed("Ocorreu um erro ao criar sua conta.");
+        return;
+      }
+    }
+    else{
+      $this->return->setFailed("Ocorreu um erro ao recuperar informações importantes para operação.");
+      return;
+    }
+  }
+
+  public function link(){
+    $connect = new Connect(MoipConstants::REDIRECT_URL, MoipConstants::APP_ID, true, Connect::ENDPOINT_SANDBOX);
+    $connect->setScope(Connect::RECEIVE_FUNDS)
+    ->setScope(Connect::REFUND)
+    ->setScope(Connect::MANAGE_ACCOUNT_INFO)
+    ->setScope(Connect::RETRIEVE_FINANCIAL_INFO);    
+    $this->return->setObject($connect->getAuthUrl());
   }
 
   public function payWithBoleto(){
@@ -99,6 +194,7 @@ class MoipController extends Controller
         }
       }
       else{
+        $this->return->setObject($order);
         $this->return->setFailed("Ocorreu um erro ao gerar o seu pedido.");
         return;
       }
@@ -263,15 +359,6 @@ class MoipController extends Controller
 
   // testando webhooks
   public function getWebHooks(){
-    $json = file_get_contents('php://input');
-
-    $data = array(
-      'info' => $json
-    );
-
-    print_r($json);
-    
-    $inserir = DB::table("webhooks")->insert($data);
   }
 
   public function validarParcelas($parcela = 1){

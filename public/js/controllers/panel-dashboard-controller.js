@@ -7,8 +7,12 @@
 
 	function PanelDashboardController ($state, $http, userService) {
 		var vm = this;
-		vm.checkLoja = checkLoja;
 		vm.store_active;
+		vm.status_conta;
+		vm.link_botao;
+		
+		
+		vm.checkLoja = checkLoja;
 		vm.getBalance = getBalance;
 		vm.getEvaluations = getEvaluations;
 
@@ -39,11 +43,19 @@
 		function getBalance(){
 			$http.get('system/public/moip/balance')
 			.then(function(response){
-				if(response.data.success){
-					vm.saldo = response.data.object;
+				vm.saldo = response.data.object;
+				vm.status_conta = response.data.success;
+				if(!response.data.success){
+					gerarVinculoMoip();
 				}
-				else{
-					vm.saldo = "Error";
+			});
+		}
+
+		function gerarVinculoMoip(){
+			$http.get('system/public/moip/connect')
+			.then(function(response){
+				if(response.data.success){
+					vm.link_botao = response.data.object;
 				}
 			});
 		}

@@ -1,14 +1,5 @@
 <?php
 
-/* ------------------------------------------------
- * Rotas em teste devem ser testadas nesta parte
- * ------------------------------------------------
-*/
-
-
-// Route::any('/debugging', function(){
-//     return view('ordershipped', ['buyer_name'=> "Comprador X", 'order_id' => 2131231, 'tracking_code' => '4343242342']);
-// });
 // Admin
 Route::post('/admin/users/search', 'AdminController@pesquisarUsuario');
 Route::post('/admin/users/ban', 'AdminController@banirUsuario');
@@ -18,6 +9,11 @@ Route::post('/admin/stores/search', 'AdminController@pesquisarLoja');
 Route::post('/admin/stores/toggleStatus', 'AdminController@toggleLoja');
 
 Route::get('/admin/stats', 'AdminController@estatisticas');
+
+Route::get('/moip/connect', 'MoipController@link');
+Route::any('/moip/receive', 'MoipController@autorizarAppMoip');
+Route::any('/moip/vincula', 'MoipController@linkMoipAccount');
+Route::get('/moip/novaconta', 'MoipController@criarConta');
 
 Route::post('/webhooks', 'MoipController@getWebHooks');
 // ------------------------ENDING OF TESTING SECTION-------------------------- //
@@ -69,6 +65,17 @@ Route::post('/order/evaluateBuyer', 'EvaluationController@evaluateBuyer');
 Route::post('/order/getBuyerStatus', 'EvaluationController@isBuyerEvaluated');
 Route::post('/order/getSellerStatus', 'EvaluationController@isSellerEvaluated');
 
+// Cadastro de usuários TODO: Implementar os métodos
+Route::post('/signup/email', 'UserController@signupEmailInfo');
+Route::post('/signup/personal', 'UserController@signupPersonalInfo');
+Route::post('/signup/address', 'UserController@signupAddressInfo');
+
+Route::any('/signup/testvalues', 'UserController@debugSignup');
+
+
+// Estudar possível caso de realocação no controlador Moip
+Route::post('/signup/moip', 'UserController@signupMoipInfo');
+
 // Usuários - OK
 Route::post('/user/signup', 'UserController@signup');
 Route::post('/user/update', 'UserController@update');
@@ -89,6 +96,8 @@ Route::post('/store/storeProducts', 'StoreController@getStoreProducts');
 Route::any('/store/soldProducts', 'StoreController@numberOfSales');
 Route::post('/stores/getStore', 'StoreController@getStore');
 Route::get('/stores/getStores', 'StoreController@getAllStores');
+
+Route::get('/stores/verificaMoip', 'StoreController@verificaContaMoip');
 
 // Destaques - OK
 Route::get('/store/featured', 'FeaturedController@featuredStores');

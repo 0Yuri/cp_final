@@ -10,55 +10,45 @@ use DB;
 class MoipClient extends Model
 {
 
-  const TABLE_NAME = "moip_accounts";
+  const TABLE_NAME = "moip_clients";
 
   // Cria um novo cliente através do id do usuário
-  public function criarCliente(Moip $moip, $id){
-    // Retorna um objeto no formato do cliente
-    $data = Client::objetoCliente($id);
-    
-    if($data == null){
-      exit();
-    }
-
+  public static function criarCliente(Moip $moip, $data=null){    
     try{
-      $customer = $moip->customers()->setOwnId(uniqid())
-      ->setFullname($data['nome'] . " " . $data['sobrenome'])
-      ->setEmail($data['email'])
-      ->setBirthDate($data['aniversario'])
-      ->setTaxDocument($data['cpf'])
-      ->setPhone($data['ddd'], $data['telefone'])
-      ->addAddress('BILLING',
-      $data['rua'], $data['numero'],
-      $data['bairro'], $data['cidade'], $data['estado'],
-      $data['cep'], $data['complemento'])
-      ->addAddress('SHIPPING',
-      $data['rua'], $data['numero'],
-      $data['bairro'], $data['cidade'], $data['estado'],
-      $data['cep'], $data['complemento'])
-      ->create();
-      $user_id = $data['id'];
-      $client_id = $customer->getId();
-      // Salva o cliente no banco de dados
-      $status = Client::add($user_id, $client_id);
-      return true;
+      if($data == null){
+        return null;
+      }
+      else{
+        $customer = $moip->customers()->setOwnId(uniqid())
+        ->setFullname($data['name'] . " " . $data['last_name'])
+        ->setEmail($data['email'])
+        ->setBirthDate($data['birthdate'])
+        ->setTaxDocument($data['cpf'])
+        ->setPhone($data['ddd_1'], $data['tel_1'])
+        ->addAddress('BILLING',
+        $data['street'], $data['number'],
+        $data['neighborhood'], $data['city'], $data['UF'],
+        $data['cep'], $data['complement'])
+        ->addAddress('SHIPPING',
+        $data['street'], $data['number'],
+        $data['neighborhood'], $data['city'], $data['UF'],
+        $data['cep'], $data['complement'])
+        ->create();
+        return $customer;
+      }
     }
     catch(Exception $e){
-      printf($e->__toString());
     }
     catch (\Moip\Exceptions\UnautorizedException $e) {
-      //StatusCode 401
-      echo $e->getMessage();
+      //StatusCode 401     
     }
     catch (\Moip\Exceptions\ValidationException $e) {
       //StatusCode entre 400 e 499 (exceto 401)
-      printf($e->__toString());
     }
     catch (\Moip\Exceptions\UnexpectedException $e) {
       //StatusCode >= 500
-      echo $e->getMessage();
     }
-    return false;
+    return null;
   }
 
   // Pega o ID do cliente moip através do id do usuário
@@ -78,14 +68,14 @@ class MoipClient extends Model
 
   // Consulta um cliente pelo seu ID
   public static function consultarCliente(Moip $moip, $customer_id){
-
-    if($customer_id == null){
-      return null;
-    }
-
     try{
-      $customer = $moip->customers()->get($customer_id);
-      return $customer;
+      if($customer_id == null){
+        return null;
+      }
+      else{
+        $customer = $moip->customers()->get($customer_id);
+        return $customer;
+      }      
     }
     catch(Exception $e){
       printf($e->__toString());
@@ -141,5 +131,4 @@ class MoipClient extends Model
     }
     return null;
   }
-
 }

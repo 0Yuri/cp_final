@@ -15,13 +15,14 @@ class CreateMoipAccountsTable extends Migration
     {
         Schema::create('moip_accounts', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->unsigned()->unique();
+            $table->integer('user_id')
+            ->unsigned()
+            ->unique();
             $table->string('account_id', 50)->nullable();
-            $table->string('client_id', 50)->nullable();
-            $table->string('accessToken', 60)->nullable();
+            $table->string('accessToken', 60)->nullable(); 
             // Chaves estrangeiras
             $table->foreign('user_id')
-            ->references('id')->on('users');
+            ->references('id')->on('users');           
             // Datas
             $table->timestamp('created_at')->useCurrent();
         });

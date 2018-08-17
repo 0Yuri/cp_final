@@ -38,6 +38,10 @@ class ProductController extends Controller
   
       $data['price'] = $this->transformPrice($data['price']);  
       $data['original_price'] = $this->transformPrice($data['original_price']);
+
+      if($data['discount'] == null || $data['discount'] == "undefined"){
+        $data['discount'] = "0";
+      }
   
       $loja_id = Store::getStoreID($_SESSION['user_id']);  
       $data['store_id'] = $loja_id;      

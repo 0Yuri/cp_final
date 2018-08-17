@@ -11,63 +11,55 @@ class User extends Model
   const TABLE_NAME = 'users';
 
   // Salva um usuário novo no banco de dados
-  public static function add($data){
-    $usuario = (array)$data['user_info'];
-    $endereco = (array)$data['address_info'];
-
-    if(!isset($data)){
+  public static function add($usuario){
+    if(!isset($usuario)){
       return false;
     }
     else{
-      // Insere o usuario e retorna o id para referenciar no endereco
-      $usuario['password'] = password_hash($usuario['password'], PASSWORD_DEFAULT);
+      // Encripta a senha do usuário em hash
+      $usuario['password'] = password_hash($usuario['password'], PASSWORD_DEFAULT);      
 
+      // Adiciona na base     
       $inseriu = DB::table(User::TABLE_NAME)
       ->insertGetId($usuario);
 
       if($inseriu){
-        // Atribui ao campo user_id o id do usuario adicionad
-        $endereco['user_id'] = $inseriu;
-        $endereco = Address::add($endereco);
-        if($endereco){
-          return $inseriu;
-        }else{
-          return false;
-        }
-      }else{
+        return $inseriu;
+      }
+      else{
         return false;
       }
     }
   }
 
-  // Altera um usuário
-  public static function updateUser($data){
-    $usuario = DB::table(User::TABLE_NAME)
-    ->where("name_id", $data['name_id'])
-    ->where("cpf", $data['cpf'])
-    ->get();
-
-    if(count($usuario) <= 0){
-      return false;
+  // Altera um usuário TODO: Refazer
+  public static function updateUser($data, $user_id = null){
+    $fields = array(
+      'cpf', 'rg', 'birthdate', 'name_id', 'id', 'email'
+    );
+    foreach($fields as $key){
+      if(isset($data[$key])){
+        unset($data[$key]);
+      }
     }
 
-    if(isset($data['cpf'])){
-      unset($data['cpf']);
+    if($user_id == null){
+      if(isset($_SESSION['user_id'])){
+        $user_id = $_SESSION['user_id'];
+      }
+      else{
+        return false;
+      }
     }
-    if(isset($data['rg'])){
-      unset($data['rg']);
-    }
-    if(isset($data['email'])){
-      unset($data['email']);
-    }
-
-    $alterou = DB::table(User::TABLE_NAME)
-    ->where('name_id', $data['name_id'])
+        
+    $updated = DB::TABLE(User::TABLE_NAME)
+    ->where("id", $user_id)
     ->update($data);
 
-    if($alterou){
+    if($updated){
       return true;
-    }else{
+    }
+    else{
       return false;
     }
   }
@@ -123,7 +115,7 @@ class User extends Model
  
     $usuario = DB::table(User::TABLE_NAME)
     ->select('*')
-    ->where('name_id', '=', $id)
+    ->where('id', '=', $id)
     ->get();
 
     if(count($usuario) > 0){

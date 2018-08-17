@@ -1,5 +1,5 @@
 <div class="w3-row w3-padding">
-  <form ng-submit="vm.cadastrarUsuario()">
+  <form ng-submit="vm.cadastrarUsuario(vm.field)">
     <h4>Informações básicas</h4>
     <hr>
     <div class="row">
@@ -84,35 +84,35 @@
     <div class="row">
       <div class="col-sm-3">
         <label>CEP:</label>
-        <input type="text" name="cep" class="w3-input w3-border w3-round" required ng-model="vm.address.cep" mask="99999-999" ng-change="vm.textChanged(vm.address)" placeholder="99999-999">
+        <input type="text" name="cep" class="w3-input w3-border w3-round" required ng-model="vm.field.cep" mask="99999-999" ng-change="vm.textChanged(vm.field)" placeholder="99999-999">
       </div>
       <div class="col-sm-3">
         <label>Rua:</label>
-        <input type="text" name="street" class="w3-input w3-border w3-round" required ng-model="vm.address.street" placeholder="Digite o nome da rua">
+        <input type="text" name="street" class="w3-input w3-border w3-round" required ng-model="vm.field.street" placeholder="Digite o nome da rua">
       </div>
       <div class="col-sm-3">
         <label>Número:</label>
-        <input type="text" name="number" class="w3-input w3-border w3-round" required ng-model="vm.address.number" placeholder="Número da residência">
+        <input type="text" name="number" class="w3-input w3-border w3-round" required ng-model="vm.field.number" placeholder="Número da residência">
       </div>
       <div class="col-sm-3">
         <label>Bairro:</label>
-        <input type="text" name="neighborhood" class="w3-input w3-border w3-round" required ng-model="vm.address.neighborhood" placeholder="Digite o bairro">
+        <input type="text" name="neighborhood" class="w3-input w3-border w3-round" required ng-model="vm.field.neighborhood" placeholder="Digite o bairro">
       </div>
       <div class="col-sm-4">
         <label>Complemento:</label>
-        <input type="text" name="complement" class="w3-input w3-border w3-round" required ng-model="vm.address.complement" placeholder="Apartamento 223">
+        <input type="text" name="complement" class="w3-input w3-border w3-round" ng-model="vm.field.complement" placeholder="Apartamento 223">
       </div>
       <div class="col-sm-4">
         <label>Referência:</label>
-        <input type="text" name="reference" class="w3-input w3-border w3-round" required ng-model="vm.address.reference" placeholder="Perto do supermercado X">
+        <input type="text" name="reference" class="w3-input w3-border w3-round" ng-model="vm.field.reference" placeholder="Perto do supermercado X">
       </div>
       <div class="col-sm-1">
         <label>Estado:</label>
-        <input type="text" name="uf" class="w3-input w3-border w3-round" required ng-model="vm.address.UF" placeholder="XX">
+        <input type="text" name="uf" class="w3-input w3-border w3-round" required ng-model="vm.field.UF" placeholder="XX">
       </div>
       <div class="col-sm-3">
         <label>Cidade:</label>
-        <input type="text" name="city" class="w3-input w3-border w3-round" required ng-model="vm.address.city" placeholder="Digite o nome da sua cidade">
+        <input type="text" name="city" class="w3-input w3-border w3-round" required ng-model="vm.field.city" placeholder="Digite o nome da sua cidade">
       </div>
     </div>
 

@@ -9,12 +9,12 @@ use DB;
 
 use App\EmailSender;
 use App\Order;
+use App\Moip as MoipConstants;
 
 
 class MoipOrder extends Model
 {
   // Conta do moip
-  const ACCOUNT_ID = "MPA-B4ABF9C3ED72";
   // Taxas Vendedor e Crespass
   const SELLER_AMOUNT = 80;
   const CP_AMOUNT = 20;
@@ -37,16 +37,16 @@ class MoipOrder extends Model
         Product::increaseSolds($produto['id'], $produto['quantidade']);
         Product::lowerStock($produto['id'], $produto['quantidade']);
       }
-
+      
       $frete = 0;
-
+      
       if($pedido['entrega']['forma'] == 'pac'){
         $frete = $pedido['entrega']['valores']['PAC']['valor'];
       }
       else{
         $frete = $pedido['entrega']['valores']['SEDEX']['valor'];
       }
-
+      
       $frete = (int)($frete * 100);
 
       $seller_id = MoipAccount::getAccountId($pedido['id_loja']);
@@ -55,8 +55,8 @@ class MoipOrder extends Model
       ->setAddition(0)
       ->setDiscount($discount)
       ->setCustomer($customer)
-      ->addReceiver($seller_id, 'PRIMARY', 0, MoipOrder::SELLER_AMOUNT, false)
-      ->addReceiver(MoipOrder::ACCOUNT_ID, 'SECONDARY', NULL, MoipOrder::CP_AMOUNT, true)
+      ->addReceiver($seller_id, 'PRIMARY', 0, MoipConstants::SELLER_AMOUNT, false)
+      ->addReceiver(MoipConstants::OWNER_ACCOUNT, 'SECONDARY', NULL, MoipConstants::CP_AMOUNT, true)
       ->create();
 
       $order_id = $order->getId();
@@ -80,16 +80,13 @@ class MoipOrder extends Model
       }
     }
     catch (\Moip\Exceptions\UnautorizedException $e) {
-      //StatusCode 401
-      print_r($e->getMessage());
+      //StatusCode 401 
     }
     catch (\Moip\Exceptions\ValidationException $e) {
       //StatusCode entre 400 e 499 (exceto 401)
-      printf($e->__toString());
     }
     catch (\Moip\Exceptions\UnexpectedException $e) {
       //StatusCode >= 500
-      print_r($e->getMessage());
     }
     return null;
   }
@@ -145,8 +142,8 @@ class MoipOrder extends Model
         ->setAddition(0)
         ->setDiscount($discount)
         ->setCustomer($customer)
-        ->addReceiver($seller_id, 'PRIMARY', 0, MoipOrder::SELLER_AMOUNT, false)
-        ->addReceiver(MoipOrder::ACCOUNT_ID, 'SECONDARY', 0, MoipOrder::CP_AMOUNT, true);        
+        ->addReceiver($seller_id, 'PRIMARY', 0, MoipConstants::SELLER_AMOUNT, false)
+        ->addReceiver(MoipConstants::OWNER_ACCOUNT, 'SECONDARY', 0, MoipConstants::CP_AMOUNT, true);        
 
         $multiorder->addOrder($order);
       }
@@ -181,15 +178,15 @@ class MoipOrder extends Model
     }
     catch (\Moip\Exceptions\UnautorizedException $e) {
       //StatusCode 401
-      print_r($e->getMessage());
+      
     }
     catch (\Moip\Exceptions\ValidationException $e) {
       //StatusCode entre 400 e 499 (exceto 401)
-      printf($e->__toString());
+      
     }
     catch (\Moip\Exceptions\UnexpectedException $e) {
       //StatusCode >= 500
-      print_r($e->getMessage());
+      
     }
     return null;
   }
@@ -202,13 +199,13 @@ class MoipOrder extends Model
       return $order;
     }
     catch (\Moip\Exceptions\UnautorizedException $e) {
-      print_r($e->getMessage());
+      
     }
     catch (\Moip\Exceptions\ValidationException $e) {
-      printf($e->__toString());
+      
     }
     catch (\Moip\Exceptions\UnexpectedException $e) {
-      print_r($e->getMessage());
+      
     }
   }
 
@@ -218,13 +215,13 @@ class MoipOrder extends Model
       return $multiorder;
     }
     catch (\Moip\Exceptions\UnautorizedException $e) {
-      print_r($e->getMessage());
+      
     }
     catch (\Moip\Exceptions\ValidationException $e) {
-      printf($e->__toString());
+      
     }
     catch (\Moip\Exceptions\UnexpectedException $e) {
-      print_r($e->getMessage());
+      
     }
   }
 
