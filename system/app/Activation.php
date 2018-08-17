@@ -60,7 +60,7 @@ class Activation extends Model
         $added = Activation::saveActivation($data);
 
         if($added){
-            Mail::to($email)->send(new AccountCreated($username, self::URL_SANDBOX . $string));
+            Mail::to($email)->send(new AccountCreated($username, self::URL . $string));
             return true;
         }
         else{
