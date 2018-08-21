@@ -9,7 +9,7 @@ class Moip
      * Note que ao mudar, contas criadas com outro token não serão acessíveis
      * Em ambiente de testes, delete as informações da DB após mudar o token
      */
-    const ACCESS_TOKEN = "7992fc93022a4f88840118f59aadc782_v";
+    const ACCESS_TOKEN = "7992fc93022a4f88840118f59aadc782_v2";
     const APP_ID = "APP-PNFT400XDNCY";
     const URL = "http://www.crescendoepassando.com.br/";
     const REDIRECT_URL = "http://www.crescendoepassando.com.br/getmoip/"; //url que deve tratar o retorno do moip
