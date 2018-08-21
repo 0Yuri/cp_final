@@ -9,11 +9,11 @@ class Moip
      * Note que ao mudar, contas criadas com outro token não serão acessíveis
      * Em ambiente de testes, delete as informações da DB após mudar o token
      */
-    const ACCESS_TOKEN = "0c832c6380f344bf9c1e1c3c3bf712fa_v2";
-    const APP_ID = "APP-DY5IMOZNBVXT";
-    const URL = "http://localhost/";
-    const REDIRECT_URL = "http://localhost/getmoip/"; //url que deve tratar o retorno do moip
-    const SECRET_SERIAL = "47a3dd45805340ec95a9260faecbc68a";
+    const ACCESS_TOKEN = "7992fc93022a4f88840118f59aadc782_v";
+    const APP_ID = "APP-PNFT400XDNCY";
+    const URL = "http://www.crescendoepassando.com.br/";
+    const REDIRECT_URL = "http://www.crescendoepassando.com.br/getmoip/"; //url que deve tratar o retorno do moip
+    const SECRET_SERIAL = "0317e6963e9f4919805fd0d44b2a5b17";
     const SUCCESS_LINK = "http://localhost/pedidofinalizado";
     const FAILED_LINK = "http://localhost/erropedido";
 
@@ -35,17 +35,17 @@ class Moip
     mQIDAQAB
     -----END PUBLIC KEY-----";
 
-    /* GERADO PARA TESTES
+
+    /*
     {
-  "id": "APP-DY5IMOZNBVXT",
-  "website": "http://localhost",
-  "accessToken": "0c832c6380f344bf9c1e1c3c3bf712fa_v2",
-  "description": "E-commerce de produtos infantis",
-  "name": "Crescendo e Passando",
-  "secret": "47a3dd45805340ec95a9260faecbc68a",
-  "redirectUri": "http://localhost/getmoip/",
-  "createdAt": "2018-08-16T01:17:08.187Z",
-  "updatedAt": "2018-08-16T01:17:08.187Z"
-}
-    */
+        "id": "APP-PNFT400XDNCY",
+        "website": "http://www.crescendoepassando.com.br",
+        "accessToken": "7992fc93022a4f88840118f59aadc782_v2",
+        "description": "E-commerce de roupas infantis",
+        "name": "Crescendo e Passando",
+        "secret": "0317e6963e9f4919805fd0d44b2a5b17",
+        "redirectUri": "http://www.crescendoepassando.com.br/getmoip/",
+        "createdAt": "2018-08-21T02:31:26.256Z",
+        "updatedAt": "2018-08-21T02:31:26.256Z"
+    } */
 }
