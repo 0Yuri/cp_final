@@ -19,6 +19,9 @@ class MoipClient extends Model
         return null;
       }
       else{
+        if(!isset($data['complement'])){
+          $data['complement'] = " ";
+        }
         $customer = $moip->customers()->setOwnId(uniqid())
         ->setFullname($data['name'] . " " . $data['last_name'])
         ->setEmail($data['email'])
@@ -40,7 +43,7 @@ class MoipClient extends Model
     catch(Exception $e){
     }
     catch (\Moip\Exceptions\UnautorizedException $e) {
-      //StatusCode 401     
+      //StatusCode 401 
     }
     catch (\Moip\Exceptions\ValidationException $e) {
       //StatusCode entre 400 e 499 (exceto 401)
