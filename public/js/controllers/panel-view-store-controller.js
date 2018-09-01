@@ -52,14 +52,16 @@
 		}
 
 		function criarContaMoip(){
+			$('#waitingModal').modal('show');
 			$http.get('system/public/moip/novaconta')
-			.then(function(response){
+			.then(function(response){				
 				if(response.data.success){
 					vm.exibirConteudo = true;
 				}
 				else{
 					console.log(response.data.error);
 				}
+				$('#waitingModal').modal('hide');
 			})
 		}
 
