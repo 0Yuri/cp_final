@@ -33,6 +33,7 @@
 		}
 
 		function pagarComCartao(info){
+			$('#waitingModal').modal('show');
 			$http.post('system/public/checkout/cartao', info)
 			.then(function(response){
 				if(response.data.success){
@@ -41,10 +42,12 @@
 				else{
 					alert(response.data.error);
 				}
+				$('#waitingModal').modal('hide');
 			});
 		}
 
 		function pagarComBoleto(){
+			$('#waitingModal').modal('show');
 			$http.get('system/public/checkout/boleto')
 			.then(function(response){
 				if(response.data.success){
@@ -53,6 +56,7 @@
 				}else{
 					alert(response.data.error);
 				}
+				$('#waitingModal').modal('hide');
 			});
 		}
 
