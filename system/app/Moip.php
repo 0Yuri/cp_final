@@ -21,7 +21,7 @@ class Moip
     // Negocial
     const SELLER_AMOUNT = 80;
     const CP_AMOUNT = 20;
-    const OWNER_ACCOUNT = "MPA-B4ABF9C3ED72"; //ID da conta moip do dono da aplicação
+    const OWNER_ACCOUNT = "MPA-443B8CF85041"; //ID da conta moip do dono da aplicação
 
 
     const TOKEN_MOIP = "DEYSLZFR42KBXZWS4YS1IPMOFPMEI4BI";
