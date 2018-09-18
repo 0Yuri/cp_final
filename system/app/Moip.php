@@ -2,8 +2,6 @@
 
 namespace App;
 
-use Moip\Moip;
-
 class Moip
 {
     /* ATENÇÃO
