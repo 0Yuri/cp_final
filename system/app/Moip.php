@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Moip\Moip;
+
 class Moip
 {
     /* ATENÇÃO
@@ -17,6 +19,9 @@ class Moip
     const SECRET_SERIAL = "a388e4f5dd9e4ddea42cad4d5c72ebbc";
     const SUCCESS_LINK = "http://localhost/pedidofinalizado";
     const FAILED_LINK = "http://localhost/erropedido";
+
+    // const MOIP_ENVIRONMENT = Moip::ENDPOINT_PRODUCTION;
+    // const MOIP_CONNECT_ENV = Connect::ENDPOINT_PRODUCTION;
 
     // Negocial
     const SELLER_AMOUNT = 80;

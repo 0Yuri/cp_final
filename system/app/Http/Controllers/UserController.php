@@ -24,7 +24,7 @@ class UserController extends Controller
 
   public function __construct(){
     parent::__construct();
-    $this->moip = new Moip(new OAuth($this->access_token), Moip::ENDPOINT_SANDBOX);
+    $this->moip = new Moip(new OAuth($this->access_token), Moip::ENDPOINT_PRODUCTION);
   }
 
   // Cadastro de novo usuario

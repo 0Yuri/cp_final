@@ -62,7 +62,7 @@ class SalesController extends Controller
 
     if($venda != null){
       $access_token = "a4face756e9e4e5c977b0b6449d4e168_v2";
-      $moip = new Moip(new OAuth($access_token), Moip::ENDPOINT_SANDBOX);
+      $moip = new Moip(new OAuth($access_token), Moip::ENDPOINT_PRODUCTION);
 
       if($this->isMultiPedido($venda->order_id)){
         $this->return->setFailed("Nenhum pedido foi encontrado.");
