@@ -18,6 +18,9 @@ class Moip
     const SUCCESS_LINK = "http://localhost/pedidofinalizado";
     const FAILED_LINK = "http://localhost/erropedido";
 
+    // const MOIP_ENVIRONMENT = Moip::ENDPOINT_PRODUCTION;
+    // const MOIP_CONNECT_ENV = Connect::ENDPOINT_PRODUCTION;
+
     // Negocial
     const SELLER_AMOUNT = 80;
     const CP_AMOUNT = 20;

@@ -40,11 +40,11 @@ class MoipController extends Controller
 
   public function __construct(){
     parent::__construct();
-    $this->moip = new Moip(new OAuth(MoipConstants::ACCESS_TOKEN), Moip::ENDPOINT_SANDBOX);    
+    $this->moip = new Moip(new OAuth(MoipConstants::ACCESS_TOKEN), Moip::ENDPOINT_PRODUCTION);    
   }
 
   public function autorizarAppMoip(){
-    $connect = new Connect(MoipConstants::REDIRECT_URL, MoipConstants::APP_ID, true, Connect::ENDPOINT_SANDBOX);
+    $connect = new Connect(MoipConstants::REDIRECT_URL, MoipConstants::APP_ID, true, Connect::ENDPOINT_PRODUCTION);
     $connect->setClientSecret(MoipConstants::SECRET_SERIAL);
     // Set the code responsed by permissions
     $code = $_GET['code'];
@@ -75,7 +75,7 @@ class MoipController extends Controller
 
     if(isset($data['code'])){
       try{
-        $connect = new Connect(MoipConstants::REDIRECT_URL, MoipConstants::APP_ID, true, Connect::ENDPOINT_SANDBOX);
+        $connect = new Connect(MoipConstants::REDIRECT_URL, MoipConstants::APP_ID, true, Connect::ENDPOINT_PRODUCTION);
         $connect->setClientSecret(MoipConstants::SECRET_SERIAL);
         $connect->setCode($data['code']);
         $authorize = $connect->authorize();
@@ -133,7 +133,7 @@ class MoipController extends Controller
   }
 
   public function link(){
-    $connect = new Connect(MoipConstants::REDIRECT_URL, MoipConstants::APP_ID, true, Connect::ENDPOINT_SANDBOX);
+    $connect = new Connect(MoipConstants::REDIRECT_URL, MoipConstants::APP_ID, true, Connect::ENDPOINT_PRODUCTION);
     $connect->setScope(Connect::RECEIVE_FUNDS)
     ->setScope(Connect::REFUND)
     ->setScope(Connect::MANAGE_ACCOUNT_INFO)
@@ -316,7 +316,7 @@ class MoipController extends Controller
       $this->return->setFailed("Nenhum token foi gerado.");
       return;
     }
-    $moipUser = new Moip(new OAuth($token), Moip::ENDPOINT_SANDBOX);
+    $moipUser = new Moip(new OAuth($token), Moip::ENDPOINT_PRODUCTION);
 
 
     $status = Wallet::withdraw($moipUser, $data['amount'], $data['bank_number'],
