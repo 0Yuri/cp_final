@@ -79,14 +79,14 @@
           </div>
           <div class="w3-row">
             <textarea id="public_key" class="w3-input w3-hide" >"-----BEGIN PUBLIC KEY-----
-              MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnn0BRekMnGuLyfLAFQxA
-              t0qob4qSwuHHAY4LqhdW6V+VZAsqs66xWJmjsjjeXsp+F17HfgxpHbOUqfyTy1EF
-              7d9MtXk8kpAAqMAJNXDFGdAvj6eHSvsNyvhhq5SsK5U+HS2WYbBIUs5vDrNhyCSM
-              18f2A/N5LYTNqP7HPDZM2WbEEQtyp308RXsXw2w46qjPVxTllBOrC3zc5LSEG8gj
-              2igV3R7aqDb1wnkmqdKB8Lhwwrz5RMoN5+HmYzj2g0StQT70m5zhSTPpxWgWz44d
-              VUr10Cs+B4g4ezRZ0LFa5afS1ZXxuoXa0G1d2/KGNMer8SpDVPf1wbg9nhcmK2QE
-              mQIDAQAB
-              -----END PUBLIC KEY-----"</textarea>
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAn3zeIBCv8CRY2/x8IroH
+aM8I0fq2hk4ppiBbIaOXab9Zx7UabAY0bk6Gn8yRnd/Omb3E7jR9SuQFXlhTJubg
+8a5hwWh/WAyUi4kv4beSMMeiVxkQrlSwSbCkhU4yW4I6O1rzvPbXjA9QMAEol5xc
+AysIbTSpLJ5kXbpq8XZQNJrBJvcU5MJIdnDbOrw/4W8RUpusJwnVICfXO8dwooPK
+xi2zg1Y1FFrW2PyAneZyJlFguV6mRFjlJaeemM3aajKJ0MDW/+gNNkdTOJg8L4eh
+TYRnS8CCs25l0HCYt4VxzI/kNcI50pgJ2VkHAt5TBrwJyhFKhTgqoWDz56jGi1FG
+qwIDAQAB
+-----END PUBLIC KEY-----"</textarea>
           </div>
           <h3>Informações de pagamento</h3>
           <div class="w3-row">
